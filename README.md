@@ -29,7 +29,12 @@ npm run dev
 ```
 
 # FOR SERVER
-Go backend devs!
+Input this in your terminal step-by-step
+```sh
+cd client
+npm install
+npm start
+```
 
 ### Route Structure
 Legend:
