@@ -3,7 +3,7 @@ import express from "express";
 import { validationResult } from "express-validator";
 import { validateBillReqBody, cleanBillObject } from "../validators/BillsValidator.js";
 import { db as prisma } from "../utils/db.server.js";
-import { allowed } from "../utils/helpers.js";
+import { allowed, generateFinancePKSegments } from "../utils/helpers.js";
 
 // Express Router
 const BillsRouter = express.Router();
@@ -30,12 +30,39 @@ const parser = (object) => {
     return object;
 };
 
+const generateBillNo = async () => {
+    const billNoList = (
+        await prisma.Bills.findMany({
+            select: {
+                bill_no: true,
+            },
+        })
+    ).map((element) => {
+        return element.bill_no;
+    });
+
+    const segments = generateFinancePKSegments(billNoList);
+    const castedSegments = [parseInt(segments.first), parseInt(segments.second)];
+
+    if (castedSegments[1] + 1 > 999999999) {
+        if (castedSegments[0] + 1 > 9) {
+            throw new Error("Bill Number Overflow");
+        } else {
+            return `${(castedSegments[0] + 1).toString()}-000000000`;
+        }
+    } else {
+        return `${castedSegments[0].toString()}-${(castedSegments[1] + 1)
+            .toString()
+            .padStart(9, "0")}`;
+    }
+};
+
 /* Controllers */
 
 /* GET Endpoints */
 // Get Bill
 BillsRouter.get("/:bill_no", async (req, res) => {
-    if (!allowed(req.permission, [1, 2, 3])) {
+    if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
@@ -62,6 +89,13 @@ BillsRouter.get("/:bill_no", async (req, res) => {
                 status: true,
                 remarks: true,
                 issued_on: true,
+                payments: {
+                    select: {
+                        payment: true,
+                        remarks: true,
+                        paid_on: true,
+                    },
+                },
             },
         });
 
@@ -91,6 +125,9 @@ BillsRouter.get("/", async (req, res) => {
                 status: true,
                 remarks: true,
                 issued_on: true,
+            },
+            orderBy: {
+                bill_no: "asc",
             },
         });
 
@@ -125,6 +162,9 @@ BillsRouter.get("/unpaid", async (req, res) => {
                 status: true,
                 remarks: true,
                 issued_on: true,
+            },
+            orderBy: {
+                bill_no: "asc",
             },
         });
 
@@ -164,6 +204,8 @@ BillsRouter.get("/module/:module_name", async (req, res) => {
                 issued_on: true,
                 enrollments: {
                     select: {
+                        module_name: true,
+                        school_year: true,
                         student_id: true,
                         grade: true,
                         student: {
@@ -175,7 +217,16 @@ BillsRouter.get("/module/:module_name", async (req, res) => {
                         },
                     },
                 },
-            }
+                payments: {
+                    select: {
+                        or_no: true,
+                        payment: true,
+                    },
+                },
+            },
+            orderBy: {
+                bill_no: "asc",
+            },
         });
 
         // Return bills
@@ -188,37 +239,53 @@ BillsRouter.get("/module/:module_name", async (req, res) => {
 
 /* POST Endpoints */
 // Create Bill
-BillsRouter.post("/", validateBillReqBody(), async (req, res) => {
-    if (!allowed(req.permission, [3])) {
-        res.status(403).send({ error: "You are not authorized to access this" });
-        return;
-    }
-
-    // Validate Bill Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
-
-    try {
-        // Get bill from req.body
-        const bill = parser(cleanBillObject(req.body));
-
-        // Check if bill_no exists
-        if (await exists(bill.bill_no)) {
-            throw new Error("Bill number already exists");
+BillsRouter.post(
+    "/bill/:module_name/:school_year/:student_id",
+    validateBillReqBody(),
+    async (req, res) => {
+        if (!allowed(req.permission, [3])) {
+            res.status(403).send({ error: "You are not authorized to access this" });
+            return;
         }
 
-        // Create bill in database
-        await prisma.Bills.create({ data: bill });
+        // Validate Bill Info
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            // Return errors if any
+            return res.status(400).send({ errors: result.array() });
+        }
 
-        res.status(200).send({ message: "Create successful" });
-    } catch (error) {
-        // Return error
-        res.status(500).send({ error: error.message });
+        try {
+            // Get bill from req.body
+            const bill = parser(cleanBillObject(req.body));
+
+            //Add bill number
+            bill.bill_no = await generateBillNo();
+
+            // Create bill in database
+            await prisma.Bills.create({ data: bill });
+
+            //Get module enrollment the bill is for from params
+            const { module_name, student_id } = req.params;
+
+            //Parse School Year
+            const school_year = parseInt(req.params.school_year);
+
+            //Append bill to correct enrollment
+            await prisma.Module_Enrollments.update({
+                where: {
+                    student_id_module_name_school_year: { student_id, module_name, school_year },
+                },
+                data: { bill_no: bill.bill_no },
+            });
+
+            res.status(200).send({ message: "Create successful", bill: bill });
+        } catch (error) {
+            // Return error
+            res.status(500).send({ error: error.message });
+        }
     }
-});
+);
 
 /* PATCH Endpoints */
 // Update Bill
@@ -258,7 +325,7 @@ BillsRouter.patch("/:bill_no", validateBillReqBody(), async (req, res) => {
 });
 
 // Delete Bill
-BillsRouter.delete("/:bill_no", async (req, res) => {
+BillsRouter.delete("/delete/:bill_no/:module_name/:school_year/:student_id", async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
@@ -273,6 +340,13 @@ BillsRouter.delete("/:bill_no", async (req, res) => {
             throw new Error("Bill number does not exist");
         }
 
+        //Delete all payments of the bill
+        await prisma.Payments.deleteMany({
+            where: {
+                bill_no: bill_no,
+            },
+        });
+
         //Delete the bill
         await prisma.Bills.delete({
             where: {
@@ -280,9 +354,23 @@ BillsRouter.delete("/:bill_no", async (req, res) => {
             },
         });
 
+        //Get module enrollment the bill is for from params
+        const { module_name, student_id } = req.params;
+
+        //Parse School Year
+        const school_year = parseInt(req.params.school_year);
+
+        //Remove bill from associated enrollment
+        await prisma.Module_Enrollments.update({
+            where: {
+                student_id_module_name_school_year: { student_id, module_name, school_year },
+            },
+            data: { bill_no: null },
+        });
+
         // Return response
         res.status(200).send({
-            message: "Bill " + bill_no + " successfully deleted from database",
+            message: `Bill Number: ${bill_no} and its associated payments have been deleted from the database`,
         });
     } catch (error) {
         // Return error

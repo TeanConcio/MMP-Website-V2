@@ -1,13 +1,9 @@
 <template>
-    <router-link to="/" class="flex items-center">
-        <img src="https://i.imgur.com/yCabNBZ.png" class="h-8 mr-3" alt="MMP Logo" />
+    <router-link to="/" class="flex items-center flex-col sm:flex-row justify-center">
+        <img src="https://i.imgur.com/yCabNBZ.png" class="h-8 sm:mr-3 mb-2" alt="MMP Logo" />
         <span
-            class="hidden self-center text-2xl font-bold whitespace-nowrap dark:text-white sm:block text-logo"
+            class="self-center text-2xl font-bold text-center dark:text-white block text-logo"
             >Mission Ministries Philippines</span
-        >
-        <span
-            class="block self-center text-2xl font-semibold whitespace-nowrap dark:text-white sm:hidden text-logo"
-            >MMP</span
         >
     </router-link>
 </template>

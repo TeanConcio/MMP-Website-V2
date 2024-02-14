@@ -1,8 +1,13 @@
 <script setup>
 import MessagePopup from "../../components/common/MessagePopup.vue";
+import ErrorMessagePopup from "../../components/common/ErrorMessagePopup.vue";
+import LoadingSpinner from "../common/LoadingSpinner.vue";
 </script>
 
 <template>
+    <div class="fixed top-1/2">
+        <LoadingSpinner v-if="loading" />
+    </div>
     <div
         class="w-full bg-white rounded-lg mx-auto p-4 shadow dark:border sm:max-w-md xl:p-0 md:max-p-4 lg:p-8 mb-8"
     >
@@ -33,7 +38,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="firstname"
                         />
                         <div class="input-errors" v-if="errors.firstname">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.firstname }}
                             </div>
                         </div>
@@ -55,7 +60,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="lastname"
                         />
                         <div class="input-errors" v-if="errors.lastname">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.lastname }}
                             </div>
                         </div>
@@ -77,7 +82,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="middlename"
                     />
                     <div class="input-errors" v-if="errors.middlename">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.middlename }}
                         </div>
                     </div>
@@ -99,7 +104,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="email"
                     />
                     <div class="input-errors" v-if="errors.email">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.email }}
                         </div>
                     </div>
@@ -123,7 +128,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         <option value="BOTH">Both</option>
                     </select>
                     <div class="input-errors" v-if="errors.track">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.track }}
                         </div>
                     </div>
@@ -144,7 +149,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="password"
                     />
                     <div class="input-errors" v-if="errors.password">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.password }}
                         </div>
                     </div>
@@ -165,7 +170,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="confirmPassword"
                     />
                     <div class="input-errors" v-if="errors.confirmPassword">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.confirmPassword }}
                         </div>
                     </div>
@@ -190,7 +195,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="address"
                     />
                     <div class="input-errors" v-if="errors.address">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.address }}
                         </div>
                     </div>
@@ -214,7 +219,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="mobile_no"
                         />
                         <div class="input-errors" v-if="errors.mobile_no">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.mobile_no }}
                             </div>
                         </div>
@@ -237,7 +242,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="landline"
                         />
                         <div class="input-errors" v-if="errors.landline">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.landline }}
                             </div>
                         </div>
@@ -262,7 +267,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="birthdate"
                         />
                         <div class="input-errors" v-if="errors.birthdate">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.birthdate }}
                             </div>
                         </div>
@@ -285,7 +290,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="birthplace"
                         />
                         <div class="input-errors" v-if="errors.birthplace">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.birthplace }}
                             </div>
                         </div>
@@ -308,7 +313,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="nationality"
                         />
                         <div class="input-errors" v-if="errors.nationality">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.nationality }}
                             </div>
                         </div>
@@ -334,7 +339,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             <option value="OTHERS">Others</option>
                         </select>
                         <div class="input-errors" v-if="errors.gender">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.gender }}
                             </div>
                         </div>
@@ -359,7 +364,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             <option value="ANNULLED">Annulled</option>
                         </select>
                         <div class="input-errors" v-if="errors.civil_status">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.civil_status }}
                             </div>
                         </div>
@@ -384,7 +389,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="no_of_children"
                         />
                         <div class="input-errors" v-if="errors.no_of_children">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.no_of_children }}
                             </div>
                         </div>
@@ -408,7 +413,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="occupation"
                     />
                     <div class="input-errors" v-if="errors.occupation">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.occupation }}
                         </div>
                     </div>
@@ -432,7 +437,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="school"
                         />
                         <div class="input-errors" v-if="errors.school">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.school }}
                             </div>
                         </div>
@@ -455,7 +460,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="admin"
                         />
                         <div class="input-errors" v-if="errors.admin">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.admin }}
                             </div>
                         </div>
@@ -473,7 +478,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         />
 
                         <div class="input-errors" v-if="errors.isPartner">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.isPartner }}
                             </div>
                         </div>
@@ -504,7 +509,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="church"
                         />
                         <div class="input-errors" v-if="errors.church">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.church }}
                             </div>
                         </div>
@@ -527,7 +532,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="pastor"
                         />
                         <div class="input-errors" v-if="errors.pastor">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.pastor }}
                             </div>
                         </div>
@@ -550,7 +555,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="gradeschool"
                     />
                     <div class="input-errors" v-if="errors.gradeschool">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.gradeschool }}
                         </div>
                     </div>
@@ -572,7 +577,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="highschool"
                     />
                     <div class="input-errors" v-if="errors.highschool">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.highschool }}
                         </div>
                     </div>
@@ -595,7 +600,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="college"
                         />
                         <div class="input-errors" v-if="errors.college">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.college }}
                             </div>
                         </div>
@@ -617,7 +622,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="college_course"
                         />
                         <div class="input-errors" v-if="errors.college_course">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.college_course }}
                             </div>
                         </div>
@@ -641,7 +646,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="graduate"
                         />
                         <div class="input-errors" v-if="errors.graduate">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.graduate }}
                             </div>
                         </div>
@@ -663,7 +668,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                             v-model="graduate_course"
                         />
                         <div class="input-errors" v-if="errors.graduate_course">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.graduate_course }}
                             </div>
                         </div>
@@ -686,7 +691,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="others"
                     />
                     <div class="input-errors" v-if="errors.others">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.others }}
                         </div>
                     </div>
@@ -710,7 +715,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="essay"
                     ></textarea>
                     <div class="input-errors" v-if="errors.essay">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.essay }}
                         </div>
                     </div>
@@ -729,13 +734,13 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         type="emergency_name"
                         id="emergencyname"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                        placeholder="First Name"
+                        placeholder="Emergency Contact Name"
                         required
                         autocomplete="off"
                         v-model="emergency_name"
                     />
-                    <div class="input-errors" v-if="errors.highschool">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                    <div class="input-errors" v-if="errors.emergency_name">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.emergency_name }}
                         </div>
                     </div>
@@ -758,7 +763,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="emergency_address"
                     />
                     <div class="input-errors" v-if="errors.emergency_address">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.emergency_address }}
                         </div>
                     </div>
@@ -781,30 +786,33 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="emergency_number"
                     />
                     <div class="input-errors" v-if="errors.emergency_number">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.emergency_number }}
                         </div>
                     </div>
                 </div>
 
                 <div class="flex items-start mb-5">
-                    <div class="flex items-center h-5">
-                        <label
-                            for="terms"
-                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                        >
-                            I have double checked that all the information I have placed is correct
-                        </label>
-                        <input
-                            id="terms"
-                            type="checkbox"
-                            value=""
-                            class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
-                            required
-                            v-model="agreeTerms"
-                        />
+                    <div class="block items-center">
+                        <div class="flex align-top mb-2">
+                            <input
+                                id="terms"
+                                type="checkbox"
+                                value=""
+                                class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
+                                required
+                                v-model="agreeTerms"
+                            />
+                            <label
+                                for="terms"
+                                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            >
+                                I have double checked that all the information I have placed is
+                                correct
+                            </label>
+                        </div>
                         <div class="input-errors" v-if="errors.agreeTerms">
-                            <div class="block mb-2 text-sm font-medium text-highlight">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
                                 {{ errors.agreeTerms }}
                             </div>
                         </div>
@@ -815,7 +823,10 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                     <button
                         type="submit"
                         class="text-white bg-highlight hover:bg-highlight_hover focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                        @click="submitForm"
+                        @click="
+                            loading = true;
+                            submitForm();
+                        "
                     >
                         Enroll Now
                     </button>
@@ -840,44 +851,56 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
         </div>
     </div>
 
-    <MessagePopup
+    <ErrorMessagePopup
         v-if="showInvalidPopup"
         title="Invalid Signup Credentials."
         description="Please follow the form guides."
         exit-text="Close"
-        @on-exit="showInvalidPopup = false"
+        @on-exit="
+            showInvalidPopup = false;
+            loading = false;
+        "
     />
 
     <MessagePopup
         v-if="showSuccessPopup"
         title="You have successfully signed up as a student!"
         description="Please wait for Admin to verify your account before logging in."
+        accepted="true"
         exit-text="Close"
         @on-exit="
             showSuccessPopup = false;
             this.$router.push('/');
+            loading = false;
         "
     />
 
-    <MessagePopup
+    <ErrorMessagePopup
         v-if="showUsedEmailPopup"
         title="Email is already in use."
         description="Please use a different email or Login."
         exit-text="Close"
-        @on-exit="showUsedEmailPopup = false"
+        @on-exit="
+            showUsedEmailPopup = false;
+            loading = false;
+        "
     />
 
-    <MessagePopup
+    <ErrorMessagePopup
         v-if="showErrorPopup"
         title="Something went wrong."
         description="Please try again."
         exit-text="Close"
-        @on-exit="showErrorPopup = false"
+        @on-exit="
+            showErrorPopup = false;
+            loading = false;
+        "
     />
 </template>
 
 <script>
 export default {
+    //  this is the data that will be used in the form
     data() {
         return {
             firstname: "",
@@ -924,15 +947,22 @@ export default {
             showSuccessPopup: false,
             showUsedEmailPopup: false,
             showErrorPopup: false,
+            //Loading
+            loading: false,
         };
     },
     methods: {
+        // change signup form type to teachers
         swapForm() {
             this.$router.push("/teacher/signup");
         },
+
+        // BELOW ARE THE VALIDATORS TO CHECK IF THE DATA ARE VALID FOR SIGNING UP
         validateFirstName() {
             if (this.firstname.length < 2 || this.firstname.length > 50) {
                 this.errors["firstname"] = "First name must be between 2 and 50 characters!";
+            } else if (/\d/.test(this.firstname)) {
+                this.errors["firstname"] = "First name must not have numbers!";
             } else {
                 delete this.errors["firstname"];
             }
@@ -940,6 +970,8 @@ export default {
         validateLastName() {
             if (this.lastname.length < 2 || this.lastname.length > 50) {
                 this.errors["lastname"] = "Last name must be between 2 and 50 characters!";
+            } else if (/\d/.test(this.lastname)) {
+                this.errors["lastname"] = "Last name must not have numbers!";
             } else {
                 delete this.errors["lastname"];
             }
@@ -952,6 +984,8 @@ export default {
 
             if (this.middlename.length < 2 || this.middlename.length > 50) {
                 this.errors["middlename"] = "Middle name must be between 2 and 50 characters!";
+            } else if (/\d/.test(this.middlename)) {
+                this.errors["middlename"] = "Middle name must not have numbers!";
             } else {
                 delete this.errors["middlename"];
             }
@@ -1238,6 +1272,10 @@ export default {
             if (this.emergency_name.length > 150) {
                 this.errors["emergency_name"] =
                     "Emergency name should be less than 150 characters long";
+            } else if (/\d/.test(this.emergency_name)) {
+                this.errors["emergency_name"] = "Emergency contact name should not have numbers";
+            } else if (this.emergency_name.length > 150) {
+                this.errors["emergency_name"] = "Emergency name should not be empty";
             } else {
                 delete this.errors["emergency_name"];
             }
@@ -1246,6 +1284,8 @@ export default {
             if (this.emergency_address.length > 150) {
                 this.errors["emergency_address"] =
                     "Emergency address should be less than 150 characters long";
+            } else if (this.emergency_address.length < 1) {
+                this.errors["emergency_address"] = "Emergency address should not be empty";
             } else {
                 delete this.errors["emergency_address"];
             }
@@ -1267,6 +1307,7 @@ export default {
             }
         },
         validateForm() {
+            // Validate all fields
             this.validateFirstName();
             this.validateLastName();
             this.validateMiddleName();
@@ -1302,7 +1343,7 @@ export default {
             this.validateEmergencyNumber();
             this.validateAgreeTerms();
 
-            if (Object.keys(this.errors).length === 0) {
+            if (Object.keys(this.errors).length === 0) { // If no errors, return true
                 return true;
             } else {
                 return false;

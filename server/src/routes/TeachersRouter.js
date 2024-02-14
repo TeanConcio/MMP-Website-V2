@@ -10,6 +10,12 @@ import {
 import { validatePasswordBody, cleanPasswordObject } from "../validators/PasswordValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { getLatestIDSegments, exclude, allowed, generatePasswordHash } from "../utils/helpers.js";
+import { sendEmail } from "../utils/email_service.js";
+import {
+    adminFacultySignupEmail,
+    facultyAcceptedSignupEmail,
+    facultyRejectedSignupEmail,
+} from "../utils/email_templates.js";
 
 // Express Router
 const TeachersRouter = express.Router();
@@ -61,6 +67,9 @@ const generateTeacherID = async () => {
                 teacher_id: {
                     startsWith: currentYear,
                 },
+            },
+            orderBy: {
+                teacher_id: "desc",
             },
         })
     ).map((element) => {
@@ -150,6 +159,9 @@ TeachersRouter.get("/", async (req, res) => {
                 status: true,
                 created_at: true,
             },
+            orderBy: {
+                teacher_id: "asc",
+            },
         });
 
         // Return teachers array entries
@@ -183,6 +195,9 @@ TeachersRouter.get("/all/:status", async (req, res) => {
                 email: true,
                 status: true,
                 created_at: true,
+            },
+            orderBy: {
+                teacher_id: "asc",
             },
         });
 
@@ -227,6 +242,15 @@ TeachersRouter.post("/", validateTeacherReqBody(), async (req, res) => {
 
         // Create teacher in database
         await prisma.Teachers.create({ data: teacher });
+
+        // Send email to admin
+        await sendEmail(
+            adminFacultySignupEmail(
+                `${teacher.first_name} ${teacher.middle_name} ${teacher.last_name}`,
+                teacher.email,
+                teacher.teacher_id
+            )
+        );
 
         res.status(200).send({ message: "Create successful" });
     } catch (error) {
@@ -295,25 +319,57 @@ TeachersRouter.patch("/status/:teacher_id", validateStatusReqBody(), async (req,
         // Get teacher_id from req.params
         const { teacher_id } = req.params;
 
-        //Check if teacher exists
-        if (!(await checkIDExists(teacher_id))) {
+        // Check if teacher exists and get previous status
+        const previousStatus = await prisma.Teachers.findUnique({
+            where: {
+                teacher_id: teacher_id,
+            },
+            select: {
+                status: true,
+            },
+        });
+        if (previousStatus == null) {
             throw new Error("Teacher does not exist");
         }
 
         // Get updated info from req.body
         const updatedData = cleanStatusUpdateObject(req.body);
 
-        // Update teacher in database
-        await prisma.Teachers.update({
+        // Update teacher in database and store the result
+        const updatedTeacher = await prisma.Teachers.update({
             where: {
                 teacher_id: teacher_id,
             },
             data: updatedData,
+            select: {
+                first_name: true,
+                middle_name: true,
+                last_name: true,
+                email: true,
+                status: true,
+            },
         });
+
+        // Check if the previous status was "FOR_APPROVAL"
+        if (previousStatus.status === "FOR_APPROVAL") {
+            // Send acceptance/rejection email
+            if (updatedData.status === "ACTIVE") {
+                await sendEmail(
+                    facultyAcceptedSignupEmail(
+                        `${updatedTeacher.first_name} ${updatedTeacher.middle_name} ${updatedTeacher.last_name}`,
+                        updatedTeacher.email,
+                        teacher_id
+                    )
+                );
+            } else if (updatedData.status === "REJECTED") {
+                await sendEmail(facultyRejectedSignupEmail(updatedTeacher.email));
+            }
+        }
 
         res.status(200).send({ message: "Status updated" });
     } catch (error) {
         // Return error
+        console.log(error);
         res.status(500).send({ error: error.message });
     }
 });

@@ -44,3 +44,29 @@ export const getLatestIDSegments = (list) => {
     const segmentStr = max.toString().padStart(6, "0");
     return { second: segmentStr.slice(0, 3), third: segmentStr.slice(3) };
 };
+
+export const generateFinancePKSegments = (list) => {
+    const pkList = list.map((element) => {
+        return parseInt(element.replace("-", ""));
+    });
+
+    let max = 0;
+    for (const element of pkList) {
+        if (element > max) {
+            max = element;
+        }
+    }
+
+    const rawPK = max.toString().padStart(10, "0");
+
+    return { first: rawPK.slice(0, 1), second: rawPK.slice(1) };
+};
+
+// Helper function to format an enum
+export function formatEnum(val) {
+    if (val == null) return "";
+    return val
+        .split("_")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(" ");
+}

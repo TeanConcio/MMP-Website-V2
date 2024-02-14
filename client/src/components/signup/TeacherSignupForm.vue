@@ -1,8 +1,13 @@
 <script setup>
 import MessagePopup from "../../components/common/MessagePopup.vue";
+import ErrorMessagePopup from "../../components/common/ErrorMessagePopup.vue";
+import LoadingSpinner from "../../components/common/LoadingSpinner.vue";
 </script>
 
 <template>
+    <div class="fixed top-1/2">
+        <LoadingSpinner v-if="loading" />
+    </div>
     <div
         class="w-full bg-white rounded-lg mx-auto p-4 shadow dark:border sm:max-w-md xl:p-0 md:max-p-4 lg:p-8 mb-6"
     >
@@ -29,7 +34,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="firstName"
                     />
                     <div class="input-errors" v-if="errors.firstName">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.firstName }}
                         </div>
                     </div>
@@ -50,7 +55,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="lastName"
                     />
                     <div class="input-errors" v-if="errors.lastName">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.lastName }}
                         </div>
                     </div>
@@ -71,7 +76,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="middleName"
                     />
                     <div class="input-errors" v-if="errors.middleName">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.middleName }}
                         </div>
                     </div>
@@ -91,7 +96,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="email"
                     />
                     <div class="input-errors" v-if="errors.email">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.email }}
                         </div>
                     </div>
@@ -110,7 +115,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="password"
                     />
                     <div class="input-errors" v-if="errors.password">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.password }}
                         </div>
                     </div>
@@ -129,7 +134,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                         v-model="confirmPassword"
                     />
                     <div class="input-errors" v-if="errors.confirmPassword">
-                        <div class="block mb-2 text-sm font-medium text-highlight">
+                        <div class="block mb-2 text-sm font-medium text-red-500">
                             {{ errors.confirmPassword }}
                         </div>
                     </div>
@@ -153,7 +158,7 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                     </label>
                 </div>
                 <div class="input-errors" v-if="errors.agreeTerms">
-                    <div class="block mb-2 text-sm font-medium text-highlight">
+                    <div class="block mb-2 text-sm font-medium text-red-500">
                         {{ errors.agreeTerms }}
                     </div>
                 </div>
@@ -162,7 +167,10 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
                     <button
                         type="submit"
                         class="text-white bg-highlight hover:bg-highlight_hover focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                        @click="submitForm"
+                        @click="
+                            loading = true;
+                            submitForm();
+                        "
                     >
                         Sign Up
                     </button>
@@ -187,39 +195,50 @@ import MessagePopup from "../../components/common/MessagePopup.vue";
         </div>
     </div>
 
-    <MessagePopup
+    <ErrorMessagePopup
         v-if="showInvalidPopup"
         title="Invalid Signup Credentials."
         description="Please follow the form guides."
         exit-text="Close"
-        @on-exit="showInvalidPopup = false"
+        @on-exit="
+            showInvalidPopup = false;
+            loading = false;
+        "
     />
 
     <MessagePopup
         v-if="showSuccessPopup"
         title="You have successfully signed up as a teacher!"
         description="Please wait for Admin to verify your account before logging in."
+        accepted="true"
         exit-text="Close"
         @on-exit="
             showSuccessPopup = false;
-            this.$router.push('/');
+            $router.push('/');
+            loading = false;
         "
     />
 
-    <MessagePopup
+    <ErrorMessagePopup
         v-if="showUsedEmailPopup"
         title="Email is already in use."
         description="Please use a different email or Login."
         exit-text="Close"
-        @on-exit="showUsedEmailPopup = false"
+        @on-exit="
+            showUsedEmailPopup = false;
+            loading = false;
+        "
     />
 
-    <MessagePopup
+    <ErrorMessagePopup
         v-if="showErrorPopup"
         title="Something went wrong."
         description="Please try again."
         exit-text="Close"
-        @on-exit="showErrorPopup = false"
+        @on-exit="
+            showErrorPopup = false;
+            loading = false;
+        "
     />
 </template>
 
@@ -242,6 +261,8 @@ export default {
             showSuccessPopup: false,
             showUsedEmailPopup: false,
             showErrorPopup: false,
+            //Loading
+            loading: false,
         };
     },
     methods: {
@@ -300,7 +321,7 @@ export default {
             this.validateConfirmPassword();
             this.validateAgreeTerms();
 
-            if (Object.keys(this.errors).length === 0) {
+            if (Object.keys(this.errors).length === 0) { // If no errors, return true, else return false
                 return true;
             } else {
                 return false;
@@ -309,6 +330,8 @@ export default {
         validateFirstName() {
             if (this.firstName.length < 2 || this.firstName.length > 50) {
                 this.errors["firstName"] = "First name must be between 2 and 50 characters!";
+            } else if (/\d/.test(this.firstName)) {
+                this.errors["firstName"] = "First name must not have numbers!";
             } else {
                 delete this.errors["firstName"];
             }
@@ -316,6 +339,8 @@ export default {
         validateLastName() {
             if (this.lastName.length < 2 || this.lastName.length > 50) {
                 this.errors["lastName"] = "Last name must be between 2 and 50 characters!";
+            } else if (/\d/.test(this.lastName)) {
+                this.errors["lastName"] = "Last name must not have numbers!";
             } else {
                 delete this.errors["lastName"];
             }
@@ -328,6 +353,8 @@ export default {
 
             if (this.middleName.length < 2 || this.middleName.length > 50) {
                 this.errors["middleName"] = "Middle name must be between 2 and 50 characters!";
+            } else if (/\d/.test(this.middleName)) {
+                this.errors["middleName"] = "Middle name must not have numbers!";
             } else {
                 delete this.errors["middleName"];
             }

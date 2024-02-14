@@ -7,9 +7,9 @@ generator client {
 
 datasource db {
     provider  = "postgresql"
-    // url      = env("DATABASE_URL_LOCAL") //Local test connection
-    url       = env("DATABASE_URL") // uses connection pooling
-    directUrl = env("DIRECT_URL") // uses a direct connection
+    url      = env("DATABASE_URL_LOCAL") //Local test connection
+    // url       = env("DATABASE_URL") // uses connection pooling
+    // directUrl = env("DIRECT_URL") // uses a direct connection
 }
 
 //Enums
@@ -37,6 +37,7 @@ enum StudentStatus {
     GRADUATED
     WITHDRAWN
     FOR_APPROVAL
+    REJECTED
 }
 
 enum TeacherStatus {
@@ -192,13 +193,12 @@ model Payments {
 
 model Modules {
     //Primary Key
-    module_name String               @db.VarChar(50)
+    module_name String               @db.VarChar(100)
     school_year Int                  @db.Integer //Only the start year (e.g. SY 2023 - 2024, 2023 is saved)
     //Fields
     teacher_id  String?              @db.VarChar(12)
     session_1   DateTime             @db.Date
     session_2   DateTime             @db.Date
-    program     Programs
     // Created and Updated Dates
     created_at  DateTime             @default(now()) @db.Timestamptz()
     updated_at  DateTime             @updatedAt @db.Timestamptz()
@@ -213,7 +213,7 @@ model Modules {
 model Module_Enrollments {
     //Primary Key
     student_id     String           @db.VarChar(12)
-    module_name    String           @db.VarChar(50)
+    module_name    String           @db.VarChar(100)
     school_year    Int              @db.Integer
     //Fields
     status         EnrollmentStatus @default(PENDING_APPROVAL)
@@ -223,7 +223,6 @@ model Module_Enrollments {
     date_received  DateTime?        @db.Date
     no_of_absences Int              @default(0) @db.Integer
     remarks        String?          @db.VarChar(200)
-    record         String?          @db.VarChar(200) //URI of the record document
     // Created and Updated Dates
     created_at     DateTime         @default(now()) @db.Timestamptz()
     updated_at     DateTime         @updatedAt @db.Timestamptz()
@@ -251,10 +250,11 @@ model TOR_Requests {
 
 model Module_Details {
     //Primary Key
-    module_name   String       @id @db.VarChar(50)
+    module_name   String       @id @db.VarChar(100)
     //Fields
-    prerequisites String[]     @default([]) @db.VarChar(50)
-    description   String       @db.VarChar(200)
+    prerequisites String[]     @default([]) @db.VarChar(100)
+    description   String       @db.Text
+    program       Programs
     //Relations
     modules       Modules[]
     name          Module_Names @relation(fields: [module_name], references: [module_name])
@@ -262,7 +262,7 @@ model Module_Details {
 
 model Module_Names {
     //Primary Key
-    module_name String          @id @db.VarChar(50)
+    module_name String          @id @db.VarChar(100)
     //Relations
     details     Module_Details?
 }

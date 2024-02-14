@@ -4,9 +4,15 @@ import { validationResult } from "express-validator";
 import {
     validateTORRequestReqBody,
     cleanTORRequestObject,
+    validateStatusReqBody,
+    cleanStatusObject,
 } from "../validators/TORRequestsValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { allowed } from "../utils/helpers.js";
+import { sendEmail } from "../utils/email_service.js";
+import { 
+    adminTORRequestEmail
+} from "../utils/email_templates.js";
 
 // Express Router
 const TORRequestsRouter = express.Router();
@@ -42,6 +48,9 @@ const generateRequestID = async () => {
                 req_id: {
                     startsWith: currentYear,
                 },
+            },
+            orderBy: {
+                req_id: "asc",
             },
         })
     ).map((element) => {
@@ -141,6 +150,9 @@ TORRequestsRouter.get("/", async (req, res) => {
                     },
                 },
             },
+            orderBy: {
+                req_id: "asc",
+            },
         });
 
         res.status(200).send(tor_requests);
@@ -177,6 +189,9 @@ TORRequestsRouter.get("/students/:student_id", async (req, res) => {
                         middle_name: true,
                     },
                 },
+            },
+            orderBy: {
+                req_id: "asc",
             },
         });
 
@@ -226,6 +241,9 @@ TORRequestsRouter.get("/year/:year", async (req, res) => {
                     },
                 },
             },
+            orderBy: {
+                req_id: "asc",
+            },
         });
 
         res.status(200).send(tor_requests);
@@ -263,6 +281,9 @@ TORRequestsRouter.get("/all/:status", async (req, res) => {
                     },
                 },
             },
+            orderBy: {
+                req_id: "asc",
+            },
         });
 
         res.status(200).send(tor_requests);
@@ -298,6 +319,22 @@ TORRequestsRouter.post("/", validateTORRequestReqBody(), async (req, res) => {
         // Create tor_request in database
         await prisma.TOR_Requests.create({ data: tor_request });
 
+        // Get requesting student info
+        const requestingStudent = await prisma.Students.findUnique({
+            where: {
+                student_id: tor_request.student_id,
+            },
+            select: {
+                first_name: true,
+                last_name: true,
+                middle_name: true,
+                email: true,
+            },
+        });
+
+        // Send email to admin
+        sendEmail(adminTORRequestEmail(`${requestingStudent.first_name} ${requestingStudent.last_name}`, requestingStudent.email, tor_request.student_id, tor_request.request_date))
+
         res.status(200).send({ message: "Create successful" });
     } catch (error) {
         // Return error
@@ -307,7 +344,7 @@ TORRequestsRouter.post("/", validateTORRequestReqBody(), async (req, res) => {
 
 /* UPDATE Endpoints */
 // Update TOR Request
-TORRequestsRouter.patch("/:req_id", validateTORRequestReqBody(), async (req, res) => {
+TORRequestsRouter.patch("/:req_id", validateStatusReqBody(), async (req, res) => {
     if (!allowed(req.permission, [1, 2, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
@@ -330,7 +367,7 @@ TORRequestsRouter.patch("/:req_id", validateTORRequestReqBody(), async (req, res
         }
 
         // Get updated info from req.body
-        const updatedData = cleanTORRequestObject(req.body);
+        const updatedData = cleanStatusObject(req.body);
 
         // Update tor_request in database
         await prisma.TOR_Requests.update({

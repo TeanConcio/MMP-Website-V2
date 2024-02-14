@@ -1,7 +1,12 @@
 // Imports Modules
 import express from "express";
 import { validationResult } from "express-validator";
-import { validateModuleReqBody, cleanModuleObject } from "../validators/ModuleValidator.js";
+import {
+    validateModuleReqBody,
+    cleanModuleObject,
+    validateEditTeacherReqBody,
+    cleanTeacherEditObject,
+} from "../validators/ModuleValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { allowed } from "../utils/helpers.js";
 
@@ -64,12 +69,12 @@ ModulesRouter.get("/module/:module_name/:school_year", async (req, res) => {
                 teacher_id: true,
                 session_1: true,
                 session_2: true,
-                program: true,
                 details: {
                     select: {
                         module_name: true,
                         prerequisites: true,
                         description: true,
+                        program: true,
                     },
                 },
             },
@@ -92,7 +97,6 @@ ModulesRouter.get("/", async (req, res) => {
         const modules = await prisma.Modules.findMany({
             select: {
                 school_year: true,
-                program: true,
                 teacher: {
                     select: {
                         teacher_id: true,
@@ -108,11 +112,13 @@ ModulesRouter.get("/", async (req, res) => {
                         module_name: true,
                         prerequisites: true,
                         description: true,
+                        program: true,
                     },
                 },
             },
+            orderBy: [{ school_year: "desc" }, { module_name: "asc" }],
         });
-        
+
         res.status(200).send(modules);
     } catch (error) {
         res.status(404).send({ error: error.message });
@@ -136,7 +142,6 @@ ModulesRouter.get("/school_year/:school_year", async (req, res) => {
             },
             select: {
                 school_year: true,
-                program: true,
                 teacher: {
                     select: {
                         teacher_id: true,
@@ -152,8 +157,12 @@ ModulesRouter.get("/school_year/:school_year", async (req, res) => {
                         module_name: true,
                         prerequisites: true,
                         description: true,
+                        program: true,
                     },
                 },
+            },
+            orderBy: {
+                module_name: "asc",
             },
         });
 
@@ -185,6 +194,9 @@ ModulesRouter.get("/student/:student_id", async (req, res) => {
                 select: {
                     module_name: true,
                 },
+                orderBy: {
+                    module_name: "asc",
+                },
             })
         ).map((element) => {
             return element.module_name;
@@ -200,12 +212,15 @@ ModulesRouter.get("/student/:student_id", async (req, res) => {
                     student_id: student_id,
                     status: "PASSED",
                 },
+                orderBy: {
+                    module_name: "asc",
+                },
             })
         ).map((element) => {
             return element.module_name;
         });
 
-        //Get all modules currently being taken by the student
+        //Get all modules currently being taken or is enrolled in by the student
         const in_progress = (
             await prisma.Module_Enrollments.findMany({
                 select: {
@@ -213,7 +228,22 @@ ModulesRouter.get("/student/:student_id", async (req, res) => {
                 },
                 where: {
                     student_id: student_id,
-                    status: "IN_PROGRESS",
+                    OR: [{ status: "IN_PROGRESS" }, { status: "PENDING_APPROVAL" }],
+                },
+                orderBy: {
+                    module_name: "asc",
+                },
+            })
+        ).map((element) => {
+            return element.module_name;
+        });
+
+        //Get all already taken modules this year
+        const same_year = (
+            await prisma.Module_Enrollments.findMany({
+                where: {
+                    school_year: new Date().getFullYear(),
+                    student_id: student_id,
                 },
             })
         ).map((element) => {
@@ -223,7 +253,8 @@ ModulesRouter.get("/student/:student_id", async (req, res) => {
         //Get all the names of modules that are not taken yet
         const untaken = names
             .filter((element) => !passed.includes(element))
-            .filter((element) => !in_progress.includes(element));
+            .filter((element) => !in_progress.includes(element))
+            .filter((element) => !same_year.includes(element));
 
         //Get all prerequisites
         const untaken_details = await prisma.Module_Details.findMany({
@@ -236,12 +267,15 @@ ModulesRouter.get("/student/:student_id", async (req, res) => {
                 module_name: true,
                 prerequisites: true,
             },
+            orderBy: {
+                module_name: "asc",
+            },
         });
 
         //Filter out for only the modules that can be taken
         const takeable = untaken_details
             .filter((element) => {
-                for (const module in element.prerequisites) {
+                for (const module of element.prerequisites) {
                     if (!passed.includes(module)) {
                         return false;
                     }
@@ -256,17 +290,33 @@ ModulesRouter.get("/student/:student_id", async (req, res) => {
         //Get all the modules to be taken
         const modules = await prisma.Modules.findMany({
             where: {
-                module_name: {
-                    in: takeable,
+                details: {
+                    module_name: {
+                        in: takeable,
+                    },
                 },
                 school_year: new Date().getFullYear(),
             },
-            include: {
+            select: {
+                school_year: true,
+                session_1: true,
+                session_2: true,
+                details: {
+                    select: {
+                        module_name: true,
+                        program: true,
+                    },
+                },
                 teacher: {
                     select: {
                         first_name: true,
                         last_name: true,
                     },
+                },
+            },
+            orderBy: {
+                details: {
+                    module_name: "asc",
                 },
             },
         });
@@ -289,11 +339,14 @@ ModulesRouter.get("/program/:program", async (req, res) => {
 
         const modules = await prisma.Modules.findMany({
             where: {
-                program: program,
+                details: {
+                    some: {
+                        program: program,
+                    },
+                },
             },
             select: {
                 school_year: true,
-                program: true,
                 teacher: {
                     select: {
                         teacher_id: true,
@@ -309,9 +362,11 @@ ModulesRouter.get("/program/:program", async (req, res) => {
                         module_name: true,
                         prerequisites: true,
                         description: true,
+                        program: true,
                     },
                 },
             },
+            orderBy: [{ school_year: "desc" }, { module_name: "asc" }],
         });
 
         res.status(200).send(modules);
@@ -340,7 +395,6 @@ ModulesRouter.get("/teacher/:teacher_id", async (req, res) => {
                 },
                 select: {
                     school_year: true,
-                    program: true,
                     teacher: {
                         select: {
                             teacher_id: true,
@@ -356,9 +410,11 @@ ModulesRouter.get("/teacher/:teacher_id", async (req, res) => {
                             module_name: true,
                             prerequisites: true,
                             description: true,
+                            program: true,
                         },
                     },
                 },
+                orderBy: [{ school_year: "desc" }, { module_name: "asc" }],
             });
             res.status(200).send(modules);
         }
@@ -387,17 +443,21 @@ ModulesRouter.get("/report/:module_name/:school_year", async (req, res) => {
                 module_name_school_year: { module_name, school_year },
             },
             select: {
-                module_name: true,
                 school_year: true,
                 session_1: true,
                 session_2: true,
-                program: true,
                 teacher: {
                     select: {
                         teacher_id: true,
                         first_name: true,
                         last_name: true,
                         middle_name: true,
+                    },
+                },
+                details: {
+                    select: {
+                        module_name: true,
+                        program: true,
                     },
                 },
                 enrollments: {
@@ -431,6 +491,19 @@ ModulesRouter.get("/report/:module_name/:school_year", async (req, res) => {
                     },
                 },
             },
+            orderBy: [
+                { school_year: "desc" },
+                { module_name: "asc" },
+                {
+                    enrollments: {
+                        select: {
+                            student: true,
+                            bill: true,
+                        },
+                        orderBy: [{ student_id: "asc" }, { bill_no: "asc" }],
+                    },
+                },
+            ],
         });
 
         res.status(200).send(data);
@@ -500,6 +573,19 @@ ModulesRouter.get("/report/:school_year", async (req, res) => {
                     },
                 },
             },
+            orderBy: [
+                { school_year: "desc" },
+                { module_name: "asc" },
+                {
+                    enrollments: {
+                        select: {
+                            student: true,
+                            bill: true,
+                        },
+                        orderBy: [{ student_id: "asc" }, { bill_no: "asc" }],
+                    },
+                },
+            ],
         });
 
         res.status(200).send(data);
@@ -526,6 +612,11 @@ ModulesRouter.post("/", validateModuleReqBody(), async (req, res) => {
     try {
         // Get module from req.body
         const module = cleanModuleObject(req.body);
+
+        // Check if module exists
+        if (await exists(module.module_name, module.school_year)) {
+            throw new Error("Module already exists");
+        }
 
         // Parse for correct data types
         parser(module);
@@ -587,6 +678,53 @@ ModulesRouter.patch("/:module_name/:school_year", validateModuleReqBody(), async
         res.status(500).send({ error: error.message });
     }
 });
+
+ModulesRouter.patch(
+    "/teacher/:module_name/:school_year",
+    validateEditTeacherReqBody(),
+    async (req, res) => {
+        if (!allowed(req.permission, [3])) {
+            res.status(403).send({ error: "You are not authorized to access this" });
+            return;
+        }
+
+        //Validate Modules Info
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            // Return errors if any
+            return res.status(400).send({ errors: result.array() });
+        }
+
+        try {
+            //Get module_name from req.params
+            const { module_name } = req.params;
+
+            //Convert school year to int
+            const school_year = parseInt(req.params.school_year);
+
+            // Check if module exists
+            if (!(await exists(module_name, school_year))) {
+                throw new Error("Module does not exist");
+            }
+
+            const updatedData = cleanTeacherEditObject(req.body);
+
+            // Update student in database
+            const updatedModule = await prisma.Modules.update({
+                where: {
+                    module_name_school_year: { module_name, school_year },
+                },
+                data: updatedData,
+            });
+
+            // Return updated student
+            res.status(200).send(updatedModule);
+        } catch (error) {
+            // Return error
+            res.status(500).send({ error: error.message });
+        }
+    }
+);
 
 /* DELETE Endpoints */
 // Delete a module

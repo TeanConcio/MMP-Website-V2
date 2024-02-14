@@ -17,6 +17,10 @@ import { useCredentialsStore } from "./../store/store.js";
 const router = createRouter({
     mode: "history",
     history: createWebHistory(),
+    scrollBehavior(to, from, savedPosition) {
+        // always scroll to top
+        return { top: 0 };
+    },
     routes: [
         {
             // Test Page
@@ -86,8 +90,6 @@ function canAccess(credentials, route) {
 router.beforeEach(async (to, from) => {
     // Get Credentials Store
     const credentials = useCredentialsStore();
-
-    console.log(`[router.js] from: ${from.name} to: ${to.name}`);
 
     // Redirect to login page if not logged in and trying to access page with account type
     if (!credentials.isLoggedIn && to.meta && to.meta.account_type) {

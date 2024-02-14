@@ -11,19 +11,17 @@ const currentYear = new Date().getFullYear();
 
 <template>
     <LoadingSpinner v-if="!render" />
-    <div v-else
-    class="w-full p-5">
+    <div v-else class="w-full grid">
         <h1 class="text-4xl font-bold mb-4">Grades</h1>
-        <!-- TODO: Change the header -->
         <h2 class="text-xl font-semibold mb-4">AY. {{ currentYear }} - {{ currentYear + 1 }}</h2>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-10">
+        <div class="overflow-x-auto shadow-md rounded-lg mb-10">
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead
-                    class="text-xs text-white uppercase bg-highlight dark:bg-gray-700 dark:text-gray-400"
+                    class="sticky top-0 text-xs text-white uppercase bg-highlight dark:bg-gray-700 dark:text-gray-400"
                 >
                     <tr>
-                        <th scope="col" class="px-6 py-3">Title</th>
+                        <th scope="col" class="px-6 py-3">Module Name</th>
                         <th scope="col" class="px-6 py-3">Track</th>
                         <th scope="col" class="px-6 py-3">Teacher</th>
                         <th scope="col" class="px-6 py-3">Session 1</th>
@@ -50,6 +48,7 @@ const currentYear = new Date().getFullYear();
                             <p class="font-medium">-</p>
                         </td>
                     </tr>
+                    <!-- display the current modules one by one with the necessary data-->
                     <tr
                         v-for="module in currentModulesArray"
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200"
@@ -58,10 +57,10 @@ const currentYear = new Date().getFullYear();
                             scope="row"
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
-                            {{ module.module.module_name }}
+                            {{ module.module.details.module_name }}
                         </th>
                         <td class="px-6 py-4">
-                            {{ formatEnum(module.module.program) }}
+                            {{ formatEnum(module.module.details.program) }}
                         </td>
                         <td class="px-6 py-4">
                             {{
@@ -118,10 +117,9 @@ export default {
         },
     },
     async created() {
-        await this.getCurrentModules()
-            .then(() => {
-                this.render = true;
-            });
+        await this.getCurrentModules().then(() => {
+            this.render = true;
+        });
     },
 };
 </script>

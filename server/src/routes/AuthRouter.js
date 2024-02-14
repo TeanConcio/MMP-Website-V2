@@ -14,7 +14,7 @@ const AuthRouter = express.Router();
 AuthRouter.post("/login", async (req, res) => {
     try {
         // Get data from request body json
-        const { user_id, password, rememberMe } = req.body;
+        const { user_id, password } = req.body;
 
         let user = null;
         let userPassword = null;
@@ -33,10 +33,12 @@ AuthRouter.post("/login", async (req, res) => {
                 },
             });
 
+            if (!user) {
+                throw new Error("INVALID_CREDENTIALS");
+            }
+
             if (user.status !== "ACTIVE") {
-                throw new Error(
-                    "Your account is not active! Please make sure that the admins have validated your account."
-                );
+                throw new Error("INACTIVE_ACCOUNT");
             }
 
             userPassword = user.password;
@@ -52,10 +54,12 @@ AuthRouter.post("/login", async (req, res) => {
                 },
             });
 
+            if (!user) {
+                throw new Error("INVALID_CREDENTIALS");
+            }
+
             if (user.status !== "ACTIVE") {
-                throw new Error(
-                    "Your account is not active! Please make sure that the admins have validated your account."
-                );
+                throw new Error("INACTIVE_ACCOUNT");
             }
 
             userPassword = user.password;
@@ -70,21 +74,21 @@ AuthRouter.post("/login", async (req, res) => {
                         admin_id: user_id,
                     },
                 })
-            ).password;
+            )?.password;
 
             userType = "admin";
         } else {
-            throw new Error("Invalid id code");
+            throw new Error("INVALID_CODE");
         }
 
         // Check if user exists, if not: respond with error
         if (!userPassword) {
-            throw new Error("Invalid credentials");
+            throw new Error("INVALID_CREDENTIALS");
         }
 
         // Password check
         if ((await bcrypt.compare(password, userPassword)) !== true) {
-            throw new Error("Wrong password");
+            throw new Error("INVALID_CREDENTIALS");
         }
 
         let user_info = null;
@@ -113,14 +117,13 @@ AuthRouter.post("/login", async (req, res) => {
                 });
                 break;
             default:
-                throw new Error("No matching user type");
+                throw new Error("INVALID_TYPE");
         }
 
         // Create signed token with user id
         // Expires in 14 days if rememberMe is true, else 60 seconds
         // Include user_id and account_type in token
-        // TODO: Sessions if Possible (Doubt it)
-        let expiresIn = rememberMe ? "14d" : "60s";
+        let expiresIn = "14d";
         const token = jwt.sign(
             {
                 account_type: userType,
@@ -135,19 +138,43 @@ AuthRouter.post("/login", async (req, res) => {
         user_info = exclude(user_info, ["password"]);
 
         // Respond with token, account_type, user_id, and user
-        return res
-            .status(200)
-            .send({
-                message: "Login Successful.",
-                success: true,
-                token: token,
-                account_type: userType,
-                user_id: user_id,
-                user: user_info,
-            });
+        return res.status(200).send({
+            message: "Login Successful.",
+            success: true,
+            token: token,
+            account_type: userType,
+            user_id: user_id,
+            user: user_info,
+        });
     } catch (error) {
-        // Return error
-        res.status(500).send({ error: error.message });
+        switch (error) {
+            case "INVALID_CREDENTIALS":
+                res.status(401).send({
+                    error: "Login Failed! Invalid credentials.",
+                    displayable: true,
+                });
+                break;
+            case "INACTIVE_ACCOUNT":
+                res.status(403).send({
+                    error: "Login Failed! This account is inactive.",
+                    displayable: true,
+                });
+                break;
+            case "INVALID_CODE":
+                res.status(400).send({
+                    error: "Login Failed! Unidentifiable ID code.",
+                    displayable: true,
+                });
+                break;
+            case "INVALID_TYPE":
+                res.status(400).send({
+                    error: "Login Failed! Unidentifiable user type.",
+                    displayable: true,
+                });
+                break;
+            default:
+                res.status(500).send({ error: error.message, displayable: false });
+        }
     }
 });
 

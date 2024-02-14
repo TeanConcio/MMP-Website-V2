@@ -3,14 +3,6 @@ import { checkSchema } from "express-validator";
 
 //Bills Scheme
 const billsSchema = {
-    bill_no: {
-        trim: true,
-        isString: true,
-        isLength: {
-            options: { min: 11, max: 11 },
-            errorMessage: "Invalid bill number format",
-        },
-    },
     fee: {
         isCurrency: {
             options: {
@@ -69,7 +61,7 @@ export const validateBillReqBody = () => checkSchema(billsSchema, ["body"]);
 // Bills Object Cleaner
 export const cleanBillObject = (billObject) => {
     // JSON Allowed Fields
-    const fields = ["bill_no", "fee", "deductions", "billed_to", "status", "remarks", "issued_on"];
+    const fields = ["fee", "deductions", "billed_to", "status", "remarks", "issued_on"];
 
     let cleanedObject = {};
 

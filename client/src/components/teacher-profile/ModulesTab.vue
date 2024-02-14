@@ -11,15 +11,14 @@ defineEmits(["select-module"]);
 <template>
     <LoadingSpinner v-if="!render" />
     <div v-else
-    class="w-3/4 p-4">
+    class="w-full">
         <h1 class="text-4xl font-bold mb-4">Modules</h1>
-        <!-- TODO: Add a prompt if there are no modules being taught -->
-        <div class="grid grid-cols-5 gap-4">
+        <div class="grid grid-cols-1 mb-5 gap-4 lg:grid-cols-3 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-6 align-center">
             <div v-if="teachingModulesArray === null || teachingModulesArray.length === 0">
                 <ModuleCard module-name="No modules being taught" module-description="-" />
             </div>
             <div v-for="module in teachingModulesArray">
-                <button
+                <button class="w-full h-auto"
                     @click="
                         $emit('select-module', {
                             module_name: module.details.module_name,
@@ -27,6 +26,7 @@ defineEmits(["select-module"]);
                         })
                     "
                 >
+                <!-- display the module card from the teachingModulesArray-->
                     <ModuleCard
                         :module-name="`${module.details.module_name} ${module.school_year}`"
                         :module-description="module.details.description"

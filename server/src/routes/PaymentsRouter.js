@@ -3,7 +3,7 @@ import express from "express";
 import { validationResult } from "express-validator";
 import { validatePaymentReqBody, cleanPaymentObject } from "../validators/PaymentsValidator.js";
 import { db as prisma } from "../utils/db.server.js";
-import { allowed } from "../utils/helpers.js";
+import { allowed, generateFinancePKSegments } from "../utils/helpers.js";
 
 // Express Router
 const PaymentsRouter = express.Router();
@@ -28,6 +28,33 @@ const parser = (object) => {
     object["paid_on"] = new Date(object["paid_on"]);
 
     return object;
+};
+
+const generateOR = async () => {
+    const orList = (
+        await prisma.Payments.findMany({
+            select: {
+                or_no: true,
+            },
+        })
+    ).map((element) => {
+        return element.or_no;
+    });
+
+    const segments = generateFinancePKSegments(orList);
+    const castedSegments = [parseInt(segments.first), parseInt(segments.second)];
+
+    if (castedSegments[1] + 1 > 999999999) {
+        if (castedSegments[0] + 1 > 9) {
+            throw new Error("OR Number Overflow");
+        } else {
+            return `${(castedSegments[0] + 1).toString()}-000000000`;
+        }
+    } else {
+        return `${castedSegments[0].toString()}-${(castedSegments[1] + 1)
+            .toString()
+            .padStart(9, "0")}`;
+    }
 };
 
 /* Controllers */
@@ -96,6 +123,9 @@ PaymentsRouter.get("/bill/:bill_no", async (req, res) => {
                 remarks: true,
                 paid_on: true,
             },
+            orderBy: {
+                or_no: "asc",
+            },
         });
 
         // Return payment
@@ -125,10 +155,8 @@ PaymentsRouter.post("/", validatePaymentReqBody(), async (req, res) => {
         // Get payment from req.body
         const payment = parser(cleanPaymentObject(req.body));
 
-        // Check if or_no exists
-        if (await exists(payment.or_no)) {
-            throw new Error("OR number already exists");
-        }
+        //Add or number
+        payment.or_no = await generateOR();
 
         // Create payment in database
         await prisma.Payments.create({ data: payment });

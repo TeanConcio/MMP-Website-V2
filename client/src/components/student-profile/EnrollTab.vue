@@ -12,17 +12,16 @@ import { formatDate, formatName, formatEnum } from "../../util/helpers";
 
 <template>
     <LoadingSpinner v-if="!render" />
-    <div v-else
-    class="w-full p-5">
+    <div v-else class="w-full grid">
         <h1 class="text-4xl font-bold mb-4">Enroll in Additional Modules</h1>
         <h2 class="text-xl font-semibold mb-4">Available Modules</h2>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-10">
+        <div class="overflow-x-auto shadow-md rounded-lg mb-10">
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead
-                    class="text-xs text-white uppercase bg-highlight dark:bg-gray-700 dark:text-gray-400"
+                    class="sticky top-0 text-xs text-white uppercase bg-highlight dark:bg-gray-700 dark:text-gray-400"
                 >
                     <tr>
-                        <th scope="col" class="px-6 py-3">Title</th>
+                        <th scope="col" class="px-6 py-3">Module Name</th>
                         <th scope="col" class="px-6 py-3">Track</th>
                         <th scope="col" class="px-6 py-3">Teacher</th>
                         <th scope="col" class="px-6 py-3">Session 1</th>
@@ -51,18 +50,19 @@ import { formatDate, formatName, formatEnum } from "../../util/helpers";
                             <p class="font-medium">-</p>
                         </td>
                     </tr>
+                    <!-- display the module and the necessary info for every entry in the enrollable modules array-->
                     <tr
-                        v-for="module in enrollableModulesArray"
+                        v-for="(module, index) in enrollableModulesArray"
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200"
                     >
                         <th
                             scope="row"
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
-                            {{ module.module_name }}
+                            {{ module.details.module_name }}
                         </th>
                         <td class="px-6 py-4">
-                            {{ formatEnum(module.program) }}
+                            {{ formatEnum(module.details.program) }}
                         </td>
                         <td class="px-6 py-4">
                             {{ formatName(module.teacher.last_name, module.teacher.first_name) }}
@@ -74,9 +74,10 @@ import { formatDate, formatName, formatEnum } from "../../util/helpers";
                             {{ formatDate(module.session_2) }}
                         </td>
                         <td class="px-6 py-4">
+                            <!-- button for the user to enroll in that module-->
                             <button
                                 type="button"
-                                @click="clickEnroll(module)"
+                                @click="clickEnroll(module, index)"
                                 class="font-medium text-highlight_hover dark:text-blue-500 hover:underline"
                             >
                                 Enroll
@@ -91,7 +92,7 @@ import { formatDate, formatName, formatEnum } from "../../util/helpers";
     <PromptPopup
         v-if="showEnrollmentPopup"
         :title="`Enroll in ${module_name}?`"
-        description="This will send an email to the admin with your information and email. *insert instructions*"
+        description="This will send an email to the admin with your information and email."
         confirm-text="Yes, I'm sure"
         exit-text="No, cancel"
         @on-confirm="enrollModule()"
@@ -101,8 +102,8 @@ import { formatDate, formatName, formatEnum } from "../../util/helpers";
     <MessagePopup
         v-if="showSuccessPopup"
         title="Enrollment Request Successful."
-        description="Your enrollment request has been sent.
-        *insert instructions*"
+        description="Your enrollment request has been sent."
+        accepted="true"
         exit-text="Close"
         @on-exit="showSuccessPopup = false"
     />
@@ -142,6 +143,8 @@ export default {
             showSuccessPopup: false,
             showExistsPopup: false,
             showErrorPopup: false,
+            // Index
+            index: null,
         };
     },
     methods: {
@@ -159,10 +162,14 @@ export default {
                     console.log(error);
                 });
         },
-        clickEnroll(module) {
-            this.module_name = module.module_name;
+        // Click Enroll
+        clickEnroll(module, index) {
+            // Store module info
+            this.module_name = module.details.module_name;
             this.school_year = module.school_year;
+            // Show enrollment popup
             this.showEnrollmentPopup = true;
+            this.index = index;
         },
         // Enroll Student into Module
         async enrollModule() {
@@ -176,10 +183,11 @@ export default {
                 })
                 // If successful
                 .then((data) => {
-                    console.log(data);
                     // Show success popup and close enrollment popup
                     this.showSuccessPopup = true;
                     this.showEnrollmentPopup = false;
+                    this.enrollableModulesArray.splice(this.index, 1);
+                    this.index = null;
                 })
                 // If unsuccessful
                 .catch((error) => {
@@ -194,10 +202,9 @@ export default {
         },
     },
     async created() {
-        await this.getEnrollableModules()
-            .then(() => {
-                this.render = true;
-            });
+        await this.getEnrollableModules().then(() => {
+            this.render = true;
+        });
     },
 };
 </script>

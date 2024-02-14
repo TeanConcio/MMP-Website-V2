@@ -11,12 +11,10 @@ import { useCredentialsStore } from "../../store/store";
 // Helpers
 import { formatName } from "../../util/helpers";
 </script>
-<!--
-  TODO: implement features in https://cssweng.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog?selectedIssue=SCRUM-22
--->
 <template>
-    <div class="flex flex-row mt-16 min-h-screen">
-        <div class="w-1/6 bg-background_pastel p-5">
+    <div class="flex flex-row min-h-screen">
+        <aside class="z-10 w-64 bg-background_pastel py-4 px-2 pt-28 fixed inset-y-0 left-0 md:pt-20 md:block md:-translate-x-0 transform -translate-x-full transition duration-200 ease-in-out"
+            :class="{ 'translate-x-0': showSidebar}">
             <div id="student-info" class="flex flex-col items-center justify-center mb-4">
                 <h2>{{ formatName(store.user?.last_name, store.user?.first_name) }}</h2>
                 <h2>{{ store.user_id || "Invalid ID" }}</h2>
@@ -62,20 +60,45 @@ import { formatName } from "../../util/helpers";
                     Request Transcript
                 </button>
             </div>
+        </aside>
+
+        <button @click="showSidebar = !showSidebar"
+                        type="button"
+                        class="z-20 inline-flex items-center p-2 w-10 h-10 mt-20 m-2 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 fixed"
+                    >
+                        <span class="sr-only">Open main menu</span>
+                        <svg
+                            class="w-5 h-5"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 17 14"
+                        >
+                            <path
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M1 1h15M1 7h15M1 13h15"
+                            />
+                        </svg>
+        </button>
+
+        <div class="p-4 w-full ml-10 md:ml-64 mt-20">
+            <div class="w-full">
+            <CurrentEnrollmentsTab
+                v-if="pageMode === 'grades'"
+            />
+
+            <EnrollTab
+                v-if="pageMode === 'enroll'"
+            />
+
+            <AllEnrollmentsTab
+                v-if="pageMode === 'history'"
+            />
         </div>
-
-        <CurrentEnrollmentsTab
-            v-if="pageMode === 'grades'"
-        />
-
-        <EnrollTab
-            v-if="pageMode === 'enroll'"
-        />
-
-        <AllEnrollmentsTab
-            v-if="pageMode === 'history'"
-        />
-
+        </div>
         <PromptPopup
             v-if="showRequestPopup"
             title="Proceed with Transcript of Records Request?"
@@ -89,7 +112,9 @@ import { formatName } from "../../util/helpers";
         <MessagePopup
             v-if="showSuccessPopup"
             title="Transcript Request Successful."
-            description="Your transcript request has been sent.\n*insert instructions*"
+            description=
+            "Your transcript request has been sent."
+            accepted=true
             exit-text="Close"
             @on-exit="showSuccessPopup = false"
         />
@@ -115,6 +140,8 @@ export default {
             showRequestPopup: false,
             showSuccessPopup: false,
             showErrorPopup: false,
+            //Sidebar
+            showSidebar: false,
         };
     },
     methods: {

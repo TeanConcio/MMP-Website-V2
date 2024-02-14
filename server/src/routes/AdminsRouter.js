@@ -57,6 +57,9 @@ const generateAdminID = async () => {
                     startsWith: currentYear,
                 },
             },
+            orderBy: {
+                admin_id: "asc",
+            },
         })
     ).map((element) => {
         return element.admin_id;

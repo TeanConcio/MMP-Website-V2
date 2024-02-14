@@ -4,6 +4,10 @@ defineProps({
     title: String,
     description: String,
     exitText: String,
+    accepted: {
+        type: Boolean,
+        default: false,
+    },
 });
 // Emits
 defineEmits(["on-exit"]);
@@ -43,19 +47,31 @@ defineEmits(["on-exit"]);
                     </button>
                     <div class="p-6 text-center">
                         <h3
-                            class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400 whitespace-pre-line"
+                            class="mb-5 text-lg font-normal whitespace-pre-line"
+                            :class="{
+                                'text-green-700': accepted,
+                                'text-red-700': !accepted,
+                            }"
                         >
                             {{ title }}
                         </h3>
                         <p
-                            class="mb-5 text-base font-normal text-gray-500 dark:text-gray-400 whitespace-pre-line"
+                            class="mb-5 text-base font-normal whitespace-pre-line"
+                            :class="{
+                                'text-green-700': accepted,
+                                'text-red-700': !accepted,
+                            }"
                         >
                             {{ description }}
                         </p>
                         <button
                             @click="$emit('on-exit')"
                             type="button"
-                            class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600 whitespace-pre-line"
+                            class="bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600 whitespace-pre-line"
+                            :class="{
+                                'text-green-700': accepted,
+                                'text-red-700': !accepted,
+                            }"
                         >
                             {{ exitText }}
                         </button>

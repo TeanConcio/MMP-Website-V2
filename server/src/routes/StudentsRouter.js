@@ -1,10 +1,21 @@
 // Imports Modules
 import express from "express";
 import { validationResult } from "express-validator";
-import { validateStudentReqBody, cleanStudentObject } from "../validators/StudentsValidator.js";
+import {
+    validateStudentReqBody,
+    cleanStudentObject,
+    validateStatusReqBody,
+    cleanStatusObject,
+} from "../validators/StudentsValidator.js";
 import { validatePasswordBody, cleanPasswordObject } from "../validators/PasswordValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { getLatestIDSegments, exclude, allowed, generatePasswordHash } from "../utils/helpers.js";
+import { sendEmail } from "../utils/email_service.js";
+import {
+    adminStudentEnrollmentEmail,
+    studentAcceptedEnrollmentEmail,
+    studentRejectedEnrollmentEmail,
+} from "../utils/email_templates.js";
 
 // Express Router
 const StudentsRouter = express.Router();
@@ -69,6 +80,9 @@ const generateStudentID = async () => {
                 student_id: {
                     startsWith: currentYear,
                 },
+            },
+            orderBy: {
+                student_id: "desc",
             },
         })
     ).map((element) => {
@@ -160,6 +174,7 @@ StudentsRouter.get("/id/:student_id", async (req, res) => {
                     emergency_mobile_number: true,
                     status: true,
                     track: true,
+                    created_at: true,
                 },
             });
         } else {
@@ -241,6 +256,9 @@ StudentsRouter.get("/year/:year", async (req, res) => {
                 status: true,
                 track: true,
             },
+            orderBy: {
+                student_id: "desc",
+            },
         });
 
         // Return all values
@@ -292,6 +310,11 @@ StudentsRouter.get("/module/:module_name/:school_year", async (req, res) => {
                         },
                     },
                 },
+                orderBy: {
+                    student: {
+                        student_id: "asc",
+                    },
+                },
             });
 
             res.status(200).send(students);
@@ -323,6 +346,11 @@ StudentsRouter.get("/module/:module_name/:school_year", async (req, res) => {
                             session_1: true,
                             session_2: true,
                         },
+                    },
+                },
+                orderBy: {
+                    student: {
+                        student_id: "asc",
                     },
                 },
             });
@@ -386,6 +414,10 @@ StudentsRouter.get("/", async (req, res) => {
                 emergency_mobile_number: true,
                 status: true,
                 track: true,
+                created_at: true,
+            },
+            orderBy: {
+                student_id: "asc",
             },
         });
 
@@ -449,6 +481,9 @@ StudentsRouter.get("/status/:status", async (req, res) => {
                 status: true,
                 track: true,
             },
+            orderBy: {
+                student_id: "desc",
+            },
         });
 
         // Return all values
@@ -473,6 +508,9 @@ StudentsRouter.get("/id_name", async (req, res) => {
                 first_name: true,
                 last_name: true,
                 middle_name: true,
+            },
+            orderBy: {
+                student_id: "desc",
             },
         });
 
@@ -506,8 +544,11 @@ StudentsRouter.get("/unpaid_bills", async (req, res) => {
                 last_name: true,
                 middle_name: true,
             },
+            orderBy: {
+                student_id: "desc",
+            },
         });
-        
+
         res.status(200).send(students);
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -535,12 +576,59 @@ StudentsRouter.get("/in_progress", async (req, res) => {
                 first_name: true,
                 last_name: true,
                 middle_name: true,
+                created_at: true,
+            },
+            orderBy: {
+                student_id: "asc",
             },
         });
 
         res.status(200).send(students);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
     }
-    catch (error) {
+});
+
+//Get all students enrolled in a specific module
+StudentsRouter.get("/module/:module_name", async (req, res) => {
+    if (!allowed(req.permission, [3])) {
+        res.status(403).send({ error: "You are not authorized to access this" });
+        return;
+    }
+
+    try {
+        const { module_name } = req.params;
+
+        const unfiltered_students = await prisma.Module_Enrollments.findMany({
+            where: {
+                module_name: module_name,
+            },
+            select: {
+                student: {
+                    select: {
+                        student_id: true,
+                        first_name: true,
+                        last_name: true,
+                        middle_name: true,
+                        created_at: true,
+                    },
+                },
+            },
+        });
+
+        //Filter students
+        let uniqueIDs = [];
+        let students = [];
+
+        unfiltered_students.forEach((element) => {
+            if (!uniqueIDs.includes(element.student.student_id)) {
+                students.push(element.student);
+                uniqueIDs.push(element.student.student_id);
+            }
+        });
+
+        res.status(200).send(students);
+    } catch (error) {
         res.status(500).send({ error: error.message });
     }
 });
@@ -580,6 +668,15 @@ StudentsRouter.post("/", validateStudentReqBody(), async (req, res) => {
 
         // Create student in database
         await prisma.Students.create({ data: student });
+
+        // Send email to admin
+        await sendEmail(
+            adminStudentEnrollmentEmail(
+                `${student.first_name} ${student.last_name}`,
+                student.email,
+                student.student_id
+            )
+        );
 
         res.status(200).send({ message: "Create successful" });
     } catch (error) {
@@ -624,6 +721,78 @@ StudentsRouter.patch("/:student_id", validateStudentReqBody(), async (req, res) 
         });
 
         res.status(200).send({ message: "Update successful" });
+    } catch (error) {
+        // Return error
+        res.status(500).send({ error: error.message });
+    }
+});
+
+// Update Student Status
+StudentsRouter.patch("/status/:student_id", validateStatusReqBody(), async (req, res) => {
+    if (!allowed(req.permission, [3])) {
+        res.status(403).send({ error: "You are not authorized to access this" });
+        return;
+    }
+
+    // Validate Student Info
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        // Return errors if any
+        return res.status(400).send({ errors: result.array() });
+    }
+
+    try {
+        // Get student_id from req.params
+        const { student_id } = req.params;
+
+        // Check if student exists and get previous status
+        const previousStatus = await prisma.Students.findUnique({
+            where: {
+                student_id: student_id,
+            },
+            select: {
+                status: true,
+            },
+        });
+        if (previousStatus == null) {
+            throw new Error("Student does not exist");
+        }
+
+        // Get updated info from req.body
+        const updatedData = cleanStatusObject(req.body);
+
+        // Update student in database and store the result
+        const updatedStudent = await prisma.Students.update({
+            where: {
+                student_id: student_id,
+            },
+            data: updatedData,
+            select: {
+                first_name: true,
+                middle_name: true,
+                last_name: true,
+                email: true,
+                status: true,
+            },
+        });
+
+        // Check if the previous status was "FOR_APPROVAL"
+        if (previousStatus.status === "FOR_APPROVAL") {
+            // Send acceptance/rejection email
+            if (updatedData.status === "ACTIVE") {
+                await sendEmail(
+                    studentAcceptedEnrollmentEmail(
+                        `${updatedStudent.first_name} ${updatedStudent.last_name}`,
+                        updatedStudent.email,
+                        student_id
+                    )
+                );
+            } else if (updatedData.status === "REJECTED") {
+                await sendEmail(studentRejectedEnrollmentEmail(updatedStudent.email));
+            }
+        }
+
+        res.status(200).send({ message: "Status updated" });
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -694,6 +863,30 @@ StudentsRouter.delete("/:student_id", async (req, res) => {
         }
 
         // Delete from database
+        await prisma.Payments.deleteMany({
+            where: {
+                payee: student_id,
+            },
+        });
+
+        await prisma.Bills.deleteMany({
+            where: {
+                billed_to: student_id,
+            },
+        });
+
+        await prisma.Module_Enrollments.deleteMany({
+            where: {
+                student_id: student_id,
+            },
+        });
+
+        await prisma.TOR_Requests.deleteMany({
+            where: {
+                student_id: student_id,
+            },
+        });
+
         await prisma.Students.delete({
             where: {
                 student_id: student_id,
