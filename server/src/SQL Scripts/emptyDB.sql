@@ -1,0 +1,10 @@
+DELETE FROM public."Admins";
+DELETE FROM public."Payments";
+DELETE FROM public."Module_Enrollments";
+DELETE FROM public."Modules";
+DELETE FROM public."Module_Details";
+DELETE FROM public."Module_Names";
+DELETE FROM public."Bills";
+DELETE FROM public."TOR_Requests";
+DELETE FROM public."Teachers";
+DELETE FROM public."Students";

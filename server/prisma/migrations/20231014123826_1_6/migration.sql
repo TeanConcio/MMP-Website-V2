@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Students" ALTER COLUMN "others" SET DEFAULT ARRAY[]::VARCHAR(50)[];
