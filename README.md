@@ -28,12 +28,27 @@ npm install nodemon -g
 npm run dev
 ```
 
+To test, build, and run the builded application, run the following commands step-by-step
+```sh
+npm run test
+npm run build
+npm run preview
+```
+
+
 # FOR SERVER
 Input this in your terminal step-by-step
 ```sh
 cd client
 npm install
 npm start
+```
+
+To test, build, and run the builded application, run the following commands step-by-step
+```sh
+npm run test
+npm run build
+npm run run-build
 ```
 
 ### Route Structure
