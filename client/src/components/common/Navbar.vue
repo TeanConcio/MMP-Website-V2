@@ -70,6 +70,16 @@ import PromptPopup from "./PromptPopup.vue";
                             Home
                         </router-link>
                     </li>
+                    <li>
+                        <router-link
+                            to="/contact"
+                            class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 hover:underline md:hover:bg-transparent md:hover:text-highlight_hover md:p-0"
+                            :class="{ 'md:text-highlight': $route.name === 'contact' }"
+                            aria-current="page"
+                        >
+                            Contact Us
+                        </router-link>
+                    </li>
                     <li v-if="!store.isLoggedIn">
                         <router-link
                             to="/student/signup"

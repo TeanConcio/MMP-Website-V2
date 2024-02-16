@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 // Import Pages
 import Login from "@/pages/login/Login.vue";
+import Contact from "@/pages/contact/Contact.vue";
 import TeacherSignup from "@/pages/signup/TeacherSignup.vue";
 import StudentSignup from "@/pages/signup/StudentSignup.vue";
 import Index from "@/pages/index/Index.vue";
@@ -34,6 +35,12 @@ const router = createRouter({
             path: "/",
             name: "index",
             component: Index,
+        },
+        {
+            // Contact Page
+            path: "/contact",
+            name: "contact",
+            component: Contact,
         },
         {
             // Login Page
