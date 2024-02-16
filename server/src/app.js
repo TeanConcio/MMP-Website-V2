@@ -2,7 +2,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import morgan from "morgan";
+//import morgan from "morgan";
 import helmet from "helmet";
 import dotenv from "dotenv";
 
