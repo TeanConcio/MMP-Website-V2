@@ -2,7 +2,8 @@
 const adminEmail = process.env.EMAIL;
 
 // Website URL
-const url = "https://mmp-m65f7pel8-daphne-gos-projects.vercel.app/";
+// const url = "https://mmp-m65f7pel8-daphne-gos-projects.vercel.app/";
+const url = "http://localhost:3000/";
 
 // Admin Student Enrollment Email
 export const adminStudentEnrollmentEmail = (studentName, studentEmail, studentId) => {
