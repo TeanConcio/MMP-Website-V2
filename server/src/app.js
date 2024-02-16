@@ -32,7 +32,7 @@ const app = express();
 // Express App Middleware
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(morgan("common"));
+// app.use(morgan("common"));   // Log HTTP Requests
 app.use(cors()); // TODO: Remove this in production
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
