@@ -10,9 +10,11 @@ import ContactCarousel from "../../components/contact/ContactCarousel.vue";
 
     <About />
 
-    <ContactCarousel />
+    <div class="container mx-auto">
+        <ContactCarousel />
+    </div>
 
-    <div class="items-center container bg-background_pastel pt-32 mx-auto px-4 py-8 flex flex-col md:flex-row max-w-full">
+    <div class="items-center container bg-background_pastel mx-auto px-4 py-14 flex flex-col md:flex-row max-w-full">
         <div class="flex-1">
             <div class="mb-5">
                 <LogoLink />

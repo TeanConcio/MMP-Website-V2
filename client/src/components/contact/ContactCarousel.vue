@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper relative mx-auto py-24">
+    <div class="wrapper relative mx-auto py-14">
         <div
             class="carousel xl:grid xl:grid-cols-3 scroll-snap-x-mandatory gap-4 rounded-lg smooth-scroll scrollbar-hidden overflow-x-auto px-8 2xl:justify-center"
         >
