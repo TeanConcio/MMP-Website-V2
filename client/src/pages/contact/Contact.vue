@@ -1,65 +1,43 @@
-<template>
-    <Cover />
-    <div class="container mx-auto px-4 py-8 flex flex-col md:flex-row max-h-fit">
-        <div class="bg-white rounded-lg shadow-lg p-6 md:p-8 flex-1">
-            <div class="text-center md:text-left">
-                <h1 class="text-2xl font-bold mb-4">Why should you join us?</h1>
-                <p class="mb-4">
-                    A special modular program designed to prepare participants to undertake a
-                    holistic and transformational early childhood program. It is based on
-                    developmentally appropriate practice Designed to provide participants with
-                    knowledge and skills to develop, implement, and evaluate an early childhood
-                    education.
-                </p>
-                <p class="mb-4">
-                    Students have an option of enrolling either in the Teacher's Track or
-                    Administrator's Track or both. In any chosen tract, bible courses are part of
-                    the curriculum
-                </p>
-                <div class="flex items-start mt-4 flex-col">
-                    <router-link
-                        to="/student/signup"
-                        class="bg-highlight hover:bg-highlight_hover text-white font-bold py-2 px-2 rounded mb-2"
-                        v-if="!store.isLoggedIn"
-                    >
-                        Apply Now
-                    </router-link>
-                    <router-link
-                        to="/login"
-                        class="text-highlight hover:text-highlight_hover"
-                        v-if="!store.isLoggedIn"
-                    >
-                        Already have an account? Log In
-                    </router-link>
-                </div>
-            </div>
-        </div>
-        <div class="flex-1">
-            <img
-                src="https://www.worldvision.org/wp-content/uploads/2017/06/Miljhon-Feature.png"
-                alt="Your Image"
-                class="max-w-full h-auto"
-            />
-        </div>
-    </div>
-    <div class="container mx-auto mb-10">
-        <Carousel />
-    </div>
-</template>
-
 <script setup>
-import Cover from "../../components/index/Cover.vue";
-import Carousel from "../../components/index/Carousel.vue";
+// Store
 import { useCredentialsStore } from "../../store/store";
-
-const store = useCredentialsStore();
+// Components
+import LogoLink from "../../components/common/LogoLink.vue";
+import ContactForm from "../../components/contact/ContactForm.vue";
 </script>
 
-<!-- Mobile responsiveness -->
-<style scoped>
-@media (max-width: 768px) {
-    .flex-col {
-        flex-direction: column;
-    }
-}
-</style>
+<template>
+    <div class="app-container bg-background_pastel min-h-screen flex">
+  <!-- Left Column -->
+  <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto" style="flex: 2;">
+    <img
+      src="https://img.freepik.com/free-photo/hot-line-contact-us-call-center-search-interface_53876-124009.jpg"
+      alt="Your Image"
+      class="max-w-full h-auto"
+    />
+  </div>
+
+  <!-- Right Column -->
+  <div class="flex flex-col items-center justify-center px-6 py-20 mx-auto" style="flex: 1; margin-right: 10%;">
+    <div class="mb-5">
+      <LogoLink />
+    </div>
+    <ContactForm/>
+  </div>
+</div>
+
+</template>
+
+<script>
+export default {
+    beforeCreate() {
+        // On component mount
+        const store = useCredentialsStore();
+        // If user is logged in
+        if (store.isLoggedIn) {
+            // Redirect to home page
+            this.$router.push("/");
+        }
+    },
+};
+</script>
