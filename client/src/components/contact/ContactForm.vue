@@ -9,7 +9,7 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
         <LoadingSpinner v-if="loading" />
     </div>
     <div
-        class="w-full bg-white rounded-lg mx-auto p-4 shadow dark:border sm:max-w-md xl:p-0 md:max-p-4 lg:p-8 mb-8"
+        class="w-full bg-white rounded-lg mx-auto p-4 shadow dark:border sm:max-w-xl xl:p-0 md:max-p-4 lg:p-8 mb-8"
     >
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1
@@ -17,6 +17,11 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
             >
                 Contact Us!
             </h1>
+            <h2
+                class="text-base font-bold leading-tight tracking-tight text-gray-900 md:text-lg dark:text-white"
+            >
+                Have any concerns? We'd love to hear from you!
+            </h2>
             <form v-on:submit.prevent="onSubmit">
                 
                 <div class="md:grid md:grid-cols-2 md:gap-3">
@@ -66,52 +71,57 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
                     </div>
                 </div>
 
-                <div class="mb-5">
-                    <label
-                        for="middle_name"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >Middle Name</label
-                    >
-                    <input
-                        type="middle_name"
-                        id="middlename"
-                        class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                        placeholder="Middle Name"
-                        autocomplete="off"
-                        v-model="middlename"
-                    />
-                    <div class="input-errors" v-if="errors.middlename">
-                        <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.middlename }}
+                <div class="md:grid md:grid-cols-2 md:gap-3">
+
+                    <div class="mb-5">
+                        <label
+                            for="email"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >Email Address<span class="text-required_red">*</span></label
+                        >
+                        <input
+                            type="email"
+                            id="email"
+                            class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                            placeholder="name1990@example.com"
+                            required
+                            autocomplete="off"
+                            v-model="email"
+                        />
+                        <div class="input-errors" v-if="errors.email">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
+                                {{ errors.email }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label
+                            for="mobile"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                            Mobile Number<span class="text-required_red">*</span>
+                        </label>
+                        <input
+                            type="string"
+                            id="mobile"
+                            class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            placeholder="09XXXXXXXXX"
+                            required
+                            autocomplete="off"
+                            v-model="mobile_no"
+                        />
+                        <div class="input-errors" v-if="errors.mobile_no">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
+                                {{ errors.mobile_no }}
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-5">
                     <label
-                        for="email"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >Email Address<span class="text-required_red">*</span></label
-                    >
-                    <input
-                        type="email"
-                        id="email"
-                        class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                        placeholder="name1990@example.com"
-                        required
-                        autocomplete="off"
-                        v-model="email"
-                    />
-                    <div class="input-errors" v-if="errors.email">
-                        <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.email }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-5">
-                    <label
-                        for="concern"
+                        for="message"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
                         What can we help you with?<span
@@ -124,11 +134,11 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
                         rows="4"
                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Write here..."
-                        v-model="essay"
+                        v-model="message"
                     ></textarea>
-                    <div class="input-errors" v-if="errors.essay">
+                    <div class="input-errors" v-if="errors.message">
                         <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.essay }}
+                            {{ errors.message }}
                         </div>
                     </div>
                 </div>
@@ -150,47 +160,36 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
     </div>
 
     <ErrorMessagePopup
-        v-if="showInvalidPopup"
-        title="Invalid Signup Credentials."
+        v-if="currentPopup === 'invalid'"
+        title="Invalid Credentials."
         description="Please follow the form guides."
         exit-text="Close"
         @on-exit="
-            showInvalidPopup = false;
+            currentPopup = 'null';
             loading = false;
         "
     />
 
     <MessagePopup
-        v-if="showSuccessPopup"
-        title="Thank you for sharing your insights with us"
+        v-if="currentPopup === 'success'"
+        title="Thank you for contacting us."
         description="Please wait for Admin to resolve your concerns and will be in touch as soon as possible."
         accepted="true"
         exit-text="Close"
         @on-exit="
-            showSuccessPopup = true;
+            currentPopup = 'null';
             this.$router.push('/');
             loading = false;
         "
     />
 
     <ErrorMessagePopup
-        v-if="showUsedEmailPopup"
-        title="Email is already in use."
-        description="Please use a different email or Login."
-        exit-text="Close"
-        @on-exit="
-            showUsedEmailPopup = false;
-            loading = false;
-        "
-    />
-
-    <ErrorMessagePopup
-        v-if="showErrorPopup"
+        v-if="currentPopup === 'error'"
         title="Something went wrong."
         description="Please try again."
         exit-text="Close"
         @on-exit="
-            showErrorPopup = false;
+            currentPopup = 'null';
             loading = false;
         "
     />
@@ -203,21 +202,18 @@ export default {
         return {
             firstname: "",
             lastname: "",
-            middlename: "",
             email: "",
-            essay: "",
+            mobile_no: "",
+            message: "",
             errors: {},
             // Popups
-            showInvalidPopup: false,
-            showSuccessPopup: false,
-            showUsedEmailPopup: false,
-            showErrorPopup: false,
+            currentPopup: null, // null, invalid, success, error
             //Loading
             loading: false,
         };
     },
     methods: {
-        // BELOW ARE THE VALIDATORS TO CHECK IF THE DATA ARE VALID FOR SIGNING UP
+        // BELOW ARE THE VALIDATORS TO CHECK IF THE DATA ARE VALID
         validateFirstName() {
             if (this.firstname.length < 2 || this.firstname.length > 50) {
                 this.errors["firstname"] = "First name must be between 2 and 50 characters!";
@@ -236,20 +232,6 @@ export default {
                 delete this.errors["lastname"];
             }
         },
-        validateMiddleName() {
-            if (this.middlename.length === 0) {
-                delete this.errors["middlename"];
-                return;
-            }
-
-            if (this.middlename.length < 2 || this.middlename.length > 50) {
-                this.errors["middlename"] = "Middle name must be between 2 and 50 characters!";
-            } else if (/\d/.test(this.middlename)) {
-                this.errors["middlename"] = "Middle name must not have numbers!";
-            } else {
-                delete this.errors["middlename"];
-            }
-        },
         validateEmail() {
             const emailPattern =
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -260,21 +242,30 @@ export default {
                 delete this.errors["email"];
             }
         },
-        validateConcern() {
-            if (this.essay.length < 1) {
-                this.errors["essay"] = "Please share us your concern";
+        validateMobileNumber() {
+            const mobilePattern = /^09[0-9]{9}$/;
+
+            if (mobilePattern.test(this.mobile_no) === false) {
+                this.errors["mobile_no"] = "Must be a valid Philippine mobile number";
             } else {
-                delete this.errors["essay"];
+                delete this.errors["mobile_no"];
             }
         },
-     
+        validateMessage() {
+            if (this.message.length < 1) {
+                this.errors["message"] = "Message must not be empty!";
+            } else {
+                delete this.errors["message"];
+            }
+        },
+        
         validateForm() {
             // Validate all fields
             this.validateFirstName();
             this.validateLastName();
-            this.validateMiddleName();
             this.validateEmail();
-            this.validateConcern();
+            this.validateMobileNumber();
+            this.validateMessage();
 
             if (Object.keys(this.errors).length === 0) { // If no errors, return true
                 return true;
@@ -286,9 +277,9 @@ export default {
         submitForm() {
             // Validate form
             if (this.validateForm()) {
-                this.showSuccessPopup = true;
+                this.currentPopup = "success";
             } else {
-                this.showInvalidPopup = true;
+                this.currentPopup = "invalid";
             }
         },
     },
@@ -299,14 +290,14 @@ export default {
         lastname() {
             this.validateLastName();
         },
-        middlename() {
-            this.validateMiddleName();
-        },
         email() {
             this.validateEmail();
         },
-        conern() {
-            this.validateConcern();
+        mobile_no() {
+            this.validateMobileNumber();
+        },
+        message() {
+            this.validateMessage();
         },
     },
 };
