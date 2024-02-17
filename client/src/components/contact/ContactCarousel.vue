@@ -4,7 +4,7 @@
             class="carousel xl:grid xl:grid-cols-3 scroll-snap-x-mandatory gap-4 rounded-lg smooth-scroll scrollbar-hidden overflow-x-auto px-8 2xl:justify-center"
         >
             <div class="relative overflow-x-auto shadow-md rounded-lg mb-5">
-                <table class="text-sm text-gray-500 dark:text-gray-400 text-center w-full">
+                <table class="text-sm h-full text-gray-500 dark:text-gray-400 text-center w-full">
                     <thead
                         class="text-lg text-white uppercase bg-background dark:bg-gray-700 dark:text-gray-400"
                     >
