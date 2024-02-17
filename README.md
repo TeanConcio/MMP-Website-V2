@@ -41,7 +41,7 @@ Input this in your terminal step-by-step
 ```sh
 cd client
 npm install
-npm start
+npm run dev
 ```
 
 To test, build, and run the builded application, run the following commands step-by-step
