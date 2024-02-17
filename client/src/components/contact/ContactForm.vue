@@ -5,7 +5,7 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
 </script>
 
 <template>
-    <div class="fixed top-1/2">
+    <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <LoadingSpinner v-if="loading" />
     </div>
     <div
@@ -258,7 +258,6 @@ export default {
                 delete this.errors["message"];
             }
         },
-        
         validateForm() {
             // Validate all fields
             this.validateFirstName();
@@ -277,6 +276,7 @@ export default {
         submitForm() {
             // Validate form
             if (this.validateForm()) {
+                // Put your submit form code here
                 this.currentPopup = "success";
             } else {
                 this.currentPopup = "invalid";
