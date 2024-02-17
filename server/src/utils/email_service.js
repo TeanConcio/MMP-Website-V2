@@ -48,9 +48,9 @@ const createTransporter = async () => {
 // Send Email Function
 export const sendEmail = async (emailOptions) => {
 
-    emailOptions.from = process.env.EMAIL;
-
     // UNCOMMENT THE FOLLOWING LINES TO SEND EMAILS
+    //emailOptions.from = process.env.EMAIL;
+
     // let emailTransporter = await createTransporter();
     // emailTransporter.sendMail(emailOptions
     //     // , (err, info) => {   // For debugging purposes
