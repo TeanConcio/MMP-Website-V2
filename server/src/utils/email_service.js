@@ -50,15 +50,16 @@ export const sendEmail = async (emailOptions) => {
 
     emailOptions.from = process.env.EMAIL;
 
-    let emailTransporter = await createTransporter();
-    emailTransporter.sendMail(emailOptions
-        // , (err, info) => {   // For debugging purposes
-        // if (err) {
-        //     console.log(err);
-        // }
-        // else {
-        //     console.log(info);
-        // }
-        // }
-    );
+    // UNCOMMENT THE FOLLOWING LINES TO SEND EMAILS
+    // let emailTransporter = await createTransporter();
+    // emailTransporter.sendMail(emailOptions
+    //     // , (err, info) => {   // For debugging purposes
+    //     // if (err) {
+    //     //     console.log(err);
+    //     // }
+    //     // else {
+    //     //     console.log(info);
+    //     // }
+    //     // }
+    // );
 };
