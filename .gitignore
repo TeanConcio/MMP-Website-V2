@@ -5,7 +5,8 @@
 *.http
 
 # .env
-/server/.env
+# UNCOMMENT THIS LINE IN DEPLOYMENT OR WHEN USING YOUR OWN .env FILE
+#/server/.env
 
 # Logs
 logs
