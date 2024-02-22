@@ -3,7 +3,7 @@
 import {
     allowed,
     exclude,
-    //excludeFromArray,
+    excludeFromArray,
     //generatePasswordHash,
     //getLatestIDSegments,
     //generateFinancePKSegments,
@@ -72,6 +72,77 @@ describe("Test Helper Functions", () => {
             const result = exclude(inputObject, keysToExclude);
 
             expect(result).not.toBe(inputObject);
+        });
+    });
+
+    // Test exclude function
+    describe('excludeFromArray function', () => {
+        test('Excludes specified keys from each object in the array', () => {
+            const inputArray = [
+                { a: 1, b: 2, c: 3 },
+                { a: 4, b: 5, c: 6 },
+                { a: 7, b: 8, c: 9 },
+            ];
+    
+            const keysToExclude = ['b'];
+    
+            const result = excludeFromArray(inputArray, keysToExclude);
+    
+            expect(result).toEqual([
+                { a: 1, c: 3 },
+                { a: 4, c: 6 },
+                { a: 7, c: 9 },
+            ]);
+        });
+    
+        test('Handles an empty array', () => {
+            const inputArray = [];
+            const keysToExclude = ['b'];
+    
+            const result = excludeFromArray(inputArray, keysToExclude);
+    
+            expect(result).toEqual([]);
+        });
+    
+        test('Handles an empty keys array', () => {
+            const inputArray = [
+                { a: 1, b: 2, c: 3 },
+                { a: 4, b: 5, c: 6 },
+            ];
+    
+            const keysToExclude = [];
+    
+            const result = excludeFromArray(inputArray, keysToExclude);
+    
+            expect(result).toEqual(inputArray);
+        });
+    
+        test('Handles keys that do not exist in the objects', () => {
+            const inputArray = [
+                { a: 1, c: 3 },
+                { a: 4, c: 6 },
+            ];
+    
+            const keysToExclude = ['b'];
+    
+            const result = excludeFromArray(inputArray, keysToExclude);
+    
+            expect(result).toEqual(inputArray);
+        });
+    
+        test('Does not modify the original array or objects', () => {
+            const inputArray = [
+                { a: 1, b: 2, c: 3 },
+                { a: 4, b: 5, c: 6 },
+            ];
+    
+            const keysToExclude = ['b'];
+    
+            const result = excludeFromArray(inputArray, keysToExclude);
+    
+            expect(result).not.toBe(inputArray);
+            expect(result[0]).not.toBe(inputArray[0]);
+            expect(result[1]).not.toBe(inputArray[1]);
         });
     });
 });
