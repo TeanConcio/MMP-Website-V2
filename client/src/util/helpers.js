@@ -36,6 +36,50 @@ export function addUnique(arr, item) {
     }
 }
 
+// Helper function to download CSV file from provided CSV string
+export function downloadCSV(csvString, filename) {
+    // If csv is empty, do nothing
+    if (csvString == null || csvString.length === 0) 
+        return;
+
+    // Add .csv extension to filename if not already present
+    if (!filename.endsWith(".csv")) filename += ".csv";
+
+    // CSV file download
+
+    // Create download link element
+    let downloadLink = document.createElement("a");
+    // File name
+    downloadLink.download = filename;
+    // Create a link to the file
+    downloadLink.href = window.URL.createObjectURL(
+        new Blob([csvString], { type: "text/csv;charset=utf-8;" })
+    );
+    // Hide download link
+    downloadLink.style.display = "none";
+    // Add the link to DOM
+    document.body.appendChild(downloadLink);
+
+    // Click download link
+    downloadLink.click();
+    
+    // Delete the link from DOM
+    document.body.removeChild(downloadLink);
+}
+
+// Helper function to format CSV string for download
+export function formatCSVString(str) {
+    // If string is empty, return empty string
+    if (str == null || str.length === 0) return "";
+    // If string contains a double quote, replace with two double quotes
+    if (str.indexOf('"') !== -1) {
+        str = str.replace(/"/g, '""');
+    }
+
+    // Return string
+    return `"${str}"`;
+}
+
 //Helper function to format null in text fields
 export function formatText(text) {
     if (text === null) {
