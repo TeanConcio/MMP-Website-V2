@@ -177,13 +177,6 @@ defineEmits(["on-back"]);
             </div>
         </div>
         <br />
-        <!-- when export data button is clicked, then run exportData() function-->
-        <button
-            class="ml-auto mb-1 w-21 h-12 px-10 py-3 text-base font-medium text-center text-white bg-highlight rounded-lg hover:bg-highlight_hover"
-            @click="exportData()"
-        >
-            Export Data
-        </button>
     </div>
 
     <!-- DOWNLOAD -->
