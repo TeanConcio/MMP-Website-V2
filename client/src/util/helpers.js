@@ -62,7 +62,7 @@ export function downloadCSV(csvString, filename) {
 
     // Click download link
     downloadLink.click();
-    
+
     // Delete the link from DOM
     document.body.removeChild(downloadLink);
 }
@@ -70,7 +70,9 @@ export function downloadCSV(csvString, filename) {
 // Helper function to format CSV string for download
 export function formatCSVString(str) {
     // If string is empty, return empty string
-    if (str == null || str.length === 0) return "";
+    if (str == null || str.length === 0) 
+        return "";
+    
     // If string contains a double quote, replace with two double quotes
     if (str.indexOf('"') !== -1) {
         str = str.replace(/"/g, '""');

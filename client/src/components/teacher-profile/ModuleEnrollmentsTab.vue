@@ -466,6 +466,15 @@ export default {
                 // add each entry to the csv data
                 csvData += `${entry.student.student_id}, ${entry.student.last_name}, ${entry.student.first_name}, ${entry.student.middle_name}, ${entry.grade}, ${entry.no_of_absences} \r\n`;
             });
+
+            // create the csv file
+            const csvContent = "data:text/csv;charset=utf-8," + csvData;
+            // create the download element
+            const downloadElement = document.getElementById("download");
+
+            // set the download element's attributes
+            downloadElement.setAttribute("href", encodeURI(csvContent));
+            downloadElement.click();
         },
     },
     async created() {
