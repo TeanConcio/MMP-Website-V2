@@ -180,7 +180,7 @@ defineEmits(["on-back"]);
         <!-- when export data button is clicked, then run exportData() function-->
         <button
             class="ml-auto mb-1 w-21 h-12 px-10 py-3 text-base font-medium text-center text-white bg-highlight rounded-lg hover:bg-highlight_hover"
-            @click="exportData()"
+            @click="exportCSVData()"
         >
             Export Module Enrollment Data (.csv)
         </button>
@@ -445,6 +445,27 @@ export default {
                 return true;
             }
             return false;
+        },
+        //Export CSV Data
+        exportCSVData() {
+            // check if in edit mode
+            if (this.editMode) {
+                this.currentPopup = "editing-error";
+                return;
+            }
+            // check if there are no enrollments
+            if (this.moduleEnrollmentArray?.length < 1) {
+                this.currentPopup = "empty-array-error";
+                return;
+            }
+            // create the csv data with the headers
+            let csvData = "Student ID, Last Name, First Name, Middle Name, Grade, Absences\n";
+
+            // for each entry in the moduleEnrollmentArray
+            this.moduleEnrollmentArray.forEach((entry) => {
+                // add each entry to the csv data
+                csvData += `${entry.student.student_id}, ${entry.student.last_name}, ${entry.student.first_name}, ${entry.student.middle_name}, ${entry.grade}, ${entry.no_of_absences} \r\n`;
+            });
         },
     },
     async created() {
