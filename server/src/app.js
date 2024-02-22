@@ -17,7 +17,6 @@ import PaymentsRouter from "./routes/PaymentsRouter.js";
 import ModuleEnrollmentsRouter from "./routes/ModuleEnrollmentsRouter.js";
 import TORRequestsRouter from "./routes/TORRequestsRouter.js";
 import ModuleDetailsRouter from "./routes/ModuleDetailsRouter.js";
-import DownloadRouter from "./routes/DownloadRouter.js";
 
 // Import Middleware
 import { verifyToken } from "./middleware/tokenVerifier.js";
@@ -50,7 +49,6 @@ app.use("/API/modules", verifyToken, ModulesRouter);
 app.use("/API/module_enrollments", verifyToken, ModuleEnrollmentsRouter);
 app.use("/API/tor_requests", verifyToken, TORRequestsRouter);
 app.use("/API/module_details", verifyToken, ModuleDetailsRouter);
-app.use("/API/download", verifyToken, DownloadRouter);
 
 // Express App Server
 app.listen(PORT, () => {
