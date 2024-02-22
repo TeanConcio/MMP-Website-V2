@@ -8,7 +8,7 @@ import PromptPopup from "../../common/PromptPopup.vue";
 import PaymentInputPopup from "../../common/PaymentInputPopup.vue";
 import EditPaymentPopup from "../../common/EditPaymentPopup.vue";
 // Helpers
-import { formatEnum, downloadCSV, downloadZIP, duplicate } from "../../../util/helpers";
+import { formatEnum, duplicate } from "../../../util/helpers";
 // Props
 defineProps({
     studentId: String,
@@ -701,20 +701,6 @@ defineEmits(["on-back"]);
                 </div>
             </div>
         </div>
-        <div
-            class="w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 px-7 py-5 mb-5"
-        >
-            <h2 class="text-2xl font-semibold mb-1">Download</h2>
-            <div class="mb-5">
-                <button
-                    type="button"
-                    @click="downloadStudentData()"
-                    class="w-full sm:w-auto ml-auto mr-10 md:px-10 px-3 py-3 mt-5 text-base font-medium text-center text-white bg-highlight rounded-lg hover:bg-highlight_hover"
-                >
-                    Download All Data of Student (.csv)
-                </button>
-            </div>
-        </div>
     </div>
 
     <MessagePopup
@@ -1067,27 +1053,6 @@ export default {
         async editPayment() {
             await this.getPayments();
             this.currentPopup = "editPayment";
-        },
-        // Download
-        async downloadStudentData() {
-            if (this.editMode) {
-                this.currentPopup = "editing-error";
-                return;
-            }
-
-            await this.$axios
-                .get(`/download/student/${this.studentId}`)
-                // If successful
-                .then(({ data }) => {
-                    downloadZIP(
-                        data,
-                        `${this.student.student_id} ${this.student.first_name} ${this.student.last_name} - Student Data.zip`
-                    );
-                })
-                // If unsuccessful
-                .catch((error) => {
-                    console.log(error);
-                });
         },
         // Validators
         validate() {

@@ -1,5 +1,3 @@
-import JSZip from "jszip";
-
 // Helper functions to format date (YYYY-MM-DD)
 export function formatDate(dateString) {
     if (dateString == null) return "";
@@ -36,81 +34,6 @@ export function addUnique(arr, item) {
     if (arr.indexOf(item) === -1) {
         arr.push(item);
     }
-}
-
-// Helper function to download CSV file
-export function downloadCSV(csvString, filename) {
-    // If csv is empty, do nothing
-    if (csvString == null || csvString.length === 0) return;
-
-    // Check if filename ends with .csv
-    if (!filename.endsWith(".csv")) filename += ".csv";
-
-    // CSV file
-    // Download link
-    let downloadLink = document.createElement("a");
-    // File name
-    downloadLink.download = filename;
-    // Create a link to the file
-    downloadLink.href = window.URL.createObjectURL(
-        new Blob([csvString], { type: "text/csv;charset=utf-8;" })
-    );
-    // Hide download link
-    downloadLink.style.display = "none";
-    // Add the link to DOM
-    document.body.appendChild(downloadLink);
-    // Click download link
-    downloadLink.click();
-    // Delete the link from DOM
-    document.body.removeChild(downloadLink);
-}
-
-// Helper function to format string for CSV
-export function formatCSVString(str) {
-    // If string is empty, return empty string
-    if (str == null || str.length === 0) return "";
-
-    let isEdited = false;
-
-    // If string contains a double quote, replace with two double quotes
-    if (str.indexOf('"') !== -1) {
-        str = str.replace(/"/g, '""');
-        isEdited = true;
-    }
-
-    // Otherwise, return string
-    return `"${str}"`;
-}
-
-// Helper function to download ZIP file
-export async function downloadZIP(zipString, filename) {
-    // If zip is empty, do nothing
-    if (zipString == null || zipString.length === 0) return;
-
-    // Check if filename ends with .zip
-    if (!filename.endsWith(".zip")) filename += ".zip";
-
-    // ZIP file
-
-    // Convert base64 string to blob
-    const zip = new JSZip();
-    await zip.loadAsync(zipString, { base64: true });
-    const blob = await zip.generateAsync({ type: "blob" });
-
-    // Download link
-    let downloadLink = document.createElement("a");
-    // Create a link to the file
-    downloadLink.href = window.URL.createObjectURL(blob);
-    // File name
-    downloadLink.download = filename;
-    // Hide download link
-    downloadLink.style.display = "none";
-    // Add the link to DOM
-    document.body.appendChild(downloadLink);
-    // Click download link
-    downloadLink.click();
-    // Delete the link from DOM
-    document.body.removeChild(downloadLink);
 }
 
 //Helper function to format null in text fields
