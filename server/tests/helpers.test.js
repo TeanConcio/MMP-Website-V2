@@ -75,7 +75,7 @@ describe("Test Helper Functions", () => {
         });
     });
 
-    // Test exclude function
+    // Test excludeFromArray function
     describe('excludeFromArray function', () => {
         test('Excludes specified keys from each object in the array', () => {
             const inputArray = [
