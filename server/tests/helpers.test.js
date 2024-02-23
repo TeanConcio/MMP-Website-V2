@@ -8,7 +8,7 @@ import {
     getLatestIDSegments,
     generateFinancePKSegments,
     expformatEnum
-} from "../src/utils/helpers";
+} from "../src/utils/helpers.js";
 
 
 
@@ -148,58 +148,59 @@ describe("Test Helper Functions", () => {
 
     // Test getLatestIDSegments function
     describe("getLatestIDSegments function", () => {
-        test("returns the correct segments for a list of IDs", () => {
-            //change with actual stuff
-            const idList = ["ID-123456", "ID-987654", "ID-555555"];
+        test("ID Segmentation Example #1 - Correct Input", () => {
+            const id = "2024-002-0123";
 
-            const result = getLatestIDSegments(idList);
+            const result = getLatestIDSegments(id);
 
-            expect(result).toEqual({ second: "987", third: "654" });
+            expect(result).toEqual({ second: "002", third: "0123" });
         });
 
-        test("Returns zeros for an empty list", () => {
-            const idList = [];
-    
-            const result = getLatestIDSegments(idList);
-    
-            expect(result).toEqual({ second: "000", third: "000" });
+        test("ID Segmentation Example #2 - Correct Input", () => {
+            const id = "2023-102-4538";
+
+            const result = getLatestIDSegments(id);
+
+            expect(result).toEqual({ second: "102", third: "4538" });
         });
 
-        test("Returns zeros for IDs with invalid formats", () => {
-            const idList = ["ID-1234567", "ID-98765"];
-     
-            const result = getLatestIDSegments(idList);
-    
-            expect(result).toEqual({ second: "000", third: "000" });
+        test("ID Segmentation Example #3 - Wrong Input", () => {
+            const id = "2024-0221-121112"; 
+
+            const result = getLatestIDSegments(id);
+        
+            expect(result).not.toEqual({ second: "022", third: "1211" });
         });
     });
 
     // Test generateFinancePKSegments function
     describe("generateFinancePKSegments function", () => {
-        test("Returns the correct segments for a list of finance PKs", () => {
-            //change with actual stuff
-            const pkList = ["PK-123456", "PK-987654", "PK-555555"];
-    
-            const result = generateFinancePKSegments(pkList);
-    
-            expect(result).toEqual({ first: "9", second: "87654" });
-        });
-    
-        test("Returns zeros for an empty list", () => {
-            const pkList = [];
-    
-            const result = generateFinancePKSegments(pkList);
-    
-            expect(result).toEqual({ first: "0", second: "0000000000" });
-        });
-    
-        test("Returns zeros for PKs with invalid formats", () => {
-            const pkList = ["PK-1234567", "PK-98765"];
-    
-            const result = generateFinancePKSegments(pkList);
+
+        // PK Format currently unknown, but when found out will have similar test cases 2 getLatestIDSegments
+
+        // test("PK Segmentation Example #1 - Correct Input", () => {
+        //     const id = "2024-002-0123";
+
+        //     const result = generateFinancePKSegments(id);
+
+        //     expect(result).toEqual({ second: "002", third: "0123" });
+        // });
+
+        // test("PK Segmentation Example #2 - Correct Input", () => {
+        //     const id = "2023-102-4538";
+
+        //     const result = generateFinancePKSegments(id);
+
+        //     expect(result).toEqual({ second: "102", third: "4538" });
+        // });
+
+        // test("PK Segmentation Example #3 - Wrong Input", () => {
+        //     const id = "2024-0221-121112"; 
+
+        //     const result = generateFinancePKSegments(id);
         
-            expect(result).toEqual({ first: "0", second: "0000000000" });
-        });
+        //     expect(result).not.toEqual({ second: "022", third: "1211" });
+        // });
     });
 
     // Test formatEnum function

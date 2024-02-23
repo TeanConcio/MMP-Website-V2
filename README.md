@@ -93,8 +93,8 @@ Generate Prima Client Functions: npx prisma generate
 5. PostgreSQL should now be configured
 
 ### ID Format Guide
-Format: |Year|-|Account Type Code|ID Number|
-Ex: 20XX-Y00ZZZ
+Format: |Year|-|Account Type Code|-|ID Number|
+Ex: 20XX-YYY-ZZZZ
 
 Account Type Codes:
 000 to 599 - Students
