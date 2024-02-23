@@ -5,9 +5,9 @@ import {
     exclude,
     excludeFromArray,
     //generatePasswordHash,
-    //getLatestIDSegments,
-    //generateFinancePKSegments,
-    //expformatEnum
+    getLatestIDSegments,
+    generateFinancePKSegments,
+    expformatEnum
 } from "../src/utils/helpers";
 
 
@@ -143,6 +143,106 @@ describe("Test Helper Functions", () => {
             expect(result).not.toBe(inputArray);
             expect(result[0]).not.toBe(inputArray[0]);
             expect(result[1]).not.toBe(inputArray[1]);
+        });
+    });
+
+    // Test getLatestIDSegments function
+    describe("getLatestIDSegments function", () => {
+        test("returns the correct segments for a list of IDs", () => {
+            //change with actual stuff
+            const idList = ["ID-123456", "ID-987654", "ID-555555"];
+
+            const result = getLatestIDSegments(idList);
+
+            expect(result).toEqual({ second: "987", third: "654" });
+        });
+
+        test("Returns zeros for an empty list", () => {
+            const idList = [];
+    
+            const result = getLatestIDSegments(idList);
+    
+            expect(result).toEqual({ second: "000", third: "000" });
+        });
+
+        test("Returns zeros for IDs with invalid formats", () => {
+            const idList = ["ID-1234567", "ID-98765"];
+     
+            const result = getLatestIDSegments(idList);
+    
+            expect(result).toEqual({ second: "000", third: "000" });
+        });
+    });
+
+    // Test generateFinancePKSegments function
+    describe("generateFinancePKSegments function", () => {
+        test("Returns the correct segments for a list of finance PKs", () => {
+            //change with actual stuff
+            const pkList = ["PK-123456", "PK-987654", "PK-555555"];
+    
+            const result = generateFinancePKSegments(pkList);
+    
+            expect(result).toEqual({ first: "9", second: "87654" });
+        });
+    
+        test("Returns zeros for an empty list", () => {
+            const pkList = [];
+    
+            const result = generateFinancePKSegments(pkList);
+    
+            expect(result).toEqual({ first: "0", second: "0000000000" });
+        });
+    
+        test("Returns zeros for PKs with invalid formats", () => {
+            const pkList = ["PK-1234567", "PK-98765"];
+    
+            const result = generateFinancePKSegments(pkList);
+        
+            expect(result).toEqual({ first: "0", second: "0000000000" });
+        });
+    });
+
+    // Test formatEnum function
+    describe("formatEnum function", () => {
+        test("Formats enum value correctly", () => {
+           
+            const enumValue = "ENUM_VALUE_ONE";
+    
+            const result = formatEnum(enumValue);
+    
+            expect(result).toBe("Enum Value One");
+        });
+    
+        test("Handles null input", () => {
+
+            const result = formatEnum(null);
+    
+            expect(result).toBe("");
+        });
+    
+        test("Handles empty string input", () => {
+
+            const result = formatEnum("");
+    
+            expect(result).toBe("");
+        });
+    
+        test("Handles input with no underscores", () => {
+
+            const inputValue = "No Underscores";
+    
+            const result = formatEnum(inputValue);
+    
+            expect(result).toBe("No Underscores");
+        });
+    
+        test("Handles input with mixed case", () => {
+
+            const inputValue = "mIXeD_CasE_VaLuE";
+    
+            const result = formatEnum(inputValue);
+    
+            expect(result).toBe("Mixed Case Value");
         });
     });
 });
