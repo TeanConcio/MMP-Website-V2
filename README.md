@@ -6,7 +6,7 @@ This is a website for Mission Ministries Philippines' Certificate Course in Earl
 - **MAKE SURE YOU ARE WORKING ON THE RIGHT BRANCH**
 - Don't forget to install dependencies ```npm install```
 - Include nodemon for an easier life ```npm install nodemon -g```
-  
+
 **Git commands in order**
 ```
 git add (use --all for to stage all changes)
@@ -24,7 +24,6 @@ Input this in your terminal step-by-step
 ```sh
 cd client
 npm install
-npm install nodemon -g
 npm run dev
 ```
 
@@ -39,7 +38,7 @@ npm run preview
 # FOR SERVER
 Input this in your terminal step-by-step
 ```sh
-cd client
+cd server
 npm install
 npm run dev
 ```
@@ -93,8 +92,8 @@ Generate Prima Client Functions: npx prisma generate
 5. PostgreSQL should now be configured
 
 ### ID Format Guide
-Format: |Year|-|Account Type Code|ID Number|
-Ex: 20XX-Y00ZZZ
+Format: |Year|-|Account Type Code|-|ID Number|
+Ex: 20XX-YYY-ZZZ
 
 Account Type Codes:
 000 to 599 - Students
@@ -106,4 +105,3 @@ Notes:
 - Only increment account type code once ID Number > 999
 - IDs reset on new year
 - It is possible for Account Type Codes to overflow, but very unlikely
-
