@@ -6,8 +6,8 @@ import {
     excludeFromArray,
     //generatePasswordHash,
     getLatestIDSegments,
-    generateFinancePKSegments,
-    expformatEnum
+    //generateFinancePKSegments,
+    formatEnum
 } from "../src/utils/helpers.js";
 
 
@@ -149,19 +149,19 @@ describe("Test Helper Functions", () => {
     // Test getLatestIDSegments function
     describe("getLatestIDSegments function", () => {
         test("ID Segmentation Example #1 - Correct Input", () => {
-            const id = "2024-002-0123";
+            const id = "2024-002-123";
 
             const result = getLatestIDSegments(id);
 
-            expect(result).toEqual({ second: "002", third: "0123" });
+            expect(result).toEqual({ second: "002", third: "123" });
         });
 
         test("ID Segmentation Example #2 - Correct Input", () => {
-            const id = "2023-102-4538";
+            const id = "2023-102-458";
 
             const result = getLatestIDSegments(id);
 
-            expect(result).toEqual({ second: "102", third: "4538" });
+            expect(result).toEqual({ second: "102", third: "458" });
         });
 
         test("ID Segmentation Example #3 - Wrong Input", () => {
@@ -169,7 +169,7 @@ describe("Test Helper Functions", () => {
 
             const result = getLatestIDSegments(id);
         
-            expect(result).not.toEqual({ second: "022", third: "1211" });
+            expect(result).not.toEqual({ second: "022", third: "121" });
         });
     });
 
@@ -179,19 +179,19 @@ describe("Test Helper Functions", () => {
         // PK Format currently unknown, but when found out will have similar test cases 2 getLatestIDSegments
 
         // test("PK Segmentation Example #1 - Correct Input", () => {
-        //     const id = "2024-002-0123";
+        //     const id = "2024-002-123";
 
         //     const result = generateFinancePKSegments(id);
 
-        //     expect(result).toEqual({ second: "002", third: "0123" });
+        //     expect(result).toEqual({ second: "002", third: "123" });
         // });
 
         // test("PK Segmentation Example #2 - Correct Input", () => {
-        //     const id = "2023-102-4538";
+        //     const id = "2023-102-458";
 
         //     const result = generateFinancePKSegments(id);
 
-        //     expect(result).toEqual({ second: "102", third: "4538" });
+        //     expect(result).toEqual({ second: "102", third: "458" });
         // });
 
         // test("PK Segmentation Example #3 - Wrong Input", () => {
@@ -199,14 +199,14 @@ describe("Test Helper Functions", () => {
 
         //     const result = generateFinancePKSegments(id);
         
-        //     expect(result).not.toEqual({ second: "022", third: "1211" });
+        //     expect(result).not.toEqual({ second: "022", third: "121" });
         // });
     });
 
     // Test formatEnum function
     describe("formatEnum function", () => {
         test("Formats enum value correctly", () => {
-           
+        
             const enumValue = "ENUM_VALUE_ONE";
     
             const result = formatEnum(enumValue);
