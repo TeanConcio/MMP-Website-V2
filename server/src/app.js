@@ -49,6 +49,7 @@ app.use("/API/modules", verifyToken, ModulesRouter);
 app.use("/API/module_enrollments", verifyToken, ModuleEnrollmentsRouter);
 app.use("/API/tor_requests", verifyToken, TORRequestsRouter);
 app.use("/API/module_details", verifyToken, ModuleDetailsRouter);
+app.use("/API/tickets", verifyToken, TORRequestsRouter);
 
 // Express App Server
 app.listen(PORT, () => {
