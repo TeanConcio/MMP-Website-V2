@@ -120,25 +120,48 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
                 </div>
 
                 <div class="mb-5">
+                        <label
+                            for="title"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                            What can we help you with?<span class="text-required_red">*</span>
+                        </label>
+                        <input
+                            type="title"
+                            id="firstname"
+                            class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            placeholder="Title"
+                            required
+                            autocomplete="off"
+                            v-model="title"
+                        />
+                        <div class="input-errors" v-if="errors.title">
+                            <div class="block mb-2 text-sm font-medium text-red-500">
+                                {{ errors.title }}
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="mb-5">
                     <label
-                        for="message"
+                        for="description"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                        What can we help you with?<span
+                        Can you tell us more about it?<span
                             class="text-required_red"
                             >*</span
                         >
                     </label>
                     <textarea
-                        id="message"
+                        id="description"
                         rows="4"
                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Write here..."
-                        v-model="message"
+                        v-model="description"
                     ></textarea>
-                    <div class="input-errors" v-if="errors.message">
+                    <div class="input-errors" v-if="errors.description">
                         <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.message }}
+                            {{ errors.description }}
                         </div>
                     </div>
                 </div>
@@ -178,7 +201,8 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
         exit-text="Close"
         @on-exit="
             currentPopup = 'null';
-            this.$router.push('/');
+            //this.$router.push('/contact');
+            resetForm();
             loading = false;
         "
     />
@@ -204,8 +228,11 @@ export default {
             lastname: "",
             email: "",
             mobile_no: "",
-            message: "",
+            title: "",
+            description: "",
             errors: {},
+            // Activate Watcher
+            isWatcherActive: true,
             // Popups
             currentPopup: null, // null, invalid, success, error
             //Loading
@@ -213,6 +240,29 @@ export default {
         };
     },
     methods: {
+        // Submit form
+        submitForm() {
+            // Validate form
+            if (this.validateForm()) {
+                // Put your submit form code here
+                this.currentPopup = "success";
+            } else {
+                this.currentPopup = "invalid";
+            }
+        },
+        // Reset form
+        resetForm() {
+            this.isWatcherActive = false;
+            this.firstname = "";
+            this.lastname = "";
+            this.email = "";
+            this.mobile_no = "";
+            this.title = "";
+            this.description = "";
+            this.errors = {};
+            this.isWatcherActive = true;
+            console.log(this.errors)
+        },
         // BELOW ARE THE VALIDATORS TO CHECK IF THE DATA ARE VALID
         validateFirstName() {
             if (this.firstname.length < 2 || this.firstname.length > 50) {
@@ -251,11 +301,18 @@ export default {
                 delete this.errors["mobile_no"];
             }
         },
-        validateMessage() {
-            if (this.message.length < 1) {
-                this.errors["message"] = "Message must not be empty!";
+        validateTitle() {
+            if (this.title.length < 1) {
+                this.errors["title"] = "Title must not be empty!";
             } else {
-                delete this.errors["message"];
+                delete this.errors["title"];
+            }
+        },
+        validateMessage() {
+            if (this.description.length < 1) {
+                this.errors["description"] = "Message must not be empty!";
+            } else {
+                delete this.errors["description"];
             }
         },
         validateForm() {
@@ -264,6 +321,7 @@ export default {
             this.validateLastName();
             this.validateEmail();
             this.validateMobileNumber();
+            this.validateTitle();
             this.validateMessage();
 
             if (Object.keys(this.errors).length === 0) { // If no errors, return true
@@ -272,33 +330,35 @@ export default {
                 return false;
             }
         },
-        // Submit form
-        submitForm() {
-            // Validate form
-            if (this.validateForm()) {
-                // Put your submit form code here
-                this.currentPopup = "success";
-            } else {
-                this.currentPopup = "invalid";
-            }
-        },
     },
     watch: {
         firstname() {
-            this.validateFirstName();
+            if (this.isWatcherActive)
+                this.validateFirstName();
         },
         lastname() {
-            this.validateLastName();
+            if (this.isWatcherActive)
+                this.validateLastName();
         },
         email() {
-            this.validateEmail();
+            if (this.isWatcherActive)
+                this.validateEmail();
         },
         mobile_no() {
-            this.validateMobileNumber();
+            if (this.isWatcherActive)
+                this.validateMobileNumber();
         },
-        message() {
-            this.validateMessage();
+        title() {
+            if (this.isWatcherActive)
+                this.validateTitle();
+        },
+        description() {
+            if (this.isWatcherActive)
+                this.validateMessage();
         },
     },
 };
+// this.$nextTick(() => {
+//     this.isWatcherActive = true;
+// });
 </script>
