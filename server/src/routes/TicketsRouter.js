@@ -7,11 +7,11 @@ import { allowed } from "../utils/helpers.js";
 const TicketsRouter = express.Router();
 
 /* Helper Functions */
-// Check if TOR Request Exists
-const exists = async (req_id) => {
-    const requestEntry = await prisma.TOR_Requests.findUnique({
+// Check if Ticket Exists
+const exists = async (ticket_id) => {
+    const requestEntry = await prisma.Tickets.findUnique({
         where: {
-            req_id: req_id,
+            ticket_id: ticket_id,
         },
     });
 
@@ -84,127 +84,83 @@ const generateTicketID = async (currentYear, lastTicketIDSegment) => {
 
 /* Controllers */
 /* GET Endpoints */
-// Get a TOR Request
-TORRequestsRouter.get("/:req_id", async (req, res) => {
-    if (!allowed(req.permission, [1, 3])) {
+// Get a Ticket
+TicketsRouter.get("/:ticket_id", async (req, res) => {
+    if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
     try {
-        // Get req_id from req.params
-        const { req_id } = req.params;
+        // Get ticket_id from req.params
+        const { ticket_id } = req.params;
 
-        // Check if tor_request exists
-        if (!(await exists(req_id))) {
-            throw new Error("TOR Request does not exist");
+        // Check if ticket exists
+        if (!(await exists(ticket_id))) {
+            throw new Error("Ticket does not exist");
         }
 
-        // Get tor_request from database
-        const tor_request = await prisma.TOR_Requests.findUnique({
+        // Get ticket from database
+        const ticket = await prisma.Tickets.findUnique({
             where: {
-                req_id: req_id,
+                ticket_id: ticket_id,
             },
             select: {
-                req_id: true,
+                ticket_id: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+                mobile_number: true,
+                title: true,
+                description: true,
                 status: true,
-                request_date: true,
-                student: {
-                    select: {
-                        student_id: true,
-                        first_name: true,
-                        last_name: true,
-                        middle_name: true,
-                    },
-                },
+                create_date: true,
             },
         });
 
-        // Return tor_request
-        res.status(200).send(tor_request);
+        // Return ticket
+        res.status(200).send(ticket);
     } catch (error) {
         // Return error
         res.status(404).send({ error: error.message });
     }
 });
 
-// Get all TOR Requests
-TORRequestsRouter.get("/", async (req, res) => {
+// Get all Tickets
+TicketsRouter.get("/", async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
     try {
-        // Get TOR requests
+        // Get Tickets
 
-        const tor_requests = await prisma.TOR_Requests.findMany({
+        const tickets = await prisma.Tickets.findMany({
             select: {
-                req_id: true,
+                ticket_id: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+                mobile_number: true,
+                title: true,
+                description: true,
                 status: true,
-                request_date: true,
-                student: {
-                    select: {
-                        student_id: true,
-                        first_name: true,
-                        last_name: true,
-                        middle_name: true,
-                    },
-                },
+                create_date: true,
             },
             orderBy: {
-                req_id: "asc",
+                ticket_id: "asc",
             },
         });
 
-        res.status(200).send(tor_requests);
+        res.status(200).send(tickets);
     } catch (error) {
         res.status(500).send({ error: error.message });
     }
 });
 
-//Get all TOR Requests from a student
-TORRequestsRouter.get("/students/:student_id", async (req, res) => {
-    if (!allowed(req.permission, [3])) {
-        res.status(403).send({ error: "You are not authorized to access this" });
-        return;
-    }
-
-    try {
-        // Get student_id
-        const { student_id } = req.params;
-
-        // Get TOR requests
-        const tor_request = await prisma.TOR_Requests.findMany({
-            where: {
-                student_id: student_id,
-            },
-            select: {
-                req_id: true,
-                status: true,
-                request_date: true,
-                student: {
-                    select: {
-                        student_id: true,
-                        first_name: true,
-                        last_name: true,
-                        middle_name: true,
-                    },
-                },
-            },
-            orderBy: {
-                req_id: "asc",
-            },
-        });
-
-        res.status(200).send(tor_request);
-    } catch (error) {
-        res.status(500).send({ error: error.message });
-    }
-});
-
-//Get all TOR Request for a certain year
-TORRequestsRouter.get("/year/:year", async (req, res) => {
+//Get all Ticket for a certain year
+TicketsRouter.get("/year/:year", async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
@@ -214,48 +170,46 @@ TORRequestsRouter.get("/year/:year", async (req, res) => {
         // Get year
         const { year } = req.params;
 
-        // Get TOR requests
-        const tor_requests = await prisma.TOR_Requests.findMany({
+        // Get Tickets
+        const tickets = await prisma.Tickets.findMany({
             where: {
                 AND: [
                     {
-                        request_date: {
+                        create_date: {
                             gte: new Date(year + "-01-01"),
                         },
                     },
                     {
-                        request_date: {
+                        create_date: {
                             lt: new Date((parseInt(year) + 1).toString() + "-01-01"),
                         },
                     },
                 ],
             },
             select: {
-                req_id: true,
+                ticket_id: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+                mobile_number: true,
+                title: true,
+                description: true,
                 status: true,
-                request_date: true,
-                student: {
-                    select: {
-                        student_id: true,
-                        first_name: true,
-                        last_name: true,
-                        middle_name: true,
-                    },
-                },
+                create_date: true,
             },
             orderBy: {
-                req_id: "asc",
+                ticket_id: "asc",
             },
         });
 
-        res.status(200).send(tor_requests);
+        res.status(200).send(tickets);
     } catch (error) {
         res.status(500).send({ error: error.message });
     }
 });
 
-//Get all TOR Requests of a certain status
-TORRequestsRouter.get("/all/:status", async (req, res) => {
+//Get all Tickets of a certain status
+TicketsRouter.get("/all/:status", async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
@@ -265,77 +219,55 @@ TORRequestsRouter.get("/all/:status", async (req, res) => {
         // Get status
         const { status } = req.params;
 
-        // Get TOR requests
-        const tor_requests = await prisma.TOR_Requests.findMany({
+        // Get Tickets
+        const tickets = await prisma.Tickets.findMany({
             where: {
                 status: status.toUpperCase(),
             },
             select: {
-                req_id: true,
+                ticket_id: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+                mobile_number: true,
+                title: true,
+                description: true,
                 status: true,
-                request_date: true,
-                student: {
-                    select: {
-                        student_id: true,
-                        first_name: true,
-                        last_name: true,
-                        middle_name: true,
-                    },
-                },
+                create_date: true,
             },
             orderBy: {
-                req_id: "asc",
+                ticket_id: "asc",
             },
         });
 
-        res.status(200).send(tor_requests);
+        res.status(200).send(tickets);
     } catch (error) {
         res.status(500).send({ error: error.message });
     }
 });
 
 /* POST Endpoints */
-// Create TOR Request
-TORRequestsRouter.post("/", validateTORRequestReqBody(), async (req, res) => {
-    if (!allowed(req.permission, [1, 3])) {
+// Create Ticket
+TicketsRouter.post("/", async (req, res) => {
+    if (!allowed(req.permission, [0, 1, 2, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate TOR Request Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
-
     try {
-        // Get tor_request from req.body
-        const tor_request = cleanTORRequestObject(req.body);
+        // Get ticket from req.body
+        const ticket = req.body;
 
-        // Generate req_id
-        tor_request.req_id = await generateRequestID();
-        tor_request.status = "PENDING";
-        tor_request.request_date = new Date();
+        // Generate ticket_id
+        const currentYear = new Date().getFullYear().toString();
+        const lastTicketIDSegment = await getLatestTicketIDSegment(currentYear);
+        ticket.ticket_id = await generateTicketID(currentYear, lastTicketIDSegment);
+        
+        ticket.status = "PENDING";
+        ticket.create_date = new Date();
 
-        // Create tor_request in database
-        await prisma.TOR_Requests.create({ data: tor_request });
-
-        // Get requesting student info
-        const requestingStudent = await prisma.Students.findUnique({
-            where: {
-                student_id: tor_request.student_id,
-            },
-            select: {
-                first_name: true,
-                last_name: true,
-                middle_name: true,
-                email: true,
-            },
-        });
-
-        // Send email to admin
-        sendEmail(adminTORRequestEmail(`${requestingStudent.first_name} ${requestingStudent.last_name}`, requestingStudent.email, tor_request.student_id, tor_request.request_date))
+        // Create ticket in database
+        await prisma.Tickets.create({ data: ticket });
 
         res.status(200).send({ message: "Create successful" });
     } catch (error) {
@@ -345,36 +277,29 @@ TORRequestsRouter.post("/", validateTORRequestReqBody(), async (req, res) => {
 });
 
 /* UPDATE Endpoints */
-// Update TOR Request
-TORRequestsRouter.patch("/:req_id", validateStatusReqBody(), async (req, res) => {
+// Update Ticket
+TicketsRouter.patch("/:ticket_id", async (req, res) => {
     if (!allowed(req.permission, [1, 2, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate TOR Request Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
-
     try {
-        // Get req_id from req.params
-        const { req_id } = req.params;
+        // Get ticket_id from req.params
+        const { ticket_id } = req.params;
 
-        // Check if tor_request exists
-        if (!(await exists(req_id))) {
-            throw new Error("TOR Request does not exist");
+        // Check if ticket exists
+        if (!(await exists(ticket_id))) {
+            throw new Error("Ticket does not exist");
         }
 
         // Get updated info from req.body
-        const updatedData = cleanStatusObject(req.body);
+        const updatedData = req.body;
 
-        // Update tor_request in database
-        await prisma.TOR_Requests.update({
+        // Update ticket in database
+        await prisma.Tickets.update({
             where: {
-                req_id: req_id,
+                ticket_id: ticket_id,
             },
             data: updatedData,
         });
@@ -387,33 +312,33 @@ TORRequestsRouter.patch("/:req_id", validateStatusReqBody(), async (req, res) =>
 });
 
 /* DELETE Endpoints */
-//Delete TOR Request
-TORRequestsRouter.delete("/:req_id", async (req, res) => {
+//Delete Ticket
+TicketsRouter.delete("/:ticket_id", async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
     try {
-        // Get req_id from req.params
-        const { req_id } = req.params;
+        // Get ticket_id from req.params
+        const { ticket_id } = req.params;
 
-        // Check if tor_request exists
-        if (!(await exists(req_id))) {
-            throw new Error("TOR Request does not exist");
+        // Check if ticket exists
+        if (!(await exists(ticket_id))) {
+            throw new Error("Ticket does not exist");
         }
 
         // Delete record
-        await prisma.TOR_Requests.delete({
+        await prisma.Tickets.delete({
             where: {
-                req_id: req_id,
+                ticket_id: ticket_id,
             },
         });
 
-        // Return tor_request
+        // Return ticket
         res.status(200).send({
             message:
-                "Request with id '" + req_id + "' has been successfully deleted from the database",
+                "Request with id '" + ticket_id + "' has been successfully deleted from the database",
         });
     } catch (error) {
         // Return error
