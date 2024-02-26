@@ -31,6 +31,11 @@ const parser = (object) => {
 };
 
 const generateOR = async () => {
+
+    // OR Number Format: A-XXXXXXXXX
+    // A: 1-digit segment
+    // XXXXXXXXX: 9-digit segment
+
     const orList = (
         await prisma.Payments.findMany({
             select: {

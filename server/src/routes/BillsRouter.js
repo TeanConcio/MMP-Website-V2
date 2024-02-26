@@ -31,6 +31,11 @@ const parser = (object) => {
 };
 
 const generateBillNo = async () => {
+
+    // Bill Number Format: A-XXXXXXXXX
+    // A: 1-digit segment
+    // XXXXXXXXX: 9-digit segment
+
     const billNoList = (
         await prisma.Bills.findMany({
             select: {
