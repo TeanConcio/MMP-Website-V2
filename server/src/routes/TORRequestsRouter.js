@@ -325,7 +325,10 @@ TORRequestsRouter.post("/", validateTORRequestReqBody(), async (req, res) => {
         const tor_request = cleanTORRequestObject(req.body);
 
         // Generate req_id
-        tor_request.req_id = await generateRequestID();
+        const currentYear = new Date().getFullYear().toString();
+        const lastRequestIDSegment = await getLatestRequestIDSegment(currentYear);
+        tor_request.req_id = await generateRequestID(currentYear, lastRequestIDSegment);
+
         tor_request.status = "PENDING";
         tor_request.request_date = new Date();
 
