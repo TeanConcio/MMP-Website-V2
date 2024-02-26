@@ -33,10 +33,11 @@ const exists = async (req_id) => {
     }
 };
 
-// Generate requestID
-const generateRequestID = async () => {
+// Get Latest Ticket ID
+const getLatestRequestIDSegment = async (currentYear) => {
     // ID Format: YYYY-AAAAA
-    const currentYear = new Date().getFullYear().toString();
+    // YYYY: Year
+    // AAAAA: 5-digit segment
 
     // Get all req_ids of the current year
     const requestEntries = (
@@ -57,12 +58,12 @@ const generateRequestID = async () => {
         return element.req_id;
     });
 
-    //If last req id is null
+    //If last request id is null
     if (requestEntries.length === 0) {
-        return currentYear + "-00000";
+        return -1;
     }
 
-    //Get the last request id
+    //Get the last request id segment
     const id_list = requestEntries.map((element) => parseInt(element.substring(5)));
     let max = 0;
     for (const num of id_list) {
@@ -71,8 +72,20 @@ const generateRequestID = async () => {
         }
     }
 
-    if (max < 99999) {
-        const id_segment = (max + 1).toString().padStart(5, "0");
+    return max;
+}
+
+// Generate requestID
+const generateRequestID = async (currentYear, lastRequestIDSegment) => {
+
+    //If last req id is null
+    if (lastRequestIDSegment === -1) {
+        return currentYear + "-00000";
+    }
+
+    //Increment the last request id segment
+    if (lastRequestIDSegment < 99999) {
+        const id_segment = (lastRequestIDSegment + 1).toString().padStart(5, "0");
         return currentYear + "-" + id_segment;
     }
 
