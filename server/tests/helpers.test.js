@@ -149,26 +149,26 @@ describe("Test Helper Functions", () => {
     // Test getLatestIDSegments function
     describe("getLatestIDSegments function", () => {
         test("ID Segmentation Example #1 - Correct Input", () => {
-            const id = "2024-002-123";
-
+            const id = ["2024-002-123"];
+    
             const result = getLatestIDSegments(id);
-
+    
             expect(result).toEqual({ second: "002", third: "123" });
         });
-
+    
         test("ID Segmentation Example #2 - Correct Input", () => {
-            const id = "2023-102-458";
-
+            const id = ["2023-102-458"];
+    
             const result = getLatestIDSegments(id);
-
+    
             expect(result).toEqual({ second: "102", third: "458" });
         });
-
+    
         test("ID Segmentation Example #3 - Wrong Input", () => {
-            const id = "2024-0221-121112"; 
-
+            const id = ["2024-0221-121112"];
+    
             const result = getLatestIDSegments(id);
-        
+    
             expect(result).not.toEqual({ second: "022", third: "121" });
         });
     });
@@ -234,7 +234,7 @@ describe("Test Helper Functions", () => {
     
             const result = formatEnum(inputValue);
     
-            expect(result).toBe("No Underscores");
+            expect(result).toBe("No underscores");
         });
     
         test("Handles input with mixed case", () => {
