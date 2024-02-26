@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider  = "postgresql"
+    provider = "postgresql"
     url      = env("DATABASE_URL_LOCAL") //Local test connection
     // url       = env("DATABASE_URL") // uses connection pooling
     // directUrl = env("DIRECT_URL") // uses a direct connection
@@ -73,6 +73,12 @@ enum Track {
     ADMIN
     TEACHER
     BOTH
+}
+
+enum TicketStatus {
+    PENDING
+    RESPONDED
+    SPAM
 }
 
 //Tables
@@ -265,4 +271,20 @@ model Module_Names {
     module_name String          @id @db.VarChar(100)
     //Relations
     details     Module_Details?
+}
+
+model Ticket {
+    //Primary Key
+    ticket_id     String       @id @db.VarChar(12)
+    //Fields
+    first_name    String       @db.VarChar(50)
+    last_name     String       @db.VarChar(50)
+    email         String       @unique @db.VarChar(50)
+    mobile_number String       @db.VarChar(11)
+    title         String       @db.VarChar(100)
+    description   String       @db.Text
+    status        TicketStatus @default(PENDING)
+    // Created and Updated Dates
+    created_at    DateTime     @default(now()) @db.Timestamptz()
+    updated_at    DateTime     @updatedAt @db.Timestamptz()
 }
