@@ -37,7 +37,7 @@ const store = useCredentialsStore();
         <div class="container mx-auto px-4 py-8 flex flex-col md:flex-row max-h-fit">
             <div class="flex-1">
                 <div
-                    class="w-full bg-white rounded-lg mx-auto p-4 shadow dark:border sm:max-w-sm xl:p-0 md:max-p-4 lg:p-8 mb-8"
+                    class="w-full bg-white rounded-lg mx-auto p-4 shadow dark:border sm:max-w-sm xl:p-0 md:max-p-4 lg:p-8 mb-8 min-h-full"
                 >
                     <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                         <h1
@@ -55,7 +55,7 @@ const store = useCredentialsStore();
             </div>
             <div class="flex-1">
                 <div
-                    class="w-full bg-white rounded-lg mx-auto p-4 shadow dark:border sm:max-w-sm xl:p-0 md:max-p-4 lg:p-8 mb-8"
+                    class="w-full bg-white rounded-lg mx-auto p-4 shadow dark:border sm:max-w-sm xl:p-0 md:max-p-4 lg:p-8 mb-8 min-h-full"
                 >
                     <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                         <h1
@@ -73,7 +73,7 @@ const store = useCredentialsStore();
             </div>
             <div class="flex-1">
                 <div
-                    class="w-full bg-white rounded-lg mx-auto p-4 shadow dark:border sm:max-w-sm xl:p-0 md:max-p-4 lg:p-8 mb-8"
+                    class="w-full bg-white rounded-lg mx-auto p-4 shadow dark:border sm:max-w-sm xl:p-0 md:max-p-4 lg:p-8 mb-8 min-h-full"
                 >
                     <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                         <h1
@@ -89,7 +89,7 @@ const store = useCredentialsStore();
                     </div>
                 </div>
             </div>
-        </div>
+        </div><br><br><br>
 
         <div class="container mx-auto px-4 py-8 flex flex-col md:flex-row max-h-fit">
             <div class="flex-1">

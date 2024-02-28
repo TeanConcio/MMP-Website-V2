@@ -63,6 +63,8 @@
                                 scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 dark:text-white"
                             >
+                                <img src="https://cdn-icons-png.flaticon.com/256/124/124010.png"
+                                    alt="fb" height="50px" width="50px" class="mx-auto mb-4">
                                 <a
                                     href="https://www.facebook.com/MMPece"
                                     target="_blank"
@@ -77,6 +79,8 @@
                                 scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 dark:text-white"
                             >
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png"
+                                    alt="instagram" height="50px" width="50px" class="mx-auto mb-4">
                                 <a
                                     href="https://www.instagram.com/mmp_ece/"
                                     target="_blank"
@@ -91,6 +95,8 @@
                                 scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 dark:text-white"
                             >
+                                <img src="https://cdn-icons-png.flaticon.com/512/124/124021.png"
+                                    alt="twitterX" height="50px" width="50px" class="mx-auto mb-4">
                                 <a
                                     href="https://twitter.com/MMP_ECE"
                                     target="_blank"
