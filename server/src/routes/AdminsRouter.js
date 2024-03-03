@@ -11,33 +11,25 @@ const AdminsRouter = express.Router();
 
 /* Helper Functions */
 // Check if ID Exists
-const checkIDExists = async (admin_id) => {
+export const checkIDExists = async (admin_id) => {
     const adminEntry = await prisma.Admins.findUnique({
         where: {
-            admin_id: admin_id,
+            admin_id,
         },
     });
 
-    if (adminEntry == null) {
-        return false;
-    } else {
-        return true;
-    }
+    return adminEntry !== null;
 };
 
 // Check if Email Exists
-const checkEmailExists = async (email) => {
+export const checkEmailExists = async (email) => {
     const adminEntry = await prisma.Admins.findUnique({
         where: {
             email: email,
         },
     });
 
-    if (adminEntry == null) {
-        return false;
-    } else {
-        return true;
-    }
+    return adminEntry !== null;
 };
 
 // Generate admin_id
