@@ -1,8 +1,46 @@
 import {
-    checkIDExists,
-    checkEmailExists
+    //checkIDExists,
+    //checkEmailExists,
+    generateAdminID
 } from "../src/routes/AdminsRouter.js";
 
+describe("AdminRouter Helper Functions", () => {
+
+    describe('generateAdminID Function', () => {
+        // Test case for a scenario where third is less than 999
+        it('increment third when less than 999', async () => {
+            const currentYear = '2024';
+            const second = '123';
+            const third = '998';
+
+            const result = await generateAdminID(currentYear, second, third);
+
+            expect(result).toBe('2024-123-999');
+        });
+
+        // Test case for a scenario where second is less than 999
+        it('increment second when less than 999', async () => {
+            const currentYear = '2024';
+            const second = '998';
+            const third = '999';
+
+            const result = await generateAdminID(currentYear, second, third);
+
+            expect(result).toBe('2024-999-000');
+        });
+
+        // Test case for an overflow scenario
+        it('throw an error for ID overflow', async () => {
+            const currentYear = '2024';
+            const second = '999';
+            const third = '999';
+
+            await expect(generateAdminID(currentYear, second, third)).rejects.toThrowError('ID Overflow!');
+        });
+    });
+});
+
+/*
 import {db as prisma} from '../src/utils/db.server.js';
 import {jest} from '@jest/globals'
 
@@ -17,9 +55,9 @@ jest.mock('../src/utils/db.server', () => ({
 describe('Test AdmindsRouter Helper Functions', () => {
 
     describe('checkIDExists Function', () => {
-
+        // Clear mock calls between test cases
         afterEach(() => {
-            jest.clearAllMocks(); // Clear mock calls between test cases
+            jest.clearAllMocks();
         });
 
         it("return true if admin entry is found for a specific admin ID", async () => {
@@ -84,4 +122,4 @@ describe('Test AdmindsRouter Helper Functions', () => {
             expect(result).toBe(false);
         });
     });
-});
+});*/

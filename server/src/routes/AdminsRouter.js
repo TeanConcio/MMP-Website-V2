@@ -32,13 +32,11 @@ export const checkEmailExists = async (email) => {
     return adminEntry !== null;
 };
 
-// Generate admin_id
-const generateAdminID = async () => {
+const getLatestAdminIDSegment = async (currentYear) => {
     // ID Format: YYYY-AAA-III
     // Year [0:4] - Account Type Code [5:8] ID Number [9:12]
-    const currentYear = new Date().getFullYear().toString();
 
-    // Get all admin ids of the year
+    // Get all admin_ids
     const adminEntries = (
         await prisma.Admins.findMany({
             select: {
@@ -63,8 +61,15 @@ const generateAdminID = async () => {
     }
 
     //Get latest id segments
-    const { second, third } = getLatestIDSegments(adminEntries);
+    const {second, third} = getLatestIDSegments(adminEntries);
 
+    return second, third;
+}
+
+// Generate admin_id
+export const generateAdminID = async (currentYear, second, third) => {
+
+    //If last req id is null
     if (parseInt(third) < 999) {
         return currentYear + "-" + second + "-" + (parseInt(third) + 1).toString().padStart(3, "0");
     }
@@ -73,8 +78,7 @@ const generateAdminID = async () => {
         return currentYear + "-" + (parseInt(second) + 1).toString().padStart(3, "0") + "-000";
     }
 
-    // It is possible for ID to overflow if there are more than 100 000 admins in a year
-    // Doubt that will happen, but if it does, we can just add another digit to the ID number
+    //Throw an error if the id number overflows. This happens when the number of requests exceeds 99999 per year
     throw new Error("ID Overflow!");
 };
 
@@ -141,7 +145,8 @@ AdminsRouter.post("/", validateAdminReqBody(), async (req, res) => {
         }
 
         // Generate admin_id
-        admin.admin_id = await generateAdminID();
+        const { second, third } = await getLatestAdminIDSegment(currentYear);
+        admin.admin_id = await generateAdminID(currentYear, second, third);
 
         // Generate password hash
         admin.password = generatePasswordHash(admin.password);
