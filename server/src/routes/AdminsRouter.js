@@ -57,7 +57,7 @@ const getLatestAdminIDSegment = async (currentYear) => {
 
     //If last admin id is null
     if (adminEntries.length === 0) {
-        return currentYear + "-900-000";
+        return { second: "", third: "" };
     }
 
     //Get latest id segments
@@ -70,6 +70,10 @@ const getLatestAdminIDSegment = async (currentYear) => {
 export const generateAdminID = async (currentYear, second, third) => {
 
     //If last req id is null
+    if (second === "" && third === "") {
+        return currentYear + "-000-000";
+    }
+
     if (parseInt(third) < 999) {
         return currentYear + "-" + second + "-" + (parseInt(third) + 1).toString().padStart(3, "0");
     }
