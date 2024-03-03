@@ -32,7 +32,7 @@ describe("TicketsRouter Helper Functions", () => {
         });
 
         // Test case to ensure the function correctly sends overflow message when last segment is in limit
-        it('handle rollover to the next 1-digit segment', async () => {
+        it('throws an error for ID overflow when lastTicketIDSegment exceeds 99999', async () => {
             const currentYear = '2024';
             const lastTicketIDSegment = 99999;
     
