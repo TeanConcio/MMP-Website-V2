@@ -11,7 +11,7 @@ import {
 // Test Suite
 describe("AdminRouter Helper Functions", () => {
 
-    // Test getLatestIDSegments function
+    // Test generateAdminID function
     describe('generateAdminID Function', () => {
         // Test case for a scenario where third is less than 999
         it('increment third when less than 999', async () => {
