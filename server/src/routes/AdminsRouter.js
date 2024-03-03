@@ -145,6 +145,7 @@ AdminsRouter.post("/", validateAdminReqBody(), async (req, res) => {
         }
 
         // Generate admin_id
+        const currentYear = new Date().getFullYear().toString();
         const { second, third } = await getLatestAdminIDSegment(currentYear);
         admin.admin_id = await generateAdminID(currentYear, second, third);
 
