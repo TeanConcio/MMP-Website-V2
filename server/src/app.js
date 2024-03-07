@@ -20,6 +20,7 @@ import ModuleDetailsRouter from "./routes/ModuleDetailsRouter.js";
 
 // Import Middleware
 import { verifyToken } from "./middleware/tokenVerifier.js";
+import TicketsRouter from "./routes/TicketsRouter.js";
 
 // Dotenv Variables
 dotenv.config();
@@ -31,7 +32,7 @@ const app = express();
 // Express App Middleware
 app.use(express.json());
 app.use(bodyParser.json());
-// app.use(morgan("common"));   // Log HTTP Requests
+//app.use(morgan("common"));   // Log HTTP Requests
 app.use(cors()); // TODO: Remove this in production
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
@@ -49,7 +50,7 @@ app.use("/API/modules", verifyToken, ModulesRouter);
 app.use("/API/module_enrollments", verifyToken, ModuleEnrollmentsRouter);
 app.use("/API/tor_requests", verifyToken, TORRequestsRouter);
 app.use("/API/module_details", verifyToken, ModuleDetailsRouter);
-app.use("/API/tickets", verifyToken, TORRequestsRouter);
+app.use("/API/tickets", verifyToken, TicketsRouter);
 
 // Express App Server
 app.listen(PORT, () => {
