@@ -195,7 +195,7 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
 
     <MessagePopup
         v-if="currentPopup === 'success'"
-        title="Thank you for contacting us."
+        :title="`Thank you for contacting us.\nYour ticket number is ${ticketNumber}`"
         description="Please wait for Admin to resolve your concerns, and we'll get in touch as soon as possible."
         v-bind:accepted="true"
         exit-text="Close"
@@ -246,7 +246,7 @@ export default {
             // Validate form
             if (this.validateForm()) {
                 // Put your submit form code here
-                this.currentPopup = "success";
+                this.sendTicket();
             } else {
                 this.currentPopup = "invalid";
             }
@@ -258,7 +258,7 @@ export default {
                 first_name: this.firstname,
                 last_name: this.lastname,
                 email: this.email,
-                mobile_no: this.mobile_no,
+                mobile_number: this.mobile_no,
                 title: this.title,
                 description: this.description,
             };
@@ -267,15 +267,17 @@ export default {
             await this.$axios
                 .post(`/tickets/`, ticket)
                 // If successful
-                .then((reply) => {
+                .then(({ data }) => {
                     // Get ticket number
-                    this.ticketNumber = reply.response.data.ticket_number;
+                    this.ticketNumber = data.ticket_id;
                     // Show success popup
-                    this.showSuccessPopup = true;
+                    this.currentPopup = "success";
                 })
                 // If unsuccessful
                 .catch((error) => {
-                    this.showErrorPopup = true;
+                    console.log(error);
+                    // Show error popup
+                    this.currentPopup = "error";
                 });
         },
         // Reset form
@@ -291,7 +293,6 @@ export default {
             this.$nextTick(() => {
                 this.isWatcherActive = true;
             });
-            console.log(this.errors)
         },
         // BELOW ARE THE VALIDATORS TO CHECK IF THE DATA ARE VALID
         validateFirstName() {
