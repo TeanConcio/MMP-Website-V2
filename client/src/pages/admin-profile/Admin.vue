@@ -5,6 +5,7 @@ import EnrollmentRecordsTab from "../../components/admin-profile/enrollment-reco
 import StudentRecordsTab from "../../components/admin-profile/student-records-tab/StudentRecordsTab.vue";
 import ModuleStudentRecordsTab from "../../components/admin-profile/student-records-tab/ModuleStudentRecordsTab.vue";
 import ModulesTab from "../../components/admin-profile/modules-tab/ModulesTab.vue";
+import TicketsTab from "../../components/admin-profile/tickets-tab/TicketsTab.vue";
 import StudentCard from "../../components/admin-profile/student-card/StudentCard.vue";
 // Store
 import { useCredentialsStore } from "../../store/store";
@@ -62,6 +63,17 @@ import { useCredentialsStore } from "../../store/store";
                 >
                     Modules
                 </button>
+
+                <button
+                    @click="gotoTicketsTab()"
+                    :class="{
+                        'bg-highlight text-white': pageMode === 'tickets-tab',
+                        'bg-white text-black': pageMode !== 'tickets-tab',
+                    }"
+                    class="w-full text-left py-2 px-4 border border-gray-300 rounded hover:text-white hover:bg-highlight_hover"
+                >
+                    Tickets
+                </button>
             </div>
         </aside>
         <button
@@ -118,6 +130,8 @@ import { useCredentialsStore } from "../../store/store";
                 v-if="pageMode === 'modules-tab'"
                 @on-back="gotoModulesTab()"
             />
+
+            <TicketsTab v-if="pageMode === 'tickets-tab'" />
         </div>
     </div>
 </template>
@@ -130,7 +144,7 @@ export default {
             // Store
             store: useCredentialsStore(),
             // Page mode
-            pageMode: "dashboard", // 'dashboard', 'enrollment-records', 'student-records', 'module-student-records'
+            pageMode: "dashboard", // 'dashboard', 'enrollment-records', 'student-records', 'module-student-records', 'modules-tab', 'student-card', 'tickets-tab'
             // Data
             selectedEnrollmentFilter: null,
             selectedEnrollmentModule: null,
@@ -188,6 +202,11 @@ export default {
             this.selectedModuleName = null;
             this.selectedSchoolYear = null;
             this.pageMode = "modules-tab";
+        },
+        // Go to tickets tab
+        gotoTicketsTab() {
+            this.resetData();
+            this.pageMode = "tickets-tab";
         },
     },
     beforeCreate() {
