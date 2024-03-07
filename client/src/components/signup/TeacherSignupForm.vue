@@ -365,6 +365,8 @@ export default {
 
             if (emailPattern.test(this.email) === false) {
                 this.errors["email"] = "Must be an email!";
+            } else if (this.email.length > 50) {
+                this.errors["email"] = "Email must be less than 50 characters!";
             } else {
                 delete this.errors["email"];
             }

@@ -197,7 +197,7 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
         v-if="currentPopup === 'success'"
         title="Thank you for contacting us."
         description="Please wait for Admin to resolve your concerns and will be in touch as soon as possible."
-        accepted="true"
+        v-bind:accepted="true"
         exit-text="Close"
         @on-exit="
             currentPopup = 'null';
@@ -260,7 +260,9 @@ export default {
             this.title = "";
             this.description = "";
             this.errors = {};
-            this.isWatcherActive = true;
+            this.$nextTick(() => {
+                this.isWatcherActive = true;
+            });
             console.log(this.errors)
         },
         // BELOW ARE THE VALIDATORS TO CHECK IF THE DATA ARE VALID
@@ -288,6 +290,8 @@ export default {
 
             if (emailPattern.test(this.email) === false) {
                 this.errors["email"] = "Must be an email!";
+            } else if (this.email.length > 50) {
+                this.errors["email"] = "Email must be less than 50 characters!";
             } else {
                 delete this.errors["email"];
             }
@@ -302,8 +306,8 @@ export default {
             }
         },
         validateTitle() {
-            if (this.title.length < 1) {
-                this.errors["title"] = "Title must not be empty!";
+            if (this.title.length < 1 || this.title.length > 100) {
+                this.errors["title"] = "Title must not be empty and must be less than 100 characters!";
             } else {
                 delete this.errors["title"];
             }
@@ -358,7 +362,4 @@ export default {
         },
     },
 };
-// this.$nextTick(() => {
-//     this.isWatcherActive = true;
-// });
 </script>
