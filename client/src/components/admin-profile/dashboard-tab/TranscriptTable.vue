@@ -39,6 +39,17 @@ defineProps({
                     </tr>
                 </thead>
                 <tbody>
+                    <tr
+                        v-if="TORRequestArray === null || TORRequestArray.length === 0"
+                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    >
+                        <th
+                            scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                            No Transcript Requests Found
+                        </th>
+                    </tr>
                     <!-- display the TOR requests from the TORRrequestArray-->
                     <tr
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
