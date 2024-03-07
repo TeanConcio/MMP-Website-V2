@@ -269,7 +269,7 @@ TicketsRouter.post("/", async (req, res) => {
         // Create ticket in database
         await prisma.Tickets.create({ data: ticket });
 
-        res.status(200).send({ message: "Create successful", ticket_number: ticket.ticket_id});
+        res.status(200).send({ message: "Create successful", ticket_id: ticket.ticket_id});
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
