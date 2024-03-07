@@ -196,7 +196,7 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
     <MessagePopup
         v-if="currentPopup === 'success'"
         title="Thank you for contacting us."
-        description="Please wait for Admin to resolve your concerns and will be in touch as soon as possible."
+        description="Please wait for Admin to resolve your concerns, and we'll get in touch as soon as possible."
         v-bind:accepted="true"
         exit-text="Close"
         @on-exit="
@@ -210,7 +210,7 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
     <ErrorMessagePopup
         v-if="currentPopup === 'error'"
         title="Something went wrong."
-        description="Please try again."
+        description="Please try again later."
         exit-text="Close"
         @on-exit="
             currentPopup = 'null';
@@ -231,6 +231,7 @@ export default {
             title: "",
             description: "",
             errors: {},
+            ticketNumber: "",
             // Activate Watcher
             isWatcherActive: true,
             // Popups
@@ -249,6 +250,33 @@ export default {
             } else {
                 this.currentPopup = "invalid";
             }
+        },
+        // Send Ticket
+        async sendTicket() {
+            //Added ticket object
+            let ticket = {
+                first_name: this.firstname,
+                last_name: this.lastname,
+                email: this.email,
+                mobile_no: this.mobile_no,
+                title: this.title,
+                description: this.description,
+            };
+
+            // Call ticket up api endpoint
+            await this.$axios
+                .post(`/tickets/`, ticket)
+                // If successful
+                .then((reply) => {
+                    // Get ticket number
+                    this.ticketNumber = reply.response.data.ticket_number;
+                    // Show success popup
+                    this.showSuccessPopup = true;
+                })
+                // If unsuccessful
+                .catch((error) => {
+                    this.showErrorPopup = true;
+                });
         },
         // Reset form
         resetForm() {
