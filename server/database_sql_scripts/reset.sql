@@ -8,6 +8,7 @@ DELETE FROM public."Bills";
 DELETE FROM public."TOR_Requests";
 DELETE FROM public."Teachers";
 DELETE FROM public."Students";
+DELETE FROM public."Tickets";
 
 -- Password is 'password'
 
