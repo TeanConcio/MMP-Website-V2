@@ -79,6 +79,7 @@ enum TicketStatus {
     PENDING
     RESPONDED
     SPAM
+    CLOSED
 }
 
 //Tables
