@@ -95,7 +95,7 @@
     <MessagePopup
         v-if="showErrorPopup"
         title="Failed to Login"
-        :description="description"
+        description="Please double check your credentials. If the problem persists, please contact the Admin."
         exit-text="Close"
         @on-exit="
             showErrorPopup = false;
