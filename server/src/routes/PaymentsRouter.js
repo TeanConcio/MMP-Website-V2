@@ -30,12 +30,8 @@ const parser = (object) => {
     return object;
 };
 
-const generateOR = async () => {
-
-    // OR Number Format: A-XXXXXXXXX
-    // A: 1-digit segment
-    // XXXXXXXXX: 9-digit segment
-
+const getLatestORIDSegment = async () => {
+    // Get all OR numbers
     const orList = (
         await prisma.Payments.findMany({
             select: {
@@ -46,8 +42,22 @@ const generateOR = async () => {
         return element.or_no;
     });
 
+    // If no OR numbers are found
+    if (orList.length === 0){
+        return {castedSegments: ""};
+    }
+
     const segments = generateFinancePKSegments(orList);
     const castedSegments = [parseInt(segments.first), parseInt(segments.second)];
+
+    return castedSegments;
+};
+
+export const generateOR = async (castedSegments) => {
+
+    // OR Number Format: A-XXXXXXXXX
+    // A: 1-digit segment
+    // XXXXXXXXX: 9-digit segment
 
     if (castedSegments[1] + 1 > 999999999) {
         if (castedSegments[0] + 1 > 9) {
@@ -161,7 +171,8 @@ PaymentsRouter.post("/", validatePaymentReqBody(), async (req, res) => {
         const payment = parser(cleanPaymentObject(req.body));
 
         //Add or number
-        payment.or_no = await generateOR();
+        const {castedSegments} = await getLatestORIDSegment();
+        payment.or_no = await generateOR(castedSegments);
 
         // Create payment in database
         await prisma.Payments.create({ data: payment });
