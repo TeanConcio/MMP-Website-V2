@@ -51,14 +51,17 @@ DownloadRouter.get("/all", async (req, res) => {
         for (const [key, value] of Object.entries(database)) {
             exclude(value, ["password", "created_at", "updated_at"]);
             try {
-                if (value) {
+                if (value != null && value.length > 0) {
                     // Check if value array is not empty
                     zip.file(`${key}.csv`, parseToCSV(value));
                 } else {
                     console.log(`No ${key} in the database`);
+                    zip.file(`${key}.csv`, `No ${key} in the database`);
                 }
             } catch (err) {
-                console.error("Problem exporting " + key + ": " + err);
+                console.error(`\nProblem exporting ${key} : ${err}\n`);
+                console.log(`value: \n${value}\n`);
+                res.status(500).send({ error: `Problem exporting ${key} : ${err}` });
             }
         }
 
@@ -68,7 +71,7 @@ DownloadRouter.get("/all", async (req, res) => {
         res.send(blob);
     } catch (error) {
         // Return error
-        res.status(404).send({ error: error.message });
+        res.status(500).send({ error: error.message });
     }
 });
 
