@@ -1,3 +1,5 @@
+import JSZip from "jszip";
+
 // Helper functions to format date (YYYY-MM-DD)
 export function formatDate(dateString) {
     if (dateString == null) return "";
@@ -107,7 +109,7 @@ export async function downloadZIP(zipString, filename) {
     downloadLink.style.display = "none";
     // Add the link to DOM
     document.body.appendChild(downloadLink);
-    
+
     // Click download link
     downloadLink.click();
 
