@@ -183,7 +183,8 @@ export default {
                 .then(() => {
                     this.$emit("success");
                 })
-                .catch(() => {
+                .catch((error) => {
+                    console.log(error);
                     this.$emit("fail");
                 });
         },
