@@ -17,10 +17,11 @@ import PaymentsRouter from "./routes/PaymentsRouter.js";
 import ModuleEnrollmentsRouter from "./routes/ModuleEnrollmentsRouter.js";
 import TORRequestsRouter from "./routes/TORRequestsRouter.js";
 import ModuleDetailsRouter from "./routes/ModuleDetailsRouter.js";
+import TicketsRouter from "./routes/TicketsRouter.js";
+import DownloadRouter from "./routes/DownloadRouter.js";
 
 // Import Middleware
 import { verifyToken } from "./middleware/tokenVerifier.js";
-import TicketsRouter from "./routes/TicketsRouter.js";
 
 // Dotenv Variables
 dotenv.config();
@@ -51,6 +52,7 @@ app.use("/API/module_enrollments", verifyToken, ModuleEnrollmentsRouter);
 app.use("/API/tor_requests", verifyToken, TORRequestsRouter);
 app.use("/API/module_details", verifyToken, ModuleDetailsRouter);
 app.use("/API/tickets", verifyToken, TicketsRouter);
+app.use("/API/download", verifyToken, DownloadRouter);
 
 // Express App Server
 app.listen(PORT, () => {
