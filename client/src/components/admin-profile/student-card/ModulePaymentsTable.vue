@@ -304,7 +304,7 @@ defineEmits(["add-success", "delete-success"]);
 
     <MessagePopup
         v-if="currentPopup === 'success'"
-        title="Edit Sucessful"
+        title="Edit Successful"
         description="Successfully applied all edits"
         :accepted="true"
         exit-text="Close"
