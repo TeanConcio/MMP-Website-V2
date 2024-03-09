@@ -384,6 +384,37 @@ DownloadRouter.get("/student/:student_id", async (req, res) => {
                     },
                 },
             }),
+            bills: await prisma.Bills.findMany({
+                where: {
+                    billed_to: student_id,
+                },
+                select: {
+                    bill_no: true,
+                    fee: true,
+                    deductions: true,
+                    status: true,
+                    remarks: true,
+                    issued_on: true,
+                },
+                orderBy: {
+                    issued_on: "asc",
+                },
+            }),
+            payments: await prisma.Payments.findMany({
+                where: {
+                    payee: student_id,
+                },
+                select: {
+                    or_no: true,
+                    bill_no: true,
+                    payment: true,
+                    remarks: true,
+                    paid_on: true,
+                },
+                orderBy: {
+                    date_paid: "asc",
+                },
+            }),
         };
 
         // Format Student Data
