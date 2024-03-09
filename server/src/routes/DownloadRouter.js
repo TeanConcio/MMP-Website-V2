@@ -191,7 +191,7 @@ DownloadRouter.get("/modules", async (req, res) => {
         );
 
         const blob = await zip.generateAsync({ type: "base64" });
-        console.log(`ADMIN [${req.user.user_id}] EXPORTED the database`);
+        console.log(`ADMIN [${req.user.user_id}] EXPORTED all module data`);
 
         res.send(blob);
     } catch (error) {
@@ -320,7 +320,7 @@ DownloadRouter.get("/modules/:school_year", async (req, res) => {
         );
 
         const blob = await zip.generateAsync({ type: "base64" });
-        console.log(`ADMIN [${req.user.user_id}] EXPORTED the database`);
+        console.log(`ADMIN [${req.user.user_id}] EXPORTED the module data for ${school_year}`);
 
         res.send(blob);
     } catch (error) {
@@ -429,6 +429,7 @@ DownloadRouter.get("/student/:student_id", async (req, res) => {
                 // If value is an array and is empty
                 if (Array.isArray(value) && value.length === 0) {
                     console.log(`No ${key} for ${student_id}`);
+                    zip.file(`${key}.csv`, `No ${key} for ${student_id}`);
                 } else {
                     // Check if value array is not empty
                     zip.file(`${key}.csv`, parseToCSV(value));
@@ -439,7 +440,7 @@ DownloadRouter.get("/student/:student_id", async (req, res) => {
         }
 
         const blob = await zip.generateAsync({ type: "base64" });
-        console.log(`ADMIN [${req.user.user_id}] EXPORTED the database`);
+        console.log(`ADMIN [${req.user.user_id}] EXPORTED the data of Student ${student_id}`);
 
         res.send(blob);
     } catch (error) {
