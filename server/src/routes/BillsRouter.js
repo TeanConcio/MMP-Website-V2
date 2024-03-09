@@ -43,34 +43,37 @@ const getLatestBillIDSegment = async () => {
         return element.bill_no;
     });
 
-    //If no bills are found
+    // If no OR numbers are found
     if (billNoList.length === 0){
-        return {castedSegments: ""};
+        return { first: "", second: "" }
     }
 
-    const segments = generateFinancePKSegments(billNoList);
-    const castedSegments = [parseInt(segments.first), parseInt(segments.second)];
+    const { first, second } = generateFinancePKSegments(billNoList);
 
-    return castedSegments
+    return {first, second};
 }
 
-export const generateBillNo = async (castedSegments) => {
+export const generateBillNo = async (first, second) => {
 
     // Bill Number Format: A-XXXXXXXXX
     // A: 1-digit segment
     // XXXXXXXXX: 9-digit segment
 
-    if (castedSegments[1] + 1 > 999999999) {
-        if (castedSegments[0] + 1 > 9) {
-            throw new Error("Bill Number Overflow");
-        } else {
-            return `${(castedSegments[0] + 1).toString()}-000000000`;
-        }
-    } else {
-        return `${castedSegments[0].toString()}-${(castedSegments[1] + 1)
-            .toString()
-            .padStart(9, "0")}`;
+    //If last req id is null
+    if (first === "" && second === "") {
+        return "1-000000000"
     }
+
+    if (parseInt(second) < 999999999) {
+        return `${first.toString()}-${(parseInt(second) + 1).toString().padStart(9, "0")}`;
+    }
+
+    if (parseInt(first) < 9) {
+        return `${(first + 1).toString()}-000000000`;
+    }
+
+    //Throw an error if the id number overflows. This happens when the number of requests exceeds 99999 per year
+    throw new Error("Bill Number Overflow!");
 };
 
 /* Controllers */
@@ -276,8 +279,8 @@ BillsRouter.post(
             const bill = parser(cleanBillObject(req.body));
 
             //Add bill number
-            const {castedSegments} = await getLatestBillIDSegment();
-            bill.bill_no = await generateBillNo(castedSegments);
+            const {first, second} = await getLatestBillIDSegment();
+            bill.bill_no = await generateBillNo(first, second);
 
             // Create bill in database
             await prisma.Bills.create({ data: bill });
