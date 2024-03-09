@@ -412,7 +412,7 @@ DownloadRouter.get("/student/:student_id", async (req, res) => {
                     paid_on: true,
                 },
                 orderBy: {
-                    date_paid: "asc",
+                    paid_on: "asc",
                 },
             }),
         };
