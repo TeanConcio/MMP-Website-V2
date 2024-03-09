@@ -82,6 +82,39 @@ export function formatCSVString(str) {
     return `"${str}"`;
 }
 
+// Helper function to download ZIP file
+export async function downloadZIP(zipString, filename) {
+    // If zip is empty, do nothing
+    if (zipString == null || zipString.length === 0) return;
+
+    // Add .zip extension to filename if not already present
+    if (!filename.endsWith(".zip")) filename += ".zip";
+
+    // ZIP file download
+
+    // Convert base64 string to blob
+    const zip = new JSZip();
+    await zip.loadAsync(zipString, { base64: true });
+    const blob = await zip.generateAsync({ type: "blob" });
+
+    // Download link
+    let downloadLink = document.createElement("a");
+    // Create a link to the file
+    downloadLink.href = window.URL.createObjectURL(blob);
+    // File name
+    downloadLink.download = filename;
+    // Hide download link
+    downloadLink.style.display = "none";
+    // Add the link to DOM
+    document.body.appendChild(downloadLink);
+    
+    // Click download link
+    downloadLink.click();
+
+    // Delete the link from DOM
+    document.body.removeChild(downloadLink);
+}
+
 //Helper function to format null in text fields
 export function formatText(text) {
     if (text === null) {
