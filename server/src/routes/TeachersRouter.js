@@ -51,10 +51,7 @@ const checkEmailExists = async (email) => {
     }
 };
 
-// Generate teacher_id
-const generateTeacherID = async () => {
-    // ID Format: YYYY-AAA-III
-    // Year [0:4] - Account Type Code [5:8] ID Number [9:12]
+const getLatestTeacherIDSegment = async () => {
     const currentYear = new Date().getFullYear().toString();
 
     // Get latest added teacher entry
@@ -76,13 +73,21 @@ const generateTeacherID = async () => {
         return element.teacher_id;
     });
 
-    //If last teacher id is null
-    if (teacherEntries.length === 0) {
-        return currentYear + "-600-000";
-    }
+    const { second, third } = getLatestIDSegments(teacherEntries)
 
-    //Get latest id segments
-    const { second, third } = getLatestIDSegments(teacherEntries);
+    // If last teacher id is null
+    if (teacherEntries.length === 0) {
+        return { second: "600", third: "000" };
+    }
+    
+    return { second, third };
+};
+
+// Generate teacher_id
+export const generateTeacherID = async ({ second, third }) => {
+    // ID Format: YYYY-AAA-III
+    // Year [0:4] - Account Type Code [5:8] ID Number [9:12]
+    const currentYear = new Date().getFullYear().toString();
 
     if (parseInt(third) < 999) {
         return currentYear + "-" + second + "-" + (parseInt(third) + 1).toString().padStart(3, "0");
@@ -235,7 +240,8 @@ TeachersRouter.post("/", validateTeacherReqBody(), async (req, res) => {
         }
 
         // Generate teacher_id
-        teacher.teacher_id = await generateTeacherID();
+        const { second, third } = getLatestTeacherIDSegment()
+        teacher.teacher_id = await generateTeacherID({ second, third });
 
         // Generate password hash
         teacher.password = generatePasswordHash(teacher.password);

@@ -65,7 +65,7 @@ const getLatestTicketIDSegment = async (currentYear) => {
 }
 
 // Generate requestID
-const generateTicketID = async (currentYear, lastTicketIDSegment) => {
+export const generateTicketID = async (currentYear, lastTicketIDSegment) => {
 
     //If last ticket id is null
     if (lastTicketIDSegment === -1) {

@@ -30,12 +30,9 @@ const parser = (object) => {
     return object;
 };
 
-const generateBillNo = async () => {
+const getLatestBillIDSegment = async () => {
 
-    // Bill Number Format: A-XXXXXXXXX
-    // A: 1-digit segment
-    // XXXXXXXXX: 9-digit segment
-
+    // Get all bill_no
     const billNoList = (
         await prisma.Bills.findMany({
             select: {
@@ -46,8 +43,22 @@ const generateBillNo = async () => {
         return element.bill_no;
     });
 
+    //If no bills are found
+    if (billNoList.length === 0){
+        return {castedSegments: ""};
+    }
+
     const segments = generateFinancePKSegments(billNoList);
     const castedSegments = [parseInt(segments.first), parseInt(segments.second)];
+
+    return castedSegments
+}
+
+export const generateBillNo = async (castedSegments) => {
+
+    // Bill Number Format: A-XXXXXXXXX
+    // A: 1-digit segment
+    // XXXXXXXXX: 9-digit segment
 
     if (castedSegments[1] + 1 > 999999999) {
         if (castedSegments[0] + 1 > 9) {
@@ -265,7 +276,8 @@ BillsRouter.post(
             const bill = parser(cleanBillObject(req.body));
 
             //Add bill number
-            bill.bill_no = await generateBillNo();
+            const {castedSegments} = await getLatestBillIDSegment();
+            bill.bill_no = await generateBillNo(castedSegments);
 
             // Create bill in database
             await prisma.Bills.create({ data: bill });

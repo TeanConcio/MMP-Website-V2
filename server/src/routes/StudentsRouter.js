@@ -64,10 +64,7 @@ const checkEmailExists = async (email) => {
     }
 };
 
-// Generate student_id
-const generateStudentID = async () => {
-    // ID Format: YYYY-AAA-III
-    // Year [0:4] - Account Type Code [5:8] ID Number [9:12]
+const getLatestStudentIDSegment = async () => {
     const currentYear = new Date().getFullYear().toString();
 
     // Get last created student_id
@@ -89,13 +86,21 @@ const generateStudentID = async () => {
         return element.student_id;
     });
 
-    //If last student id is null
-    if (studentEntries.length === 0) {
-        return currentYear + "-000-000";
-    }
+    const { second, third } = getLatestIDSegments(studentEntries)
 
-    //Get latest id segments
-    const { second, third } = getLatestIDSegments(studentEntries);
+    // If last student id is null
+    if (studentEntries.length === 0) {
+        return { second: "000", third: "000" };
+    }
+    
+    return { second, third };
+};
+
+// Generate student_id
+export const generateStudentID = async ({ second, third }) => {
+    // ID Format: YYYY-AAA-III
+    // Year [0:4] - Account Type Code [5:8] ID Number [9:12]
+    const currentYear = new Date().getFullYear().toString();
 
     if (parseInt(third) < 999) {
         return currentYear + "-" + second + "-" + (parseInt(third) + 1).toString().padStart(3, "0");
@@ -109,6 +114,7 @@ const generateStudentID = async () => {
     // Doubt that will happen, but if it does, we can just add another digit to the ID number
     throw new Error("ID Overflow!");
 };
+
 
 /* Controllers */
 
@@ -658,7 +664,8 @@ StudentsRouter.post("/", validateStudentReqBody(), async (req, res) => {
         }
 
         // Generate student_id
-        student.student_id = await generateStudentID();
+        const { second, third } = getLatestStudentIDSegment()
+        student.student_id = await generateStudentID({ second, third });
 
         // Generate password hash
         student.password = generatePasswordHash(student.password);
