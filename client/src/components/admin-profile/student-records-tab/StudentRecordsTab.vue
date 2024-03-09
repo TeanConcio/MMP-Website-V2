@@ -5,6 +5,7 @@ import { useCredentialsStore } from "../../../store/store";
 import ModuleCard from "../../common/ModuleCard.vue";
 import LoadingSpinner from "../../common/LoadingSpinner.vue";
 import Dropdown from "../../common/Dropdown.vue";
+import ErrorMessagePopup from "../../../components/common/ErrorMessagePopup.vue";
 // Helpers
 import { downloadZIP } from "../../../util/helpers";
 // Emits
@@ -72,9 +73,27 @@ defineEmits(["select-module"]);
                 >
                     Download All Module Student Records (.zip)
                 </button>
+                <button
+                    @click="downloadWholeDatabase"
+                    type="button"
+                    class="w-full sm:w-auto ml-auto mr-10 md:px-10 px-3 py-3 mt-5 text-base font-medium text-center text-white bg-highlight rounded-lg hover:bg-highlight_hover"
+                >
+                    Download Whole Database (.zip)
+                </button>
             </div>
         </div>
     </div>
+
+    <ErrorMessagePopup
+        v-if="currentPopup === 'error'"
+        title="Cannot Download Files."
+        description="Please try again later."
+        exit-text="Close"
+        @on-exit="
+            currentPopup = 'null';
+        "
+    />
+
 </template>
 
 <script>
@@ -93,6 +112,8 @@ export default {
             selectedModuleYear: null,
             yearRange: [],
             filterYear: null,
+            // Popup
+            currentPopup: "null", // null, error
         };
     },
     methods: {
@@ -120,6 +141,7 @@ export default {
                 })
                 // If unsuccessful
                 .catch((error) => {
+                    this.currentPopup = "error";
                     console.log(error);
                 });
         },
@@ -133,6 +155,21 @@ export default {
                 })
                 // If unsuccessful
                 .catch((error) => {
+                    this.currentPopup = "error";
+                    console.log(error);
+                });
+        },
+        async downloadWholeDatabase() {
+            await this.$axios
+                .get(`/download/all`)
+                // If successful
+                .then(({ data }) => {
+                    // Download data
+                    downloadZIP(data, "MMP Database.zip");
+                })
+                // If unsuccessful
+                .catch((error) => {
+                    this.currentPopup = "error";
                     console.log(error);
                 });
         },
