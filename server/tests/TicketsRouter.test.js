@@ -35,7 +35,7 @@ describe("TicketsRouter Helper Functions", () => {
             const currentYear = '2024';
             const lastTicketIDSegment = 99999;
     
-            await expect(generateTicketID(currentYear, lastTicketIDSegment)).rejects.toThrow('ID Overflow');
+            await expect(generateTicketID(currentYear, lastTicketIDSegment)).rejects.toThrow('ID Overflow!');
         });
     });
 
