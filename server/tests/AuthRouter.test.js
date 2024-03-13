@@ -1,11 +1,12 @@
 /* eslint-disable no-undef */
-// Import functions to test
+// Import libraries to test
 import express from 'express';
 import request from 'supertest';
+
 import AuthRouter from '../src/routes/AuthRouter.js';
 
 // Test Suite
-// Test AuthorRouter POST
+// Test AuthRouter POST
 describe('AuthRouter /login endpoint', () => {
     // Test case for a scenario where both id and password is valid
     it('both correct user_id and password', async () => {
