@@ -12,18 +12,22 @@ describe("TeachersRouter Helper Functions", () => {
         it('increment the third parameter', async () => {
             const input = { second: "000", third: "123" };
 
+            const currentYear = new Date().getFullYear().toString();
+
             const result = await generateTeacherID(input);
 
-            expect(result).toMatch(/^\d{4}-000-\d{3}$/); // Expects the format to be YYYY-AAA-III
+            expect(result).toMatch(currentYear+'-000-124'); // Expects the format to be YYYY-AAA-III
           });
 
         // Test case for incrementing the ID number within the maximum limit
         it('increment second part of ID when third part exceeds 999', async () => {
             const input = { second: "000", third: "999" };
 
+            const currentYear = new Date().getFullYear().toString();
+
             const result = await generateTeacherID(input);
             
-            expect(result).toMatch(/^\d{4}-001-\d{3}$/); // Expects the format to be YYYY-AAA-III
+            expect(result).toMatch(currentYear+'-001-000'); // Expects the format to be YYYY-AAA-III
         });
 
         // Test case for ID overflow
