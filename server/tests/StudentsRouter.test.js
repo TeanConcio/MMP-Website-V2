@@ -9,21 +9,25 @@ describe("StudentsRouter Helper Functions", () => {
     describe('generateStudentID Function', () => {
 
         // Test case for incrementing the ID number within the limit
-        it('increments the ID number within the limit', async () => {
-            const input = { second: "100", third: "123" };
+        it('increment the third parameter when less than 999', async () => {
+            const input = { second: "000", third: "123" };
+
+            const currentYear = new Date().getFullYear().toString();
 
             const result = await generateStudentID(input);
 
-            expect(result).toMatch(/^\d{4}-\d{3}-\d{3}$/); // Matches the format YYYY-AAA-III
-        });
+            expect(result).toMatch(currentYear+'-000-124'); // Expects the format to be YYYY-AAA-III
+          });
 
         // Test case for incrementing the ID number within the maximum limit
-        it('increments the ID number within the limit', async () => {
-            const input = { second: "100", third: "998" };
+        it('increment second part of ID when third part exceeds 999', async () => {
+            const input = { second: "000", third: "999" };
+
+            const currentYear = new Date().getFullYear().toString();
 
             const result = await generateStudentID(input);
-
-            expect(result).toMatch(/^\d{4}-\d{3}-\d{3}$/); // Matches the format YYYY-AAA-III
+            
+            expect(result).toMatch(currentYear+'-001-000'); // Expects the format to be YYYY-AAA-III
         });
 
         // Test case for ID overflow

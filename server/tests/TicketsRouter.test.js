@@ -16,8 +16,8 @@ describe("TicketsRouter Helper Functions", () => {
             const lastTicketIDSegment = 99998;
     
             const result = await generateTicketID(currentYear, lastTicketIDSegment);
-    
-            expect(result).toMatch(/^2024-\d{5}$/); 
+
+            expect(result).toBe('2024-99999'); 
         });
         
         // Test case to ensure the function generates a new ticket ID when last segment is null
@@ -27,7 +27,6 @@ describe("TicketsRouter Helper Functions", () => {
     
             const result = await generateTicketID(currentYear, lastTicketIDSegment);
     
-            // Assertions
             expect(result).toBe('2024-00000');
         });
 
@@ -36,7 +35,7 @@ describe("TicketsRouter Helper Functions", () => {
             const currentYear = '2024';
             const lastTicketIDSegment = 99999;
     
-            await expect(generateTicketID(currentYear, lastTicketIDSegment)).rejects.toThrow('ID Overflow');
+            await expect(generateTicketID(currentYear, lastTicketIDSegment)).rejects.toThrow('ID Overflow!');
         });
     });
 

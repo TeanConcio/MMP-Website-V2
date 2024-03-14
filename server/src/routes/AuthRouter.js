@@ -7,7 +7,7 @@ import { exclude } from "../utils/helpers.js";
 
 // Express Router
 const AuthRouter = express.Router();
-
+AuthRouter.use(express.json())
 /* Helper Functions */
 /* Controllers */
 // Login
