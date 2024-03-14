@@ -83,6 +83,7 @@ Naming Scheme: rootURL/API/TableName/:params
 ### Prisma Schema Commands
 Migrate Prisma Schema to Database: npx prisma migrate dev
 Generate Prima Client Functions: npx prisma generate
+Generate Database Script: npx prisma migrate diff --from-empty --to-schema-datasource prisma/schema.prisma --script > prisma/generated.sql
 
 ### PostgreSQL Guide
 1. Download PostgreSQL version 16.
