@@ -2,6 +2,25 @@
 import MessagePopup from "../../components/common/MessagePopup.vue";
 import ErrorMessagePopup from "../../components/common/ErrorMessagePopup.vue";
 import LoadingSpinner from "../common/LoadingSpinner.vue";
+// Validators
+import {
+    validateName,
+    validateLongName,
+    validateEmail,
+    validatePassword,
+    validateConfirmPassword,
+    validateAddress,
+    validateMobileNumber,
+    validateLandline,
+    validateBirthdate,
+    validate150String,
+    validate30String,
+    validate200String,
+    validateEnum,
+    validateNumber,
+    validateBoolean,
+    validateTextArea
+} from "../../util/validators";
 </script>
 
 <template>
@@ -959,22 +978,10 @@ export default {
 
         // BELOW ARE THE VALIDATORS TO CHECK IF THE DATA ARE VALID FOR SIGNING UP
         validateFirstName() {
-            if (this.firstname.length < 2 || this.firstname.length > 50) {
-                this.errors["firstname"] = "First name must be between 2 and 50 characters!";
-            } else if (/\d/.test(this.firstname)) {
-                this.errors["firstname"] = "First name must not have numbers!";
-            } else {
-                delete this.errors["firstname"];
-            }
+            validateName(this.firstname, "firstname", this.errors);
         },
         validateLastName() {
-            if (this.lastname.length < 2 || this.lastname.length > 50) {
-                this.errors["lastname"] = "Last name must be between 2 and 50 characters!";
-            } else if (/\d/.test(this.lastname)) {
-                this.errors["lastname"] = "Last name must not have numbers!";
-            } else {
-                delete this.errors["lastname"];
-            }
+            validateName(this.lastname, "lastname", this.errors);
         },
         validateMiddleName() {
             if (this.middlename.length === 0) {
@@ -982,149 +989,71 @@ export default {
                 return;
             }
 
-            if (this.middlename.length < 2 || this.middlename.length > 50) {
-                this.errors["middlename"] = "Middle name must be between 2 and 50 characters!";
-            } else if (/\d/.test(this.middlename)) {
-                this.errors["middlename"] = "Middle name must not have numbers!";
-            } else {
-                delete this.errors["middlename"];
-            }
+            validateName(this.middlename, "middlename", this.errors);
         },
         validateEmail() {
-            const emailPattern =
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-            if (emailPattern.test(this.email) === false) {
-                this.errors["email"] = "Must be an email!";
-            } else if (this.email.length > 50) {
-                this.errors["email"] = "Email must be less than 50 characters!";
-            } else {
-                delete this.errors["email"];
-            }
+            validateEmail(this.email, this.errors);
         },
         validatePassword() {
-            if (this.password.length < 8 || this.password.length > 40) {
-                this.errors["password"] = "Password must be between 8 and 40 characters!";
-            } else {
-                delete this.errors["password"];
-            }
+            validatePassword(this.password, this.errors);
         },
         validateConfirmPassword() {
-            if (this.confirmPassword !== this.password) {
-                this.errors["confirmPassword"] = "Passwords must match!";
-            } else {
-                delete this.errors["confirmPassword"];
-            }
+            validateConfirmPassword(this.confirmPassword, this.password, this.errors);
         },
         validateAddress() {
-            if (this.address.length < 2 || this.address.length > 150) {
-                this.errors["address"] = "Address must be between 2 and 150 characters!";
-            } else {
-                delete this.errors["address"];
-            }
+            validate150String(this.address, "address", this.errors);
         },
         validateMobileNumber() {
-            const mobilePattern = /^09[0-9]{9}$/;
-
-            if (mobilePattern.test(this.mobile_no) === false) {
-                this.errors["mobile_no"] = "Must be a valid Philippine mobile number";
-            } else {
-                delete this.errors["mobile_no"];
-            }
+            validateMobileNumber(this.mobile_no, this.errors);
         },
         validateLandline() {
-            const landlinePattern = /^[0-9]{8}$/;
-
-            if (landlinePattern.test(this.landline) === false) {
-                this.errors["landline"] = "Must be a valid landline number";
-            } else {
-                delete this.errors["landline"];
-            }
+            validateLandline(this.landline, this.errors);
         },
         validateBirthdate() {
-            if (Date.parse(this.birthdate) === NaN) {
-                this.errors["birthdate"] = "Must be a valid date";
-            } else {
-                delete this.errors["birthdate"];
-            }
+            validateBirthdate(this.birthdate, this.errors);
         },
         validateBirthplace() {
-            if (this.birthplace.length < 2 || this.birthplace.length > 150) {
-                this.errors["birthplace"] = "Birthplace must be between 2 and 150 characters!";
-            } else {
-                delete this.errors["birthplace"];
-            }
+            validate150String(this.birthplace, "birthplace", this.errors);
         },
         validateNationality() {
-            if (this.nationality.length < 2 || this.nationality.length > 150) {
-                this.errors["nationality"] = "Nationality must be between 2 and 50 characters!";
-            } else {
-                delete this.errors["nationality"];
-            }
+            validate150String(this.nationality, "nationality", this.errors);
         },
         validateGender() {
-            if (!["MALE", "FEMALE", "OTHERS"].includes(this.gender)) {
-                this.errors["gender"] = "Gender must be male, female, or others";
-            } else {
-                delete this.errors["gender"];
-            }
+            validateEnum(
+                this.gender, 
+                "gender", 
+                ["MALE", "FEMALE", "OTHERS"], 
+                this.errors
+            );
         },
         validateCivilStatus() {
-            if (!["SINGLE", "MARRIED", "WIDOWED", "ANNULLED"].includes(this.civil_status)) {
-                this.errors["civil_status"] =
-                    "Civil status must be single, married, widowed, or annulled";
-            } else {
-                delete this.errors["civil_status"];
-            }
+            validateEnum(
+                this.civil_status,
+                "civil_status",
+                ["SINGLE", "MARRIED", "WIDOWED", "ANNULLED"],
+                this.errors
+            );
         },
         validateNoOfChildren() {
-            if (this.no_of_children < 0 || this.no_of_children > 99) {
-                this.errors["no_of_children"] = "Number of children must be between 0 and 99";
-            } else {
-                delete this.errors["no_of_children"];
-            }
+            validateNumber(this.no_of_children, "no_of_children", this.errors);
         },
         validateOccupation() {
-            if (this.occupation.length < 2 || this.occupation.length > 30) {
-                this.errors["occupation"] = "Occupation should be between 2 and 30 characters long";
-            } else {
-                delete this.errors["occupation"];
-            }
+            validate30String(this.occupation, "occupation", this.errors);
         },
         validateSchool() {
-            if (this.school.length < 2 || this.school.length > 30) {
-                this.errors["school"] = "School name should be between 2 and 30 characters long";
-            } else {
-                delete this.errors["school"];
-            }
+            validate30String(this.school, "school", this.errors);
         },
         validateAdmin() {
-            if (this.admin.length < 2 || this.admin.length > 150) {
-                this.errors["admin"] = "Admin name should be between 2 and 150 characters long";
-            } else {
-                delete this.errors["admin"];
-            }
+            validate150String(this.admin, "admin", this.errors);
         },
         validateIsPartner() {
-            if (this.isPartner !== true && this.isPartner !== false) {
-                this.errors["isPartner"] = "Is partner school must be true or false";
-            } else {
-                delete this.errors["isPartner"];
-            }
+            validateBoolean(this.isPartner, "isPartner", this.errors);
         },
         validatChurch() {
-            if (this.church.length < 2 || this.church.length > 150) {
-                this.errors["church"] = "Church should be between 2 and 150 characters long";
-            } else {
-                delete this.errors["church"];
-            }
+            validate150String(this.church, "church", this.errors);
         },
         validatePastor() {
-            if (this.pastor.length < 2 || this.pastor.length > 150) {
-                this.errors["pastor"] = "Pastor name should be between 2 and 150 characters long";
-            } else {
-                delete this.errors["pastor"];
-            }
+            validate150String(this.pastor, "pastor", this.errors);
         },
         validateGradeschool() {
             if (this.gradeschool.length > 50) {
@@ -1250,56 +1179,27 @@ export default {
             }
         },
         validateTrack() {
-            if (!["ADMIN", "TEACHER", "BOTH"].includes(this.track)) {
-                this.errors["track"] = "Track must be admin, teacher, or both";
-            } else {
-                delete this.errors["track"];
-            }
+            validateEnum(
+                this.track, 
+                "track", 
+                ["ADMIN", "TEACHER", "BOTH"], 
+                this.errors
+            );
         },
         validateOthers() {
-            if (this.others.length > 200) {
-                this.errors["others"] = "Others should be less than 200 characters long";
-            } else {
-                delete this.errors["others"];
-            }
+            validate200String(this.others, "others", this.errors);
         },
         validateEssay() {
-            if (this.essay.length < 1) {
-                this.errors["essay"] = "Essay is required";
-            } else {
-                delete this.errors["essay"];
-            }
+            validateTextArea(this.essay, "essay", this.errors);
         },
         validateEmergencyName() {
-            if (this.emergency_name.length > 150) {
-                this.errors["emergency_name"] =
-                    "Emergency name should be less than 150 characters long";
-            } else if (/\d/.test(this.emergency_name)) {
-                this.errors["emergency_name"] = "Emergency contact name should not have numbers";
-            } else if (this.emergency_name.length > 150) {
-                this.errors["emergency_name"] = "Emergency name should not be empty";
-            } else {
-                delete this.errors["emergency_name"];
-            }
+            validateLongName(this.emergency_name, "emergency_name", this.errors);
         },
         validateEmergencyAddress() {
-            if (this.emergency_address.length > 150) {
-                this.errors["emergency_address"] =
-                    "Emergency address should be less than 150 characters long";
-            } else if (this.emergency_address.length < 1) {
-                this.errors["emergency_address"] = "Emergency address should not be empty";
-            } else {
-                delete this.errors["emergency_address"];
-            }
+            validate150String(this.emergency_address, "emergency_address", this.errors);
         },
         validateEmergencyNumber() {
-            const mobilePattern = /^09[0-9]{9}$/;
-
-            if (mobilePattern.test(this.emergency_number) === false) {
-                this.errors["emergency_number"] = "Must be a valid Philippine mobile number";
-            } else {
-                delete this.errors["emergency_number"];
-            }
+            validateMobileNumber(this.emergency_number, this.errors);
         },
         validateAgreeTerms() {
             if (!this.agreeTerms) {
@@ -1364,36 +1264,36 @@ export default {
         async signup() {
             //Get the student info object
             let student = {
-                first_name: this.firstname,
-                last_name: this.lastname,
-                address: this.address,
-                mobile_number: this.mobile_no,
-                landline: this.landline,
-                email: this.email,
-                birthdate: this.birthdate,
-                birthplace: this.birthplace,
-                nationality: this.nationality,
-                gender: this.gender,
-                civil_status: this.civil_status,
-                no_of_children: this.no_of_children,
-                school: this.school,
-                occupation: this.occupation,
-                admin: this.admin,
-                church: this.church,
-                pastor: this.pastor,
-                is_partner_school: this.isPartner,
-                others: this.others,
-                gradeschool_completed: this.gradeschool_completed,
-                highschool_completed: this.highschool_completed,
-                college_completed: this.college_completed,
-                graduate_completed: this.graduate_completed,
-                essay: this.essay,
-                emergency_name: this.emergency_name,
-                emergency_address: this.emergency_address,
-                emergency_mobile_number: this.emergency_number,
-                password: this.password,
+                first_name: this.firstname.trim(),
+                last_name: this.lastname.trim(),
+                address: this.address.trim(),
+                mobile_number: this.mobile_no.trim(),
+                landline: this.landline.trim(),
+                email: this.email.trim(),
+                birthdate: this.birthdate.trim(),
+                birthplace: this.birthplace.trim(),
+                nationality: this.nationality.trim(),
+                gender: this.gender.trim(),
+                civil_status: this.civil_status.trim(),
+                no_of_children: this.no_of_children.trim(),
+                school: this.school.trim(),
+                occupation: this.occupation.trim(),
+                admin: this.admin.trim(),
+                church: this.church.trim(),
+                pastor: this.pastor.trim(),
+                is_partner_school: this.isPartner.trim(),
+                others: this.others.trim(),
+                gradeschool_completed: this.gradeschool_completed.trim(),
+                highschool_completed: this.highschool_completed.trim(),
+                college_completed: this.college_completed.trim(),
+                graduate_completed: this.graduate_completed.trim(),
+                essay: this.essay.trim(),
+                emergency_name: this.emergency_name.trim(),
+                emergency_address: this.emergency_address.trim(),
+                emergency_mobile_number: this.emergency_number.trim(),
+                password: this.password.trim(),
                 status: "FOR_APPROVAL",
-                track: this.track,
+                track: this.track.trim(),
             };
 
             // Add optional fields if they have a value
