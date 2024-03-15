@@ -2,7 +2,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-//import morgan from "morgan";
+import morgan from "morgan";
 import helmet from "helmet";
 import dotenv from "dotenv";
 
@@ -33,7 +33,7 @@ const app = express();
 // Express App Middleware
 app.use(express.json());
 app.use(bodyParser.json());
-//app.use(morgan("common"));   // Log HTTP Requests
+app.use(morgan("common"));   // Log HTTP Requests
 app.use(cors()); // TODO: Remove this in production
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
