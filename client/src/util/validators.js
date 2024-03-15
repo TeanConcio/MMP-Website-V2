@@ -35,7 +35,7 @@ export function validateEmail (string, errorObject) {
     } else if (string.length > 50) {
         errorObject["email"] = "Email must be less than 50 characters!";
     } else {
-        delete this.errors["email"];
+        delete errorObject["email"];
     }
 }
 
