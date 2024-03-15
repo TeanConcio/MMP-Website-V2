@@ -117,6 +117,37 @@ export async function downloadZIP(zipString, filename) {
     document.body.removeChild(downloadLink);
 }
 
+// Helper function to download PDF file
+export function downloadPDF(pdfString, filename) {
+    // If pdf is empty, do nothing
+    if (pdfString == null || pdfString.length === 0) return;
+
+    // Add .pdf extension to filename if not already present
+    if (!filename.endsWith(".pdf")) filename += ".pdf";
+
+    // PDF file download
+
+    // Convert base64 string to blob
+    const blob = base64ToBlob(pdfString, "application/pdf");
+
+    // Download link
+    let downloadLink = document.createElement("a");
+    // Create a link to the file
+    downloadLink.href = window.URL.createObjectURL(blob);
+    // File name
+    downloadLink.download = filename;
+    // Hide download link
+    downloadLink.style.display = "none";
+    // Add the link to DOM
+    document.body.appendChild(downloadLink);
+
+    // Click download link
+    downloadLink.click();
+
+    // Delete the link from DOM
+    document.body.removeChild(downloadLink);
+}
+
 //Helper function to format null in text fields
 export function formatText(text) {
     if (text === null) {

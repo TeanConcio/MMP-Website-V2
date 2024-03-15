@@ -1,9 +1,17 @@
 // Imports Modules
 import express from "express";
 import { db as prisma } from "../utils/db.server.js";
+import { exclude, allowed } from "../utils/helpers.js";
+
+// Import JSZip and json2csv
 import JSZip from "jszip";
 import { parse as parseToCSV } from "json2csv";
-import { exclude, allowed } from "../utils/helpers.js";
+
+// Import PDF Generator
+// import { generate } from '@pdfme/generator';
+import pkg from '@pdfme/generator';
+const { generate } = pkg;
+import { registrationFormECEPDF } from "../utils/registration_form.js";
 
 // Express Router
 const DownloadRouter = express.Router();
@@ -474,6 +482,126 @@ DownloadRouter.get("/student/:student_id", async (req, res) => {
         console.log(`ADMIN [${req.user.user_id}] EXPORTED the data of Student ${student_id}`);
 
         res.send(blob);
+    } catch (error) {
+        // Return error
+        res.status(404).send({ error: error.message });
+    }
+});
+
+// Download Student Registration PDF
+DownloadRouter.get("/student/pdf/:student_id", async (req, res) => {
+    if (!allowed(req.permission, [1, 3])) {
+        res.status(401).send({ error: "You are not authorized to access this" });
+        return;
+    }
+
+    try {
+        // // Get student_id from req.params
+        // const student_id = req.params.student_id;
+
+        // //Check if ID Exists
+        // const checkIDExists = async (student_id) => {
+        //     const studentEntry = await prisma.Students.findUnique({
+        //         where: {
+        //             student_id: student_id,
+        //         },
+        //     });
+
+        //     if (studentEntry == null) {
+        //         return false;
+        //     } else {
+        //         return true;
+        //     }
+        // };
+        // // Check if student exists
+        // if (!(await checkIDExists(student_id))) {
+        //     throw new Error("Student does not exist");
+        // }
+
+        // // Get student from database
+        // let student = null;
+        // student = await prisma.Students.findUnique({
+        //     where: {
+        //         student_id: student_id,
+        //     },
+        //     select: {
+        //         student_id: true,
+        //         first_name: true,
+        //         last_name: true,
+        //         middle_name: true,
+        //         address: true,
+        //         mobile_number: true,
+        //         landline: true,
+        //         email: true,
+        //         birthdate: true,
+        //         birthplace: true,
+        //         nationality: true,
+        //         gender: true,
+        //         civil_status: true,
+        //         no_of_children: true,
+        //         school: true,
+        //         occupation: true,
+        //         admin: true,
+        //         church: true,
+        //         pastor: true,
+        //         is_partner_school: true,
+        //         gradeschool: true,
+        //         highschool: true,
+        //         college: true,
+        //         college_course: true,
+        //         graduate_course: true,
+        //         graduate: true,
+        //         others: true,
+        //         gradeschool_completed: true,
+        //         highschool_completed: true,
+        //         college_completed: true,
+        //         graduate_completed: true,
+        //         essay: true,
+        //         emergency_name: true,
+        //         emergency_address: true,
+        //         emergency_mobile_number: true,
+        //         status: true,
+        //         track: true,
+        //         created_at: true,
+        //     },
+        // });
+
+        const template = {
+            basePdf: registrationFormECEPDF,
+            schemas: [
+                {
+                a: {
+                    type: 'text',
+                    position: { x: 0, y: 0 },
+                    width: 10,
+                    height: 10,
+                },
+                b: {
+                    type: 'text',
+                    position: { x: 10, y: 10 },
+                    width: 10,
+                    height: 10,
+                },
+                c: {
+                    type: 'text',
+                    position: { x: 20, y: 20 },
+                    width: 10,
+                    height: 10,
+                },
+                },
+            ],
+        };
+        const inputs = [{ a: 'a1', b: 'b1', c: 'c1' }];
+        
+        generate({ template, inputs }).then((pdf) => {
+            console.log(pdf);
+            
+            // Browser
+            const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
+            //console.log(`ADMIN [${req.user.user_id}] Printed the data of Student ${student_id}`);
+            res.status(200).send(blob);
+        });
+
     } catch (error) {
         // Return error
         res.status(404).send({ error: error.message });
