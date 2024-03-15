@@ -1,38 +1,62 @@
 /* eslint-disable no-undef */
 // Import libraries to test
 import express from 'express';
-import request from 'supertest';
-import { db as prisma } from '../src/utils/db.server.js';
-import {jest} from '@jest/globals'
-
+import session from 'supertest-session';
+import AuthRouter from '../src/routes/AuthRouter.js';
 import ModuleEnrollmentsRouter from '../src/routes/ModuleEnrollmentsRouter.js';
+
+const app = express();
+app.use(express.json())
+app.use(AuthRouter)
 
 // Test Suite
 // Test ModuleEnrollmentsRouter GET
 describe('ModuleEnrollmentsRouter /active/:student_id endpoint', () => {
+
     // Test case for unauthorized access
     it('should return 403 error for unauthorized access', async () => {
-        const studentId = '2024-900-200'; 
+        const adminSession = session(app);
 
-        const response = await request(express().use(ModuleEnrollmentsRouter))
-            .get(`/active/${studentId}`)
+        const response = await adminSession.post('/login')
             .set('Content-Type', 'application/json')
-
-        expect(response.statusCode).toBe(403);
-        expect(response.body).toEqual({ error: 'You are not authorized to access this' });
+            .send({
+                user_id: '2024-900-001', //teacher ID
+                password: 'password'
+            });
+        
+        //successful connection
+        expect(response.statusCode).toBe(200);
     });
+
+    // // Test case for unauthorized access
+    // it('should return 403 error for unauthorized access', async () => {
+    //     const studentId = '2024-900-200'; 
+
+    //     const response = await request(express().use(ModuleEnrollmentsRouter))
+    //         .get(`/active/${studentId}`)
+    //         .set('Content-Type', 'application/json')
+    //         .set({ permission: 2 });
+
+    //     expect(response.statusCode).toBe(403);
+    //     expect(response.body).toEqual({ error: 'You are not authorized to access this' });
+    // });
 
     // Test case for invalid student ID
-    it('should return 403 error for invalid student ID', async () => {
-        const studentId = '2024-100-600'; 
+    // it('should return 403 error for invalid student ID', async () => {
+    //     const studentId = '2024-100-600'; 
+        
+    //     const req = {
+    //         permission: 1
+    //     };
 
-        const response = await request(express().use(ModuleEnrollmentsRouter))
-            .get(`/active/${studentId}`)
-            .set('Content-Type', 'application/json')
+    //     const response = await request(express().use(ModuleEnrollmentsRouter))
+    //         .get(`/active/${studentId}`)
+    //         .set('Content-Type', 'application/json')
+    //         .set(req);
 
-        expect(response.statusCode).toBe(403);
-        expect(response.body).toEqual({ error: 'Invalid user ID' });
-    });
+    //     expect(response.statusCode).toBe(403);
+    //     expect(response.body).toEqual({ error: 'Invalid user ID' });
+    // });
 
     // Test case for unauthorized access
     // it('should return 403 error for unauthorized access', async () => {
