@@ -14,6 +14,7 @@ import { adminStudentModuleEnrollmentEmail } from "../utils/email_templates.js";
 
 // Express Router
 const ModuleEnrollmentsRouter = express.Router();
+ModuleEnrollmentsRouter.use(express.json())
 
 /* Helper Functions */
 //Check for existence
@@ -307,7 +308,7 @@ ModuleEnrollmentsRouter.get("/active/:student_id", async (req, res) => {
 
         //Validation check
         if (student_id !== req.user.user_id) {
-            res.status(403).send({ error: "You are not authorized to access this" });
+            res.status(403).send({ error: "Invalid user ID" });
             return;
         }
 
