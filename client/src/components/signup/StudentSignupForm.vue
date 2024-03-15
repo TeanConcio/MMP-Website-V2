@@ -976,7 +976,169 @@ export default {
             this.$router.push("/teacher/signup");
         },
 
+        // Trim inputs
+        trimInputs() {
+            this.firstname = this.firstname.trim();
+            this.lastname = this.lastname.trim();
+            this.middlename = this.middlename.trim();
+            this.email = this.email.trim();
+            this.password = this.password.trim();;
+            this.confirmPassword = this.confirmPassword.trim();
+            this.address = this.address.trim();
+            this.birthplace = this.birthplace.trim();
+            this.nationality = this.nationality.trim();
+            this.occupation = this.occupation.trim();
+            this.school = this.school.trim();
+            this.admin = this.admin.trim();
+            this.church = this.church.trim();
+            this.pastor = this.pastor.trim();
+            this.gradeschool = this.gradeschool.trim();
+            this.highschool = this.highschool.trim();
+            this.college = this.college.trim();
+            this.college_course = this.college_course.trim();
+            this.graduate = this.graduate.trim();
+            this.graduate_course = this.graduate_course.trim();
+            this.others = this.others.trim();
+            this.essay = this.essay.trim();
+            this.emergency_name = this.emergency_name.trim();
+            this.emergency_address = this.emergency_address.trim();
+        },
+        // Submit form
+        submitForm() {
+            this.trimInputs();
+
+            // Validate form
+            if (this.validateForm()) {
+                this.signup();
+            } else {
+                this.showInvalidPopup = true;
+            }
+        },
+        // Sign up Teacher
+        async signup() {
+            //Get the student info object
+            let student = {
+                first_name: this.firstname,
+                last_name: this.lastname,
+                address: this.address,
+                mobile_number: this.mobile_no,
+                landline: this.landline,
+                email: this.email,
+                birthdate: this.birthdate,
+                birthplace: this.birthplace,
+                nationality: this.nationality,
+                gender: this.gender,
+                civil_status: this.civil_status,
+                no_of_children: this.no_of_children,
+                school: this.school,
+                occupation: this.occupation,
+                admin: this.admin,
+                church: this.church,
+                pastor: this.pastor,
+                is_partner_school: this.isPartner,
+                others: this.others,
+                gradeschool_completed: this.gradeschool_completed,
+                highschool_completed: this.highschool_completed,
+                college_completed: this.college_completed,
+                graduate_completed: this.graduate_completed,
+                essay: this.essay,
+                emergency_name: this.emergency_name,
+                emergency_address: this.emergency_address,
+                emergency_mobile_number: this.emergency_number,
+                password: this.password,
+                status: "FOR_APPROVAL",
+                track: this.track,
+            };
+
+            // Add optional fields if they have a value
+            if (this.middlename.length > 0) {
+                student["middle_name"] = this.middlename;
+            }
+
+            if (this.gradeschool.length > 0) {
+                student["gradeschool"] = this.gradeschool;
+            }
+
+            if (this.highschool.length > 0) {
+                student["highschool"] = this.highschool;
+            }
+
+            if (this.college.length > 0) {
+                student["college"] = this.college;
+            }
+
+            if (this.college_course.length > 0) {
+                student["college_course"] = this.college_course;
+            }
+
+            if (this.graduate.length > 0) {
+                student["graduate"] = this.graduate;
+            }
+
+            if (this.graduate_course.length > 0) {
+                student["graduate_course"] = this.graduate_course;
+            }
+
+            // Call Sign up api endpoint
+            await this.$axios
+                .post("/students/", student)
+                // If successful
+                .then(() => {
+                    this.showSuccessPopup = true;
+                })
+                // If unsuccessful
+                .catch((error) => {
+                    if (error.response.data.error === "Email already exists") {
+                        this.showUsedEmailPopup = true;
+                    } else {
+                        this.showErrorPopup = true;
+                    }
+                });
+        },
         // BELOW ARE THE VALIDATORS TO CHECK IF THE DATA ARE VALID FOR SIGNING UP
+        validateForm() {
+            // Validate all fields
+            this.validateFirstName();
+            this.validateLastName();
+            this.validateMiddleName();
+            this.validateEmail();
+            this.validatePassword();
+            this.validateConfirmPassword();
+            this.validateTrack();
+            this.validateAddress();
+            this.validateMobileNumber();
+            this.validateLandline();
+            this.validateBirthdate();
+            this.validateBirthplace();
+            this.validateNationality();
+            this.validateGender();
+            this.validateCivilStatus();
+            this.validateNoOfChildren();
+            this.validateOccupation();
+            this.validateSchool();
+            this.validateAdmin();
+            this.validateIsPartner();
+            this.validateChurch();
+            this.validatePastor();
+            this.validateGradeschool();
+            this.validateHighschool();
+            this.validateCollege();
+            this.validateGraduate();
+            this.validateCollegeCourse();
+            this.validateGraduateCourse();
+            this.validateOthers();
+            this.validateEssay();
+            this.validateEmergencyName();
+            this.validateEmergencyAddress();
+            this.validateEmergencyNumber();
+            this.validateAgreeTerms();
+
+            if (Object.keys(this.errors).length === 0) { // If no errors, return true
+                return true;
+            } else {
+                return false;
+            }
+        },
         validateFirstName() {
             validateName(this.firstname, "firstname", this.errors);
         },
@@ -1049,7 +1211,7 @@ export default {
         validateIsPartner() {
             validateBoolean(this.isPartner, "isPartner", this.errors);
         },
-        validatChurch() {
+        validateChurch() {
             validate150String(this.church, "church", this.errors);
         },
         validatePastor() {
@@ -1208,139 +1370,6 @@ export default {
                 delete this.errors["agreeTerms"];
             }
         },
-        validateForm() {
-            // Validate all fields
-            this.validateFirstName();
-            this.validateLastName();
-            this.validateMiddleName();
-            this.validateEmail();
-            this.validatePassword();
-            this.validateConfirmPassword();
-            this.validateTrack();
-            this.validateAddress();
-            this.validateMobileNumber();
-            this.validateLandline();
-            this.validateBirthdate();
-            this.validateBirthplace();
-            this.validateNationality();
-            this.validateGender();
-            this.validateCivilStatus();
-            this.validateNoOfChildren();
-            this.validateOccupation();
-            this.validateSchool();
-            this.validateAdmin();
-            this.validateIsPartner();
-            this.validatChurch();
-            this.validatePastor();
-            this.validateGradeschool();
-            this.validateHighschool();
-            this.validateCollege();
-            this.validateGraduate();
-            this.validateCollegeCourse();
-            this.validateGraduateCourse();
-            this.validateOthers();
-            this.validateEssay();
-            this.validateEmergencyName();
-            this.validateEmergencyAddress();
-            this.validateEmergencyNumber();
-            this.validateAgreeTerms();
-
-            if (Object.keys(this.errors).length === 0) { // If no errors, return true
-                return true;
-            } else {
-                return false;
-            }
-        },
-        // Submit form
-        submitForm() {
-            // Validate form
-            if (this.validateForm()) {
-                this.signup();
-            } else {
-                this.showInvalidPopup = true;
-            }
-        },
-        // Sign up Teacher
-        async signup() {
-            //Get the student info object
-            let student = {
-                first_name: this.firstname.trim(),
-                last_name: this.lastname.trim(),
-                address: this.address.trim(),
-                mobile_number: this.mobile_no,
-                landline: this.landline,
-                email: this.email.trim(),
-                birthdate: this.birthdate,
-                birthplace: this.birthplace.trim(),
-                nationality: this.nationality.trim(),
-                gender: this.gender,
-                civil_status: this.civil_status,
-                no_of_children: this.no_of_children,
-                school: this.school.trim(),
-                occupation: this.occupation.trim(),
-                admin: this.admin.trim(),
-                church: this.church.trim(),
-                pastor: this.pastor.trim(),
-                is_partner_school: this.isPartner,
-                others: this.others.trim(),
-                gradeschool_completed: this.gradeschool_completed.trim(),
-                highschool_completed: this.highschool_completed.trim(),
-                college_completed: this.college_completed.trim(),
-                graduate_completed: this.graduate_completed.trim(),
-                essay: this.essay.trim(),
-                emergency_name: this.emergency_name.trim(),
-                emergency_address: this.emergency_address.trim(),
-                emergency_mobile_number: this.emergency_number,
-                password: this.password.trim(),
-                status: "FOR_APPROVAL",
-                track: this.track.trim(),
-            };
-
-            // Add optional fields if they have a value
-            if (this.middlename.length > 0) {
-                student["middle_name"] = this.middlename;
-            }
-
-            if (this.gradeschool.length > 0) {
-                student["gradeschool"] = this.gradeschool;
-            }
-
-            if (this.highschool.length > 0) {
-                student["highschool"] = this.highschool;
-            }
-
-            if (this.college.length > 0) {
-                student["college"] = this.college;
-            }
-
-            if (this.college_course.length > 0) {
-                student["college_course"] = this.college_course;
-            }
-
-            if (this.graduate.length > 0) {
-                student["graduate"] = this.graduate;
-            }
-
-            if (this.graduate_course.length > 0) {
-                student["graduate_course"] = this.graduate_course;
-            }
-
-            // Call Sign up api endpoint
-            await this.$axios
-                .post("/students/", student)
-                // If successful
-                .then(() => {
-                    this.showSuccessPopup = true;
-                })
-                // If unsuccessful
-                .catch((error) => {
-                    if (error.response.data.error === "Email already exists") {
-                        this.showUsedEmailPopup = true;
-                    } else {
-                        this.showErrorPopup = true;
-                    }
-                });
-        },
     },
     watch: {
         firstname() {
@@ -1404,7 +1433,7 @@ export default {
             this.validateIsPartner();
         },
         church() {
-            this.validatChurch();
+            this.validateChurch();
         },
         pastor() {
             this.validatePastor();
