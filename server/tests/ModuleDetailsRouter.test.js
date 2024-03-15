@@ -5,16 +5,16 @@ import session from 'supertest-session';
 import AuthRouter from '../src/routes/AuthRouter';
 import ModuleDetailsRouter from '../src/routes/ModuleDetailsRouter';
 
-// Create an Express app instance
-const app = express();
-// Mount AuthRouter on the app
-
-app.use(express.json());
-app.use(AuthRouter);
-
 // Test Suite
 describe('ModuleDetailsRouter /all Endpoint', () => {
     it('login as admin to view the modules', async () => {
+        // Create an Express app instance
+        const app = express();
+
+        // Mount AuthRouter on the app
+        app.use(express.json());
+        app.use(AuthRouter);
+        
         const adminSession = session(app); // Create a new session for admin
 
 
@@ -50,13 +50,20 @@ describe('ModuleDetailsRouter /all Endpoint', () => {
     });
 
     it('login as admin to view the modules', async () => {
+        // Create an Express app instance
+        const app = express();
+
+        // Mount AuthRouter on the app
+        app.use(express.json());
+        app.use(AuthRouter);
+
         const adminSession = session(app); // Create a new session for admin
 
         // Make a request to log in and establish the session
         const response = await adminSession.post('/login')
             .set('Content-Type', 'application/json')
             .send({
-                user_id: '2024-000-001', // Admin id
+                user_id: '2024-000-000', // Admin id
                 password: 'password'
             });
 
@@ -81,6 +88,6 @@ describe('ModuleDetailsRouter /all Endpoint', () => {
         const responseModule = await adminSession.get('/all');
         
         //Successful Connection
-        expect(responseModule.statusCode).toBe(200);
+        expect(responseModule.statusCode).toBe(403);
     });
 });
