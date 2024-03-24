@@ -8,7 +8,7 @@ import PromptPopup from "../../common/PromptPopup.vue";
 import PaymentInputPopup from "../../common/PaymentInputPopup.vue";
 import EditPaymentPopup from "../../common/EditPaymentPopup.vue";
 // Helpers
-import { formatEnum, downloadCSV, downloadZIP, duplicate } from "../../../util/helpers";
+import { formatEnum, downloadCSV, downloadZIP, downloadPDF, duplicate } from "../../../util/helpers";
 // Props
 defineProps({
     studentId: String,
@@ -1104,12 +1104,18 @@ export default {
             }
 
             await this.$axios
-                .get(`/download/student/pdf/${this.studentId}`)
+                .get(`/download/student/pdf/${this.studentId}`, { responseType: 'arraybuffer' })
                 // If successful
                 .then(({ data }) => {
+                    
+                    console.log(data);
+
+                    let decodedString = String.fromCharCode.apply(null, new Uint8Array(data));
+                    console.log(decodedString);
+
                     downloadPDF(
                         data,
-                        `${this.student.student_id} ${this.student.first_name} ${this.student.last_name} - Registration Form.zip`
+                        `${this.student.student_id} ${this.student.first_name} ${this.student.last_name} - Registration Form.pdf`
                     );
                 })
                 // If unsuccessful

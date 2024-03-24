@@ -118,17 +118,23 @@ export async function downloadZIP(zipString, filename) {
 }
 
 // Helper function to download PDF file
-export function downloadPDF(pdfString, filename) {
-    // If pdf is empty, do nothing
-    if (pdfString == null || pdfString.length === 0) return;
+export function downloadPDF(pdfBlob, filename) {
+
+    // If pdfBlob is empty, do nothing
+    if (pdfBlob == null || pdfBlob == undefined) return;
 
     // Add .pdf extension to filename if not already present
     if (!filename.endsWith(".pdf")) filename += ".pdf";
 
     // PDF file download
 
-    // Convert base64 string to blob
-    const blob = base64ToBlob(pdfString, "application/pdf");
+    console.log(pdfBlob instanceof Blob);
+    console.log(pdfBlob);
+
+    // Convert Buffer to Blob
+    let blob = new Blob([pdfBlob], {type: "application/pdf"});
+
+    console.log(blob);
 
     // Download link
     let downloadLink = document.createElement("a");

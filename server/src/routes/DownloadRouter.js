@@ -7,9 +7,9 @@ import { exclude, allowed } from "../utils/helpers.js";
 import JSZip from "jszip";
 import { parse as parseToCSV } from "json2csv";
 
-// Import pdftron
-import pkg from '@pdftron/pdfnet-node';
-const { PDFNet } = pkg;
+// Import PDF Generator
+import pkg from '../utils/pdf_generator.cjs';
+const generatePDF = pkg;
 
 // Express Router
 const DownloadRouter = express.Router();
@@ -74,7 +74,7 @@ DownloadRouter.get("/all", async (req, res) => {
         const blob = await zip.generateAsync({ type: "base64" });
         console.log(`ADMIN [${req.user.user_id}] EXPORTED the database`);
 
-        res.send(blob);
+        res.status(200).send(blob);
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -199,7 +199,7 @@ DownloadRouter.get("/modules", async (req, res) => {
         const blob = await zip.generateAsync({ type: "base64" });
         console.log(`ADMIN [${req.user.user_id}] EXPORTED all module data`);
 
-        res.send(blob);
+        res.status(200).send(blob);
     } catch (error) {
         // Return error
         res.status(404).send({ error: error.message });
@@ -328,7 +328,7 @@ DownloadRouter.get("/modules/:school_year", async (req, res) => {
         const blob = await zip.generateAsync({ type: "base64" });
         console.log(`ADMIN [${req.user.user_id}] EXPORTED the module data for ${school_year}`);
 
-        res.send(blob);
+        res.status(200).send(blob);
     } catch (error) {
         // Return error
         res.status(404).send({ error: error.message });
@@ -479,7 +479,7 @@ DownloadRouter.get("/student/:student_id", async (req, res) => {
         const blob = await zip.generateAsync({ type: "base64" });
         console.log(`ADMIN [${req.user.user_id}] EXPORTED the data of Student ${student_id}`);
 
-        res.send(blob);
+        res.status(200).send(blob);
     } catch (error) {
         // Return error
         res.status(404).send({ error: error.message });
@@ -564,66 +564,23 @@ DownloadRouter.get("/student/pdf/:student_id", async (req, res) => {
                 created_at: true,
             },
         });
-
         student["school_year"] = new Date().getFullYear();
 
-        const main = async function() {
-            const options = new PDFNet.Convert.OfficeToPDFOptions();
-        
-            // Create a TemplateDocument object from an input office file.
-            const templateDoc = await PDFNet.Convert.createOfficeTemplateWithPath("./../utils/Registration_Form_ECE.docx", options);
-        
-            // Fill the template with data from a JSON string, producing a PDF document.
-            const pdfDoc = await templateDoc.fillTemplateJson(student);
-        
-            // Save the PDF to a file.
-            await pdfDoc.save("cringe.pdf", PDFNet.SDFDoc.SaveOptions.e_linearized);
-        }
+        // Generate PDF as buffer
+        const buffer = await generatePDF();
+        console.log(`ADMIN [${req.user.user_id}] PRINTED the data of Student ${student_id}`);
 
-        // add your own license key as the second parameter, e.g. in place of 'YOUR_LICENSE_KEY'.
-        PDFNet.runWithCleanup(main, process.env.PDF_KEY).catch(function(error) {
-            console.log(error.message);
-        }).then(function(){ PDFNet.shutdown(); });
-        
+        // Set Headers
+        res.setHeader('Content-Type', 'application/pdf');
 
-        // const template = {
-        //     basePdf: registrationFormECEPDF,
-        //     schemas: [
-        //         {
-        //         a: {
-        //             type: 'text',
-        //             position: { x: 0, y: 0 },
-        //             width: 10,
-        //             height: 10,
-        //         },
-        //         b: {
-        //             type: 'text',
-        //             position: { x: 10, y: 10 },
-        //             width: 10,
-        //             height: 10,
-        //         },
-        //         c: {
-        //             type: 'text',
-        //             position: { x: 20, y: 20 },
-        //             width: 10,
-        //             height: 10,
-        //         },
-        //         },
-        //     ],
-        // };
-        // const inputs = [{ a: 'a1', b: 'b1', c: 'c1' }];
-        
-        // generate({ template, inputs }).then((pdf) => {
-        //     console.log(pdf);
-            
-        //     // Browser
-        //     const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
-        //     //console.log(`ADMIN [${req.user.user_id}] Printed the data of Student ${student_id}`);
-        //     res.status(200).send(blob);
-        // });
+        console.log(buffer)
+
+        // Send base64 string
+        res.status(200).send(buffer);
 
     } catch (error) {
         // Return error
+        console.log(`Error: ${error}`);
         res.status(404).send({ error: error.message });
     }
 });
