@@ -900,7 +900,6 @@ export default {
             await this.$axios
                 .get(`/students/id/${this.studentId}`)
                 .then(({ data }) => {
-                    console.log(data);
                     this.student = data;
                 })
                 .catch((error) => {

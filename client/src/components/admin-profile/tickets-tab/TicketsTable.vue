@@ -208,6 +208,7 @@ export default {
                 await this.$axios
                     .patch(`/tickets/${data.ticket_id}`, { status: data.status })
                     .catch((error) => {
+                        console.log(error);
                         errorsID.push(data.ticket_id);
                     });
             }

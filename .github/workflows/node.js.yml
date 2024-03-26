@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: neondatabase/reset-branch-action@v1
       with:
-        project_id: lucky-dawn-47393169
+        project_id: br-bold-dream-a16neu5t
         parent: true
         branch: test-database
         api_key: ${{ vars.NEON_API_KEY }}
