@@ -59,16 +59,6 @@ export function validateConfirmPasswordField (string, password, errorObject) {
     }
 }
 
-// Validate Address
-export function validateAddressField (string, errorObject) {
-    
-    if (string.length < 2 || string.length > 150) {
-        errorObject["address"] = "Address must be between 2 and 150 characters!";
-    } else {
-        delete errorObject["address"];
-    }
-}
-
 // Validate City
 export function validateMobileNumberField (string, errorObject) {
         
