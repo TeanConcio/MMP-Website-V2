@@ -8,7 +8,7 @@ import PromptPopup from "../../common/PromptPopup.vue";
 import PaymentInputPopup from "../../common/PaymentInputPopup.vue";
 import EditPaymentPopup from "../../common/EditPaymentPopup.vue";
 // Helpers
-import { formatEnum, downloadCSV, downloadZIP, duplicate } from "../../../util/helpers";
+import { formatEnum, downloadCSV, downloadZIP, downloadPDF, duplicate } from "../../../util/helpers";
 // Props
 defineProps({
     studentId: String,
@@ -713,6 +713,13 @@ defineEmits(["on-back"]);
                 >
                     Download All Student Data (.zip)
                 </button>
+                <button
+                    type="button"
+                    @click="printStudentData()"
+                    class="w-full sm:w-auto ml-auto mr-10 md:px-10 px-3 py-3 mt-5 text-base font-medium text-center text-white bg-highlight rounded-lg hover:bg-highlight_hover"
+                >
+                    Print Student Registration Form (.pdf)
+                </button>
             </div>
         </div>
     </div>
@@ -1082,6 +1089,27 @@ export default {
                     downloadZIP(
                         data,
                         `${this.student.student_id} ${this.student.first_name} ${this.student.last_name} - Student Data.zip`
+                    );
+                })
+                // If unsuccessful
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        // Print
+        async printStudentData() {
+            if (this.editMode) {
+                this.currentPopup = "editing-error";
+                return;
+            }
+
+            await this.$axios
+                .get(`/download/student/pdf/${this.studentId}`)
+                // If successful
+                .then(({ data }) => {
+                    downloadPDF(
+                        data,
+                        `${this.student.student_id} ${this.student.first_name} ${this.student.last_name} - Registration Form.pdf`
                     );
                 })
                 // If unsuccessful
