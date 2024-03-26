@@ -8,7 +8,7 @@ import PromptPopup from "../../common/PromptPopup.vue";
 import PaymentInputPopup from "../../common/PaymentInputPopup.vue";
 import EditPaymentPopup from "../../common/EditPaymentPopup.vue";
 // Helpers
-import { formatEnum, downloadCSV, downloadZIP, downloadPDF, duplicate } from "../../../util/helpers";
+import { formatEnum, downloadZIP, downloadPDF, duplicate } from "../../../util/helpers";
 // Validators
 import {
     validateNameField,
