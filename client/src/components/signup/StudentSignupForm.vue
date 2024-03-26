@@ -48,16 +48,16 @@ import {
                         </label>
                         <input
                             type="first_name"
-                            id="firstname"
+                            id="first_name"
                             class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="First Name"
                             required
                             autocomplete="off"
-                            v-model="firstname"
+                            v-model="first_name"
                         />
-                        <div class="input-errors" v-if="errors.firstname">
+                        <div class="input-errors" v-if="errors.first_name">
                             <div class="block mb-2 text-sm font-medium text-red-500">
-                                {{ errors.firstname }}
+                                {{ errors.first_name }}
                             </div>
                         </div>
                     </div>
@@ -70,16 +70,16 @@ import {
                         >
                         <input
                             type="last_name"
-                            id="lastname"
+                            id="last_name"
                             class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                             placeholder="Last Name"
                             required
                             autocomplete="off"
-                            v-model="lastname"
+                            v-model="last_name"
                         />
-                        <div class="input-errors" v-if="errors.lastname">
+                        <div class="input-errors" v-if="errors.last_name">
                             <div class="block mb-2 text-sm font-medium text-red-500">
-                                {{ errors.lastname }}
+                                {{ errors.last_name }}
                             </div>
                         </div>
                     </div>
@@ -93,15 +93,15 @@ import {
                     >
                     <input
                         type="middle_name"
-                        id="middlename"
+                        id="middle_name"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="Middle Name"
                         autocomplete="off"
-                        v-model="middlename"
+                        v-model="middle_name"
                     />
-                    <div class="input-errors" v-if="errors.middlename">
+                    <div class="input-errors" v-if="errors.middle_name">
                         <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.middlename }}
+                            {{ errors.middle_name }}
                         </div>
                     </div>
                 </div>
@@ -234,11 +234,11 @@ import {
                             placeholder="09XXXXXXXXX"
                             required
                             autocomplete="off"
-                            v-model="mobile_no"
+                            v-model="mobile_number"
                         />
-                        <div class="input-errors" v-if="errors.mobile_no">
+                        <div class="input-errors" v-if="errors.mobile_number">
                             <div class="block mb-2 text-sm font-medium text-red-500">
-                                {{ errors.mobile_no }}
+                                {{ errors.mobile_number }}
                             </div>
                         </div>
                     </div>
@@ -492,12 +492,12 @@ import {
                             type="checkbox"
                             value=""
                             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            v-model="isPartner"
+                            v-model="is_partner_school"
                         />
 
-                        <div class="input-errors" v-if="errors.isPartner">
+                        <div class="input-errors" v-if="errors.is_partner_school">
                             <div class="block mb-2 text-sm font-medium text-red-500">
-                                {{ errors.isPartner }}
+                                {{ errors.is_partner_school }}
                             </div>
                         </div>
 
@@ -801,11 +801,11 @@ import {
                         placeholder="09XXXXXXXXX"
                         required
                         autocomplete="off"
-                        v-model="emergency_number"
+                        v-model="emergency_mobile_number"
                     />
-                    <div class="input-errors" v-if="errors.emergency_number">
+                    <div class="input-errors" v-if="errors.emergency_mobile_number">
                         <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.emergency_number }}
+                            {{ errors.emergency_mobile_number }}
                         </div>
                     </div>
                 </div>
@@ -921,15 +921,15 @@ export default {
     //  this is the data that will be used in the form
     data() {
         return {
-            firstname: "",
-            lastname: "",
-            middlename: "",
+            first_name: "",
+            last_name: "",
+            middle_name: "",
             email: "",
             track: "",
             password: "",
             confirmPassword: "",
             address: "",
-            mobile_no: "",
+            mobile_number: "",
             landline: "",
             birthdate: "",
             birthplace: "",
@@ -940,7 +940,7 @@ export default {
             occupation: "",
             school: "",
             admin: "",
-            isPartner: false,
+            is_partner_school: false,
             church: "",
             pastor: "",
             gradeschool: "",
@@ -957,7 +957,7 @@ export default {
             essay: "",
             emergency_name: "",
             emergency_address: "",
-            emergency_number: "",
+            emergency_mobile_number: "",
             agreeTerms: false,
             errors: {},
             // Popups
@@ -977,9 +977,9 @@ export default {
 
         // Trim inputs
         trimInputs() {
-            this.firstname = this.firstname.trim();
-            this.lastname = this.lastname.trim();
-            this.middlename = this.middlename.trim();
+            this.first_name = this.first_name.trim();
+            this.last_name = this.last_name.trim();
+            this.middle_name = this.middle_name.trim();
             this.email = this.email.trim();
             this.password = this.password.trim();;
             this.confirmPassword = this.confirmPassword.trim();
@@ -1017,10 +1017,10 @@ export default {
         async signup() {
             //Get the student info object
             let student = {
-                first_name: this.firstname,
-                last_name: this.lastname,
+                first_name: this.first_name,
+                last_name: this.last_name,
                 address: this.address,
-                mobile_number: this.mobile_no,
+                mobile_number: this.mobile_number,
                 landline: this.landline,
                 email: this.email,
                 birthdate: this.birthdate,
@@ -1034,7 +1034,7 @@ export default {
                 admin: this.admin,
                 church: this.church,
                 pastor: this.pastor,
-                is_partner_school: this.isPartner,
+                is_partner_school: this.is_partner_school,
                 others: this.others,
                 gradeschool_completed: this.gradeschool_completed,
                 highschool_completed: this.highschool_completed,
@@ -1043,15 +1043,15 @@ export default {
                 essay: this.essay,
                 emergency_name: this.emergency_name,
                 emergency_address: this.emergency_address,
-                emergency_mobile_number: this.emergency_number,
+                emergency_mobile_number: this.emergency_mobile_number,
                 password: this.password,
                 status: "FOR_APPROVAL",
                 track: this.track,
             };
 
             // Add optional fields if they have a value
-            if (this.middlename.length > 0) {
-                student["middle_name"] = this.middlename;
+            if (this.middle_name.length > 0) {
+                student["middle_name"] = this.middle_name;
             }
 
             if (this.gradeschool.length > 0) {
@@ -1139,18 +1139,18 @@ export default {
             }
         },
         validateFirstName() {
-            validateNameField(this.firstname, "firstname", this.errors);
+            validateNameField(this.first_name, "first_name", this.errors);
         },
         validateLastName() {
-            validateNameField(this.lastname, "lastname", this.errors);
+            validateNameField(this.last_name, "last_name", this.errors);
         },
         validateMiddleName() {
-            if (this.middlename.length === 0) {
-                delete this.errors["middlename"];
+            if (this.middle_name.length === 0) {
+                delete this.errors["middle_name"];
                 return;
             }
 
-            validateNameField(this.middlename, "middlename", this.errors);
+            validateNameField(this.middle_name, "middle_name", this.errors);
         },
         validateEmail() {
             validateEmailField(this.email, this.errors);
@@ -1173,7 +1173,7 @@ export default {
             validate150StringField(this.address, "address", this.errors);
         },
         validateMobileNumber() {
-            validateMobileNumberField(this.mobile_no, this.errors);
+            validateMobileNumberField(this.mobile_number, this.errors);
         },
         validateLandline() {
             validateLandlineField(this.landline, this.errors);
@@ -1216,7 +1216,7 @@ export default {
             validate150StringField(this.admin, "admin", this.errors);
         },
         validateIsPartner() {
-            validateBooleanField(this.isPartner, "isPartner", this.errors);
+            validateBooleanField(this.is_partner_school, "is_partner_school", this.errors);
         },
         validateChurch() {
             validate150StringField(this.church, "church", this.errors);
@@ -1360,7 +1360,7 @@ export default {
             validate150StringField(this.emergency_address, "emergency_address", this.errors);
         },
         validateEmergencyNumber() {
-            validateMobileNumberField(this.emergency_number, this.errors);
+            validateMobileNumberField(this.emergency_mobile_number, this.errors);
         },
         validateAgreeTerms() {
             if (!this.agreeTerms) {
@@ -1371,13 +1371,13 @@ export default {
         },
     },
     watch: {
-        firstname() {
+        first_name() {
             this.validateFirstName();
         },
-        lastname() {
+        last_name() {
             this.validateLastName();
         },
-        middlename() {
+        middle_name() {
             this.validateMiddleName();
         },
         email() {
@@ -1395,7 +1395,7 @@ export default {
         address() {
             this.validateAddress();
         },
-        mobile_no() {
+        mobile_number() {
             this.validateMobileNumber();
         },
         landline() {
@@ -1428,7 +1428,7 @@ export default {
         admin() {
             this.validateAdmin();
         },
-        isPartner() {
+        is_partner_school() {
             this.validateIsPartner();
         },
         church() {
@@ -1491,7 +1491,7 @@ export default {
         emergency_address() {
             this.validateEmergencyAddress();
         },
-        emergency_number() {
+        emergency_mobile_number() {
             this.validateEmergencyNumber();
         },
         agreeTerms() {

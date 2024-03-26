@@ -7,8 +7,7 @@ import {
     validateStatusReqBody,
     cleanStatusObject,
 } from "../validators/StudentsValidator.js";
-//import { validatePasswordBody, cleanPasswordObject } from "../validators/PasswordValidator.js";
-import { validatePasswordBody } from "../validators/PasswordValidator.js";
+import { validatePasswordBody, cleanPasswordObject } from "../validators/PasswordValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { getLatestIDSegments, exclude, allowed, generatePasswordHash } from "../utils/helpers.js";
 import { sendEmail } from "../utils/email_service.js";
@@ -717,7 +716,7 @@ StudentsRouter.patch("/:student_id", validateStudentReqBody(), async (req, res) 
             throw new Error("Student does not exist");
         }
 
-        // Get updated info from req.body
+        // Get updated info from req.body and exclude password
         const updatedData = exclude(parser(cleanStudentObject(req.body)), ["password"]);
 
         // Update student in database
@@ -836,15 +835,14 @@ StudentsRouter.patch("/update_password/:student_id", validatePasswordBody(), asy
         }
 
         // Update password in database
-        //const updatedData = cleanPasswordObject(req.body);
+        const updatedData = cleanPasswordObject(req.body);
         
         // Get updated info from req.body
         await prisma.Students.update({
             where: {
                 student_id: student_id,
             },
-            //data: updatedData,
-            data: req.body,
+            data: updatedData,
         });
 
         res.status(200).send({ message: "Password successfully changed" });
