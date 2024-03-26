@@ -137,7 +137,7 @@ StudentsRouter.get("/id/:student_id", async (req, res) => {
 
         // Get student from database
         let student = null;
-        if (req.permission === 3) {
+        if (req.permission === 3 || req.user.user_id === student_id) {
             student = await prisma.Students.findUnique({
                 where: {
                     student_id: student_id,
