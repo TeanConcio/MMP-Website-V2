@@ -1,7 +1,7 @@
 import { formatEnum } from "./helpers.js";
 
 // Validate Name
-export function validateName (string, fieldName, errorObject) {
+export function validateNameField (string, fieldName, errorObject) {
 
     if (string.length < 2 || string.length > 50) {
         errorObject[fieldName] = "Must be between 2 and 50 characters!";
@@ -13,7 +13,7 @@ export function validateName (string, fieldName, errorObject) {
 }
 
 // Validate Long Name
-export function validateLongName (string, fieldName, errorObject) {
+export function validateLongNameField (string, fieldName, errorObject) {
 
     if (string.length < 2 || string.length > 150) {
         errorObject[fieldName] = "Must be between 2 and 150 characters!";
@@ -25,7 +25,7 @@ export function validateLongName (string, fieldName, errorObject) {
 }
 
 // Validate Email
-export function validateEmail (string, errorObject) {
+export function validateEmailField (string, errorObject) {
     
     const emailPattern =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -40,7 +40,7 @@ export function validateEmail (string, errorObject) {
 }
 
 // Validate Password
-export function validatePassword (string, errorObject) {
+export function validatePasswordField (string, errorObject) {
 
     if (string.length < 8 || string.length > 40) {
         errorObject["password"] = "Password must be between 8 and 40 characters!";
@@ -50,7 +50,7 @@ export function validatePassword (string, errorObject) {
 }
 
 // Validate Confirm Password
-export function validateConfirmPassword (string, password, errorObject) {
+export function validateConfirmPasswordField (string, password, errorObject) {
     
     if (string !== password) {
         errorObject["confirmPassword"] = "Passwords must match!";
@@ -60,7 +60,7 @@ export function validateConfirmPassword (string, password, errorObject) {
 }
 
 // Validate Address
-export function validateAddress (string, errorObject) {
+export function validateAddressField (string, errorObject) {
     
     if (string.length < 2 || string.length > 150) {
         errorObject["address"] = "Address must be between 2 and 150 characters!";
@@ -70,7 +70,7 @@ export function validateAddress (string, errorObject) {
 }
 
 // Validate City
-export function validateMobileNumber (string, errorObject) {
+export function validateMobileNumberField (string, errorObject) {
         
     const mobilePattern = /^09[0-9]{9}$/;
 
@@ -82,7 +82,7 @@ export function validateMobileNumber (string, errorObject) {
 }
 
 // Validate Landline
-export function validateLandline (string, errorObject) {
+export function validateLandlineField (string, errorObject) {
         
     const landlinePattern = /^[0-9]{8}$/;
 
@@ -94,7 +94,7 @@ export function validateLandline (string, errorObject) {
 }
 
 // Validate Birthdate
-export function validateBirthdate (string, errorObject) {
+export function validateBirthdateField (string, errorObject) {
         
     if (Date.parse(string) === NaN) {
         errorObject["birthdate"] = "Must be a valid date";
@@ -104,7 +104,7 @@ export function validateBirthdate (string, errorObject) {
 }
 
 // Validate 150 String
-export function validate150String (string, fieldName, errorObject) {
+export function validate150StringField (string, fieldName, errorObject) {
 
     if (string.length < 2 || string.length > 150) {
         errorObject[fieldName] = "Must be between 2 and 150 characters!";
@@ -114,7 +114,7 @@ export function validate150String (string, fieldName, errorObject) {
 }
 
 // Validate 30 String
-export function validate30String (string, fieldName, errorObject) {
+export function validate30StringField (string, fieldName, errorObject) {
     
     if (string.length < 2 || string.length > 30) {
         errorObject[fieldName] = "Must be between 2 and 30 characters!";
@@ -124,7 +124,7 @@ export function validate30String (string, fieldName, errorObject) {
 }
 
 // Validate 200 String
-export function validate200String (string, fieldName, errorObject) {
+export function validate200StringField (string, fieldName, errorObject) {
     
     if (string.length < 2 || string.length > 200) {
         errorObject[fieldName] = "Must be between 2 and 200 characters!";
@@ -134,7 +134,7 @@ export function validate200String (string, fieldName, errorObject) {
 }
 
 // Validate Enum
-export function validateEnum (string, fieldName, enumChoices, errorObject) {
+export function validateEnumField (string, fieldName, enumChoices, errorObject) {
     
     if (!enumChoices.includes(string)) {
         enumChoices = enumChoices.map((choice) => formatEnum(choice));
@@ -145,7 +145,7 @@ export function validateEnum (string, fieldName, enumChoices, errorObject) {
 }
 
 // Validate Number
-export function validateNumber (number, fieldName, errorObject) {
+export function validateNumberField (number, fieldName, errorObject) {
         
     if (number < 0 || number > 99) {
         errorObject[fieldName] = "Must be between 0 and 99!";
@@ -155,7 +155,7 @@ export function validateNumber (number, fieldName, errorObject) {
 }
 
 // Validate Boolean
-export function validateBoolean (boolean, fieldName, errorObject) {
+export function validateBooleanField (boolean, fieldName, errorObject) {
         
     if (boolean !== true && boolean !== false) {
         errorObject[fieldName] = "Must be true or false!";
@@ -165,7 +165,7 @@ export function validateBoolean (boolean, fieldName, errorObject) {
 }
 
 // Validate Text Area
-export function validateTextArea (string, fieldName, errorObject) {
+export function validateTextAreaField (string, fieldName, errorObject) {
     
     if (string.length < 1) {
         errorObject[fieldName] = "Field is required!";
