@@ -1,42 +1,28 @@
-// Convert import to require
-const { BLANK_PDF } = require('@pdfme/common');
+// Import the required modules
+
+// PDF Generator
 const { generate } = require('@pdfme/generator');
+
+// PDF Template
+const registrationPDFTemplate = require("../files/RegistrationPDFTemplate.cjs");
+
+// Debugging
+//const { BLANK_PDF } = require('@pdfme/common');
 // const fs = require('fs');
 // const path = require('path');
 
 
-async function generatePDF() {
-    
-    const template = {
-        basePdf: BLANK_PDF,
-        schemas: [
-            {
-                a: {
-                    type: 'text',
-                    position: { x: 0, y: 0 },
-                    width: 10,
-                    height: 10,
-                    },
-                    b: {
-                    type: 'text',
-                    position: { x: 10, y: 10 },
-                    width: 10,
-                    height: 10,
-                    },
-                    c: {
-                    type: 'text',
-                    position: { x: 20, y: 20 },
-                    width: 10,
-                    height: 10,
-                },
-            },
-        ],
-    };
-    
-    const inputs = [{ a: 'a1', b: 'b1', c: 'c1' }];
+async function generatePDF(data) {
+
+    const templateData = registrationPDFTemplate();
 
     try {
-        const pdf = await generate({ template, inputs });
+        const pdf = await generate({ 
+            template: templateData.template, 
+            plugins: templateData.plugins, 
+            inputs: [data],
+            options: templateData.options
+        });
 
         // Save PDF to file
         //fs.writeFileSync(path.join(__dirname, `test.pdf`), pdf);

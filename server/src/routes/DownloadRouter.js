@@ -518,8 +518,8 @@ DownloadRouter.get("/student/pdf/:student_id", async (req, res) => {
         }
 
         // Get student from database
-        let student = null;
-        student = await prisma.Students.findUnique({
+        let studentData = null;
+        studentData = await prisma.Students.findUnique({
             where: {
                 student_id: student_id,
             },
@@ -551,25 +551,37 @@ DownloadRouter.get("/student/pdf/:student_id", async (req, res) => {
                 graduate_course: true,
                 graduate: true,
                 others: true,
-                gradeschool_completed: true,
-                highschool_completed: true,
-                college_completed: true,
-                graduate_completed: true,
                 essay: true,
                 emergency_name: true,
                 emergency_address: true,
                 emergency_mobile_number: true,
-                status: true,
-                track: true,
-                created_at: true,
             },
         });
-        student["school_year"] = new Date().getFullYear();
+
+        // Format Student Data
+        studentData["school_year"] = new Date().getFullYear().toString();
+        studentData["full_name"] = `${studentData.first_name} ${studentData.middle_name} ${studentData.last_name}`;
+        studentData["college_w_course"] = `${studentData.college} (${studentData.college_course})`;
+        studentData["graduate_w_course"] = `${studentData.graduate} (${studentData.graduate_course})`;
+        let date = studentData["birthdate"] // use your date here
+        studentData["birthdate"] = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+        studentData["no_of_children"] = studentData["no_of_children"].toString();
+        switch (studentData["is_partner_school"]) {
+            case true:
+                studentData["is_partner_school"] = "YES";
+                break;
+            case false:
+                studentData["is_partner_school"] = "NO";
+                break;
+            default:
+                studentData["is_partner_school"] = "NO";
+                break;
+        }
 
         console.log(`ADMIN [${req.user.user_id}] PRINTED the data of Student ${student_id}`);
 
         // Generate PDF as buffer
-        const buffer = await generatePDF();
+        const buffer = await generatePDF(studentData);
 
         // Set Headers
         res.setHeader('Content-Type', 'application/pdf');
