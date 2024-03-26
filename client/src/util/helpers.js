@@ -118,23 +118,24 @@ export async function downloadZIP(zipString, filename) {
 }
 
 // Helper function to download PDF file
-export function downloadPDF(pdfBlob, filename) {
+export function downloadPDF(pdfString, filename) {
 
-    // If pdfBlob is empty, do nothing
-    if (pdfBlob == null || pdfBlob == undefined) return;
+    // If pdfString is empty, do nothing
+    if (pdfString == null || pdfString == undefined) return;
 
     // Add .pdf extension to filename if not already present
     if (!filename.endsWith(".pdf")) filename += ".pdf";
 
-    // PDF file download
+    // Convert base64 string to binary data
+    let pdfData = atob(pdfString);
+    let pdfArray = new Uint8Array(new ArrayBuffer(pdfData.length));
 
-    console.log(pdfBlob instanceof Blob);
-    console.log(pdfBlob);
+    for (let i = 0; i < pdfData.length; i++) {
+        pdfArray[i] = pdfData.charCodeAt(i);
+    }
 
-    // Convert Buffer to Blob
-    let blob = new Blob([pdfBlob], {type: "application/pdf"});
-
-    console.log(blob);
+    // Create a Blob from the PDF data
+    let blob = new Blob([pdfArray], { type: 'application/pdf' });
 
     // Download link
     let downloadLink = document.createElement("a");

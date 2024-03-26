@@ -1104,15 +1104,9 @@ export default {
             }
 
             await this.$axios
-                .get(`/download/student/pdf/${this.studentId}`, { responseType: 'arraybuffer' })
+                .get(`/download/student/pdf/${this.studentId}`)
                 // If successful
                 .then(({ data }) => {
-                    
-                    console.log(data);
-
-                    let decodedString = String.fromCharCode.apply(null, new Uint8Array(data));
-                    console.log(decodedString);
-
                     downloadPDF(
                         data,
                         `${this.student.student_id} ${this.student.first_name} ${this.student.last_name} - Registration Form.pdf`

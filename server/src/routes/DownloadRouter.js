@@ -566,17 +566,23 @@ DownloadRouter.get("/student/pdf/:student_id", async (req, res) => {
         });
         student["school_year"] = new Date().getFullYear();
 
+        console.log(`ADMIN [${req.user.user_id}] PRINTED the data of Student ${student_id}`);
+
         // Generate PDF as buffer
         const buffer = await generatePDF();
-        console.log(`ADMIN [${req.user.user_id}] PRINTED the data of Student ${student_id}`);
 
         // Set Headers
         res.setHeader('Content-Type', 'application/pdf');
 
+        console.log(buffer instanceof Buffer)
         console.log(buffer)
 
-        // Send base64 string
-        res.status(200).send(buffer);
+        // Convert buffer to base64
+        let bufferFromAB = Buffer.from(buffer);
+        const base64 = bufferFromAB.toString('base64');
+
+        // Send response
+        res.status(200).send(base64);
 
     } catch (error) {
         // Return error
