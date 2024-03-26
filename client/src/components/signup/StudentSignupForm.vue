@@ -4,22 +4,21 @@ import ErrorMessagePopup from "../../components/common/ErrorMessagePopup.vue";
 import LoadingSpinner from "../common/LoadingSpinner.vue";
 // Validators
 import {
-    validateName,
-    validateLongName,
-    validateEmail,
-    validatePassword,
-    validateConfirmPassword,
-    validateAddress,
-    validateMobileNumber,
-    validateLandline,
-    validateBirthdate,
-    validate150String,
-    validate30String,
-    validate200String,
-    validateEnum,
-    validateNumber,
-    validateBoolean,
-    validateTextArea
+    validateNameField,
+    validateLongNameField,
+    validateEmailField,
+    validatePasswordField,
+    validateConfirmPasswordField,
+    validateMobileNumberField,
+    validateLandlineField,
+    validateBirthdateField,
+    validate150StringField,
+    validate30StringField,
+    validate200StringField,
+    validateEnumField,
+    validateNumberField,
+    validateBooleanField,
+    validateTextAreaField
 } from "../../util/validators";
 </script>
 
@@ -926,6 +925,7 @@ export default {
             lastname: "",
             middlename: "",
             email: "",
+            track: "",
             password: "",
             confirmPassword: "",
             address: "",
@@ -958,7 +958,6 @@ export default {
             emergency_name: "",
             emergency_address: "",
             emergency_number: "",
-            track: "",
             agreeTerms: false,
             errors: {},
             // Popups
@@ -1102,9 +1101,9 @@ export default {
             this.validateLastName();
             this.validateMiddleName();
             this.validateEmail();
+            this.validateTrack();
             this.validatePassword();
             this.validateConfirmPassword();
-            this.validateTrack();
             this.validateAddress();
             this.validateMobileNumber();
             this.validateLandline();
@@ -1123,8 +1122,8 @@ export default {
             this.validateGradeschool();
             this.validateHighschool();
             this.validateCollege();
-            this.validateGraduate();
             this.validateCollegeCourse();
+            this.validateGraduate();
             this.validateGraduateCourse();
             this.validateOthers();
             this.validateEssay();
@@ -1140,10 +1139,10 @@ export default {
             }
         },
         validateFirstName() {
-            validateName(this.firstname, "firstname", this.errors);
+            validateNameField(this.firstname, "firstname", this.errors);
         },
         validateLastName() {
-            validateName(this.lastname, "lastname", this.errors);
+            validateNameField(this.lastname, "lastname", this.errors);
         },
         validateMiddleName() {
             if (this.middlename.length === 0) {
@@ -1151,37 +1150,45 @@ export default {
                 return;
             }
 
-            validateName(this.middlename, "middlename", this.errors);
+            validateNameField(this.middlename, "middlename", this.errors);
         },
         validateEmail() {
-            validateEmail(this.email, this.errors);
+            validateEmailField(this.email, this.errors);
+        },
+        validateTrack() {
+            validateEnumField(
+                this.track, 
+                "track", 
+                ["ADMIN", "TEACHER", "BOTH"], 
+                this.errors
+            );
         },
         validatePassword() {
-            validatePassword(this.password, this.errors);
+            validatePasswordField(this.password, this.errors);
         },
         validateConfirmPassword() {
-            validateConfirmPassword(this.confirmPassword, this.password, this.errors);
+            validateConfirmPasswordField(this.confirmPassword, this.password, this.errors);
         },
         validateAddress() {
-            validate150String(this.address, "address", this.errors);
+            validate150StringField(this.address, "address", this.errors);
         },
         validateMobileNumber() {
-            validateMobileNumber(this.mobile_no, this.errors);
+            validateMobileNumberField(this.mobile_no, this.errors);
         },
         validateLandline() {
-            validateLandline(this.landline, this.errors);
+            validateLandlineField(this.landline, this.errors);
         },
         validateBirthdate() {
-            validateBirthdate(this.birthdate, this.errors);
+            validateBirthdateField(this.birthdate, this.errors);
         },
         validateBirthplace() {
-            validate150String(this.birthplace, "birthplace", this.errors);
+            validate150StringField(this.birthplace, "birthplace", this.errors);
         },
         validateNationality() {
-            validate150String(this.nationality, "nationality", this.errors);
+            validate150StringField(this.nationality, "nationality", this.errors);
         },
         validateGender() {
-            validateEnum(
+            validateEnumField(
                 this.gender, 
                 "gender", 
                 ["MALE", "FEMALE", "OTHERS"], 
@@ -1189,7 +1196,7 @@ export default {
             );
         },
         validateCivilStatus() {
-            validateEnum(
+            validateEnumField(
                 this.civil_status,
                 "civil_status",
                 ["SINGLE", "MARRIED", "WIDOWED", "ANNULLED"],
@@ -1197,25 +1204,25 @@ export default {
             );
         },
         validateNoOfChildren() {
-            validateNumber(this.no_of_children, "no_of_children", this.errors);
+            validateNumberField(this.no_of_children, "no_of_children", this.errors);
         },
         validateOccupation() {
-            validate30String(this.occupation, "occupation", this.errors);
+            validate30StringField(this.occupation, "occupation", this.errors);
         },
         validateSchool() {
-            validate30String(this.school, "school", this.errors);
+            validate30StringField(this.school, "school", this.errors);
         },
         validateAdmin() {
-            validate150String(this.admin, "admin", this.errors);
+            validate150StringField(this.admin, "admin", this.errors);
         },
         validateIsPartner() {
-            validateBoolean(this.isPartner, "isPartner", this.errors);
+            validateBooleanField(this.isPartner, "isPartner", this.errors);
         },
         validateChurch() {
-            validate150String(this.church, "church", this.errors);
+            validate150StringField(this.church, "church", this.errors);
         },
         validatePastor() {
-            validate150String(this.pastor, "pastor", this.errors);
+            validate150StringField(this.pastor, "pastor", this.errors);
         },
         validateGradeschool() {
             if (this.gradeschool.length > 50) {
@@ -1340,28 +1347,20 @@ export default {
                 delete this.errors["graduate_course"];
             }
         },
-        validateTrack() {
-            validateEnum(
-                this.track, 
-                "track", 
-                ["ADMIN", "TEACHER", "BOTH"], 
-                this.errors
-            );
-        },
         validateOthers() {
-            validate200String(this.others, "others", this.errors);
+            validate200StringField(this.others, "others", this.errors);
         },
         validateEssay() {
-            validateTextArea(this.essay, "essay", this.errors);
+            validateTextAreaField(this.essay, "essay", this.errors);
         },
         validateEmergencyName() {
-            validateLongName(this.emergency_name, "emergency_name", this.errors);
+            validateLongNameField(this.emergency_name, "emergency_name", this.errors);
         },
         validateEmergencyAddress() {
-            validate150String(this.emergency_address, "emergency_address", this.errors);
+            validate150StringField(this.emergency_address, "emergency_address", this.errors);
         },
         validateEmergencyNumber() {
-            validateMobileNumber(this.emergency_number, this.errors);
+            validateMobileNumberField(this.emergency_number, this.errors);
         },
         validateAgreeTerms() {
             if (!this.agreeTerms) {
@@ -1384,11 +1383,11 @@ export default {
         email() {
             this.validateEmail();
         },
-        password() {
-            this.validatePassword();
-        },
         track() {
             this.validateTrack();
+        },
+        password() {
+            this.validatePassword();
         },
         confirmPassword() {
             this.validateConfirmPassword();
@@ -1462,18 +1461,18 @@ export default {
             this.validateCollegeCourse();
             this.validateGraduateCourse();
         },
+        college_course() {
+            this.validateCollege();
+            this.validateCollegeCourse();
+            this.validateGraduate();
+            this.validateGraduateCourse();
+        },
         graduate() {
             this.validateGradeschool();
             this.validateHighschool();
             this.validateCollege();
             this.validateGraduate();
             this.validateCollegeCourse();
-            this.validateGraduateCourse();
-        },
-        college_course() {
-            this.validateCollege();
-            this.validateCollegeCourse();
-            this.validateGraduate();
             this.validateGraduateCourse();
         },
         graduate_course() {
