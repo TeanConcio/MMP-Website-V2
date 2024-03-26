@@ -247,10 +247,20 @@ export default {
         addEditedIndex(index) {
             // if the status is changed, add the ticket ID and status to the editArray
             if (this.TicketArray[index].status !== this.statusArray[index]) {
-                this.editArray.push({
-                    ticket_id: this.TicketArray[index].ticket_id,
-                    status: this.statusArray[index],
-                });
+
+                // Update the status of the ticket in editArray if it already exists, if not, then add it
+                let found = this.editArray.find(
+                    (element) => element.ticket_id === this.TicketArray[index].ticket_id
+                );
+                if (found) {
+                    found.status = this.statusArray[index];
+                } else {
+                    this.editArray.push({
+                        ticket_id: this.TicketArray[index].ticket_id,
+                        status: this.statusArray[index],
+                    });
+                }
+                
             } else { // if the status is changed back to the original, remove the ticket ID and status from the editArray
                 this.editArray = this.editArray.filter(
                     (element) => element.ticket_id !== this.TicketArray[index].ticket_id
