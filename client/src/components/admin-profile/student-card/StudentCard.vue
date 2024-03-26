@@ -568,7 +568,7 @@ defineEmits(["on-back"]);
                 <div class="mb-6">
                     <div class="block mb-1 font-medium text-gray-900 dark:text-white">Landline</div>
                     <input
-                        type="number"
+                        type="text"
                         v-model="student.landline"
                         :disabled="!editMode"
                         placeholder="Landline"
@@ -653,7 +653,7 @@ defineEmits(["on-back"]);
                         Mobile Number
                     </div>
                     <input
-                        type="string"
+                        type="text"
                         v-model="student.emergency_mobile_number"
                         :disabled="!editMode"
                         placeholder="Emergency Mobile Number"
@@ -1192,7 +1192,7 @@ export default {
             validate150StringField(this.student.address, "address", this.errors);
         },
         validateMobileNumber() {
-            validateMobileNumberField(this.student.mobile_number, this.errors);
+            validateMobileNumberField(this.student.mobile_number, "mobile_number", this.errors);
         },
         validateLandline() {
             validateLandlineField(this.student.landline, this.errors);
@@ -1374,7 +1374,7 @@ export default {
             validate150StringField(this.student.emergency_address, "emergency_address", this.errors);
         },
         validateEmergencyNumber() {
-            validateMobileNumberField(this.student.emergency_mobile_number, this.errors);
+            validateMobileNumberField(this.student.emergency_mobile_number, "emergency_mobile_number", this.errors);
         },
     },
     watch: {

@@ -60,14 +60,14 @@ export function validateConfirmPasswordField (string, password, errorObject) {
 }
 
 // Validate City
-export function validateMobileNumberField (string, errorObject) {
+export function validateMobileNumberField (number, fieldName, errorObject) {
         
     const mobilePattern = /^09[0-9]{9}$/;
 
-    if (mobilePattern.test(string) === false) {
-        errorObject["mobile_no"] = "Must be a valid Philippine mobile number";
+    if (mobilePattern.test(number) === false) {
+        errorObject[fieldName] = "Must be a valid Philippine mobile number";
     } else {
-        delete errorObject["mobile_no"];
+        delete errorObject[fieldName];
     }
 }
 

@@ -47,7 +47,7 @@ import {
                             First Name<span class="text-required_red">*</span>
                         </label>
                         <input
-                            type="first_name"
+                            type="text"
                             id="first_name"
                             class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="First Name"
@@ -69,7 +69,7 @@ import {
                             >Last Name<span class="text-required_red">*</span></label
                         >
                         <input
-                            type="last_name"
+                            type="text"
                             id="last_name"
                             class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                             placeholder="Last Name"
@@ -92,7 +92,7 @@ import {
                         >Middle Name</label
                     >
                     <input
-                        type="middle_name"
+                        type="text"
                         id="middle_name"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="Middle Name"
@@ -204,7 +204,7 @@ import {
                         Address<span class="text-required_red">*</span>
                     </label>
                     <input
-                        type="address"
+                        type="text"
                         id="address"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Address"
@@ -228,7 +228,7 @@ import {
                             Mobile Number<span class="text-required_red">*</span>
                         </label>
                         <input
-                            type="string"
+                            type="text"
                             id="mobile"
                             class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="09XXXXXXXXX"
@@ -251,7 +251,7 @@ import {
                             Landline Number<span class="text-required_red">*</span>
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             id="landline"
                             class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="12345678"
@@ -749,7 +749,7 @@ import {
                         Full Name<span class="text-required_red">*</span>
                     </label>
                     <input
-                        type="emergency_name"
+                        type="text"
                         id="emergencyname"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Emergency Contact Name"
@@ -772,7 +772,7 @@ import {
                         Emergency Address<span class="text-required_red">*</span>
                     </label>
                     <input
-                        type="address"
+                        type="text"
                         id="emergencyaddress"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Address"
@@ -795,7 +795,7 @@ import {
                         Emergency Number<span class="text-required_red">*</span>
                     </label>
                     <input
-                        type="string"
+                        type="text"
                         id="emergencymobile"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="09XXXXXXXXX"
@@ -1173,7 +1173,7 @@ export default {
             validate150StringField(this.address, "address", this.errors);
         },
         validateMobileNumber() {
-            validateMobileNumberField(this.mobile_number, this.errors);
+            validateMobileNumberField(this.mobile_number, "mobile_number", this.errors);
         },
         validateLandline() {
             validateLandlineField(this.landline, this.errors);
@@ -1360,7 +1360,7 @@ export default {
             validate150StringField(this.emergency_address, "emergency_address", this.errors);
         },
         validateEmergencyNumber() {
-            validateMobileNumberField(this.emergency_mobile_number, this.errors);
+            validateMobileNumberField(this.emergency_mobile_number, "emergency_mobile_number", this.errors);
         },
         validateAgreeTerms() {
             if (!this.agreeTerms) {
