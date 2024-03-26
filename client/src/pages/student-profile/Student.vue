@@ -3,6 +3,7 @@
 import PromptPopup from "../../components/common/PromptPopup.vue";
 import MessagePopup from "../../components/common/MessagePopup.vue";
 // Tabs
+import StudentDetailsTab from "../../components/student-profile/StudentDetailsTab.vue";
 import CurrentEnrollmentsTab from "../../components/student-profile/CurrentEnrollmentsTab.vue";
 import AllEnrollmentsTab from "../../components/student-profile/AllEnrollmentsTab.vue";
 import EnrollTab from "../../components/student-profile/EnrollTab.vue";
@@ -23,6 +24,16 @@ import { formatName } from "../../util/helpers";
             </div>
             <!-- drop down -->
             <div class="space-y-2">
+                <button
+                    @click="gotoStudentDetails()"
+                    :class="{
+                        'bg-highlight text-white': pageMode === 'details',
+                        'bg-white text-black': pageMode !== 'details',
+                    }"
+                    class="w-full text-left py-2 px-4 hover:bg-highlight_hover border hover:text-white border-gray-300 rounded"
+                >
+                    Student Details
+                </button>
                 <button
                     @click="gotoGrades()"
                     :class="{
@@ -86,6 +97,12 @@ import { formatName } from "../../util/helpers";
 
         <div class="p-4 w-full ml-10 md:ml-64 mt-20">
             <div class="w-full">
+
+            <StudentDetailsTab
+                v-if="pageMode === 'details'"
+                :student-id="store.user_id"
+            />
+
             <CurrentEnrollmentsTab
                 v-if="pageMode === 'grades'"
             />
@@ -135,7 +152,7 @@ export default {
         return {
             store: useCredentialsStore(),
             // Page mode
-            pageMode: 'grades', // 'grades', 'enroll, 'history'
+            pageMode: 'grades', // "details", 'grades', 'enroll, 'history'
             // Popups
             showRequestPopup: false,
             showSuccessPopup: false,
@@ -145,6 +162,9 @@ export default {
         };
     },
     methods: {
+        gotoStudentDetails() {
+            this.pageMode = "details";
+        },
         gotoGrades() {
             this.pageMode = "grades";
         },
