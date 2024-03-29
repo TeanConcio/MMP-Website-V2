@@ -52,7 +52,7 @@ const getLatestORIDSegment = async () => {
     return {first, second};
 };
 
-export const generateOR = async (first, second) => {
+export const generateOR = (first, second) => {
 
     // OR Number Format: A-XXXXXXXXX
     // A: 1-digit segment
@@ -175,7 +175,7 @@ PaymentsRouter.post("/", validatePaymentReqBody(), async (req, res) => {
 
         //Add or number
         const { first, second } = await getLatestORIDSegment();
-        payment.or_no = await generateOR(first, second);
+        payment.or_no = generateOR(first, second);
 
 
         // Create payment in database

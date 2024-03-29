@@ -53,7 +53,7 @@ const getLatestBillIDSegment = async () => {
     return {first, second};
 }
 
-export const generateBillNo = async (first, second) => {
+export const generateBillNo = (first, second) => {
 
     // Bill Number Format: A-XXXXXXXXX
     // A: 1-digit segment
@@ -280,7 +280,7 @@ BillsRouter.post(
 
             //Add bill number
             const {first, second} = await getLatestBillIDSegment();
-            bill.bill_no = await generateBillNo(first, second);
+            bill.bill_no = generateBillNo(first, second);
 
             // Create bill in database
             await prisma.Bills.create({ data: bill });

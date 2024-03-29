@@ -76,7 +76,7 @@ const getLatestRequestIDSegment = async (currentYear) => {
 }
 
 // Generate requestID
-export const generateRequestID = async (currentYear, lastRequestIDSegment) => {
+export const generateRequestID = (currentYear, lastRequestIDSegment) => {
 
     //If last req id is null
     if (lastRequestIDSegment === -1) {
@@ -327,7 +327,7 @@ TORRequestsRouter.post("/", validateTORRequestReqBody(), async (req, res) => {
         // Generate req_id
         const currentYear = new Date().getFullYear().toString();
         const lastRequestIDSegment = await getLatestRequestIDSegment(currentYear);
-        tor_request.req_id = await generateRequestID(currentYear, lastRequestIDSegment);
+        tor_request.req_id = generateRequestID(currentYear, lastRequestIDSegment);
 
         tor_request.status = "PENDING";
         tor_request.request_date = new Date();

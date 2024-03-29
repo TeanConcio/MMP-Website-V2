@@ -84,7 +84,7 @@ const getLatestTeacherIDSegment = async () => {
 };
 
 // Generate teacher_id
-export const generateTeacherID = async ({ second, third }) => {
+export const generateTeacherID = ({ second, third }) => {
     // ID Format: YYYY-AAA-III
     // Year [0:4] - Account Type Code [5:8] ID Number [9:12]
     const currentYear = new Date().getFullYear().toString();
@@ -240,8 +240,8 @@ TeachersRouter.post("/", validateTeacherReqBody(), async (req, res) => {
         }
 
         // Generate teacher_id
-        const { second, third } = getLatestTeacherIDSegment()
-        teacher.teacher_id = await generateTeacherID({ second, third });
+        const { second, third } = await getLatestTeacherIDSegment()
+        teacher.teacher_id = generateTeacherID({ second, third });
 
         // Generate password hash
         teacher.password = generatePasswordHash(teacher.password);

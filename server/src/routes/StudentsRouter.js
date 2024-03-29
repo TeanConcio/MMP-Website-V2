@@ -97,7 +97,7 @@ const getLatestStudentIDSegment = async () => {
 };
 
 // Generate student_id
-export const generateStudentID = async ({ second, third }) => {
+export const generateStudentID = ({ second, third }) => {
     // ID Format: YYYY-AAA-III
     // Year [0:4] - Account Type Code [5:8] ID Number [9:12]
     const currentYear = new Date().getFullYear().toString();
@@ -664,8 +664,8 @@ StudentsRouter.post("/", validateStudentReqBody(), async (req, res) => {
         }
 
         // Generate student_id
-        const { second, third } = getLatestStudentIDSegment()
-        student.student_id = await generateStudentID({ second, third });
+        const { second, third } = await getLatestStudentIDSegment()
+        student.student_id = generateStudentID({ second, third });
 
         // Generate password hash
         student.password = generatePasswordHash(student.password);

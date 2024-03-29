@@ -67,7 +67,7 @@ const getLatestAdminIDSegment = async (currentYear) => {
 }
 
 // Generate admin_id
-export const generateAdminID = async (currentYear, second, third) => {
+export const generateAdminID = (currentYear, second, third) => {
 
     //If last req id is null
     if (second === "" && third === "") {
@@ -151,7 +151,7 @@ AdminsRouter.post("/", validateAdminReqBody(), async (req, res) => {
         // Generate admin_id
         const currentYear = new Date().getFullYear().toString();
         const { second, third } = await getLatestAdminIDSegment(currentYear);
-        admin.admin_id = await generateAdminID(currentYear, second, third);
+        admin.admin_id = generateAdminID(currentYear, second, third);
 
         // Generate password hash
         admin.password = generatePasswordHash(admin.password);
