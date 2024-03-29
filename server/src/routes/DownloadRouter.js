@@ -586,8 +586,8 @@ DownloadRouter.get("/student/pdf/:student_id", async (req, res) => {
         // Set Headers
         res.setHeader('Content-Type', 'application/pdf');
 
-        console.log(buffer instanceof Buffer)
-        console.log(buffer)
+        //console.log(buffer instanceof Buffer)
+        //console.log(buffer)
 
         // Convert buffer to base64
         let bufferFromAB = Buffer.from(buffer);
