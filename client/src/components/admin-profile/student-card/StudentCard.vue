@@ -1036,6 +1036,7 @@ export default {
                     this.currentPopup = "delete";
                 })
                 .catch((error) => {
+                    console.log(error);
                     this.currentPopup = "error";
                 });
             await this.updateFinanceInfo();

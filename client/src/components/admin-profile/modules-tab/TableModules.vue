@@ -243,6 +243,7 @@ export default {
                             this.teacherMap[this.parseVal(this.updateHandlerArray[index])];
                     })
                     .catch((error) => {
+                        console.log(error);
                         this.errorCount++;
                     });
             }

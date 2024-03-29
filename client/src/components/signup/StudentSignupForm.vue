@@ -1087,6 +1087,7 @@ export default {
                 })
                 // If unsuccessful
                 .catch((error) => {
+                    console.log(error);
                     if (error.response.data.error === "Email already exists") {
                         this.showUsedEmailPopup = true;
                     } else {

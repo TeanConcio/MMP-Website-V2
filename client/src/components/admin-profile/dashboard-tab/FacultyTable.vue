@@ -315,6 +315,7 @@ export default {
                     })
                     // If unsuccessful
                     .catch((error) => {
+                        console.log(error);
                         this.erroredEdits.push(this.displayArray[index].teacher_id);
                     });
             });
@@ -364,6 +365,7 @@ export default {
                 })
                 // If unsuccessful
                 .catch((error) => {
+                    console.log(error);
                     this.showErrorPopup = true;
                 });
         },
@@ -427,6 +429,7 @@ export default {
                 })
                 // If unsuccessful
                 .catch((error) => {
+                    console.log(error);
                     this.showErrorPopup = true;
                 });
                 // Reset base data array

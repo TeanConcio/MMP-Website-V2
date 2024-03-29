@@ -322,6 +322,7 @@ export default {
                     })
                     //If unsuccessful, add to errored edits
                     .catch((error) => {
+                        console.log(error);
                         this.erroredEdits.push(this.displayArray[index].student_id);
                     });
             });
@@ -373,6 +374,7 @@ export default {
                 })
                 //If unsuccessful, show error popup
                 .catch((error) => {
+                    console.log(error);
                     this.showErrorPopup = true;
                 });
         },
@@ -442,6 +444,7 @@ export default {
                     });
                 })
                 .catch((error) => {
+                    console.log(error);
                     this.showErrorPopup = true;
                 });
                 //duplicate displayArray to baseDataArray

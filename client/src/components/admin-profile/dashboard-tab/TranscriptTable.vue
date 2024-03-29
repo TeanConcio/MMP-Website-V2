@@ -173,6 +173,7 @@ export default {
                 await this.$axios
                     .patch(`/tor_requests/${data.req_id}`, { status: data.status })
                     .catch((error) => {
+                        console.log(error);
                         errorsID.push(data.req_id);
                     });
             }
