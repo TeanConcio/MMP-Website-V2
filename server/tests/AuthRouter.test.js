@@ -12,7 +12,7 @@ describe('AuthRouter /login endpoint', () => {
     it('both correct user_id and password', async () => {
         const response = await request(express().use(AuthRouter))
             .post('/login')
-            .set('Content-Type', 'application/json') // Set content type
+            .set('Content-Type', 'application/json')
             .send({
                 user_id: '2024-600-000',
                 password: 'password'
@@ -25,7 +25,7 @@ describe('AuthRouter /login endpoint', () => {
     it('correct user_id, wrong password', async () => {
         const response = await request(express().use(AuthRouter))
             .post('/login')
-            .set('Content-Type', 'application/json') // Set content type
+            .set('Content-Type', 'application/json')
             .send({
                 user_id: '2024-600-000',
                 password: 'asdasd'
