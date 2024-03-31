@@ -204,7 +204,7 @@ describe('StudentsRouter / endpoint', () => {
             address: '123 Maple Street',
             mobile_number: '09123456789',
             landline: '98765432',
-            email: generateRandomEmail(),
+            email: "sophiejohnson@email.com",
             birthdate: '2000-03-15',
             birthplace: 'City',
             nationality: 'American',
@@ -270,6 +270,12 @@ describe('StudentsRouter / endpoint', () => {
         // success
         expect(createStudentResponse.statusCode).toBe(200);
         expect(createStudentResponse.body.message).toBe('Create successful');
+
+        // Delete the student created
+        const createdStudentID = createStudentResponse.body.student.student_id;
+        const deleteStudentResponse = await adminSession.delete(`/${createdStudentID}`);
+        expect(deleteStudentResponse.statusCode).toBe(200);
+        expect(deleteStudentResponse.body.message).toBe("Student " + createdStudentID + " has been successfully deleted from the database");
     });
 
     // Test case for invalid teacher account type
@@ -280,8 +286,8 @@ describe('StudentsRouter / endpoint', () => {
     
         const teacherSession = session(app);
     
-        // mock teacher data
-        const teacherData = {
+        // mock student data
+        const studentData = {
             first_name: 'John',
             last_name: 'Doe',
             middle_name: 'Middle',
@@ -348,12 +354,11 @@ describe('StudentsRouter / endpoint', () => {
     
         const createStudentResponse = await teacherSession.post('/')
             .set('Content-Type', 'application/json')
-            .send(teacherData);
+            .send(studentData);
     
         // success
         expect(createStudentResponse.statusCode).toBe(403);
         expect(createStudentResponse.body.error).toBe("You are not authorized to access this");
-       
     });
 
     // Test case for existing email
@@ -436,5 +441,6 @@ describe('StudentsRouter / endpoint', () => {
     
         // unsuccessful
         expect(createStudentResponse.statusCode).toBe(500);
+        expect(createStudentResponse.body.error).toBe("Email already exists");
     });
 });

@@ -58,6 +58,9 @@ const checkEmailExists = async (email) => {
         },
     });
 
+    console.log(email);
+    console.log(studentEntry);
+
     if (studentEntry == null) {
         return false;
     } else {
@@ -677,7 +680,10 @@ StudentsRouter.post("/",
         parser(student);
 
         // Create student in database
-        await prisma.Students.create({ data: student });
+        var createdStudent = await prisma.Students.create({ data: student });
+
+        // Exclude password from response
+        createdStudent = exclude(createdStudent, ["password"]);
 
         // Send email to admin
         await sendEmail(
@@ -688,9 +694,10 @@ StudentsRouter.post("/",
             )
         );
 
-        res.status(200).send({ message: "Create successful" });
+        res.status(200).send({ message: "Create successful", student: createdStudent });
     } catch (error) {
         // Return error
+        console.log(error);
         res.status(500).send({ error: error.message });
     }
 });
@@ -725,14 +732,17 @@ StudentsRouter.patch("/:student_id",
         const updatedData = exclude(parser(cleanStudentObject(req.body)), ["password"]);
 
         // Update student in database
-        await prisma.Students.update({
+        var updatedStudent = await prisma.Students.update({
             where: {
                 student_id: student_id,
             },
             data: updatedData,
         });
 
-        res.status(200).send({ message: "Update successful" });
+        // Exclude password from response
+        updatedStudent = exclude(updatedStudent, ["password"]);
+
+        res.status(200).send({ message: "Update successful", student: updatedStudent });
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -806,7 +816,7 @@ StudentsRouter.patch("/status/:student_id",
             }
         }
 
-        res.status(200).send({ message: "Status updated" });
+        res.status(200).send({ message: "Status updated", student: updatedStudent });
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -847,14 +857,17 @@ StudentsRouter.patch("/update_password/:student_id",
         const updatedData = cleanPasswordObject(req.body);
         
         // Get updated info from req.body
-        await prisma.Students.update({
+        var updatedStudent = await prisma.Students.update({
             where: {
                 student_id: student_id,
             },
             data: updatedData,
         });
 
-        res.status(200).send({ message: "Password successfully changed" });
+        // Exclude password from response
+        updatedStudent = exclude(updatedStudent, ["password"]);
+
+        res.status(200).send({ message: "Password successfully changed", student: updatedStudent });
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -903,14 +916,18 @@ StudentsRouter.delete("/:student_id", async (req, res) => {
             },
         });
 
-        await prisma.Students.delete({
+        var deletedStudent = await prisma.Students.delete({
             where: {
                 student_id: student_id,
             },
         });
 
+        // Return response message
+        deletedStudent = exclude(deletedStudent, ["password"]);
+
         res.status(200).send({
             message: "Student " + student_id + " has been successfully deleted from the database",
+            student: deletedStudent,
         });
     } catch (error) {
         // Return error

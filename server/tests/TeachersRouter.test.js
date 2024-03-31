@@ -201,7 +201,7 @@ describe('TeachersRouter / endpoint', () => {
             first_name: 'John',
             middle_name: 'Robert',
             last_name: 'Doe',
-            email: generateRandomEmail(),
+            email: "johnrobert@email.com",
             status: 'ACTIVE',
             password: 'password'
         };       
@@ -232,13 +232,19 @@ describe('TeachersRouter / endpoint', () => {
         app.use(TeachersRouter);
 
     
-        const responseTeachers = await adminSession.post('/')
+        const createTeacherResponse = await adminSession.post('/')
             .set('Content-Type', 'application/json')
             .send(teacherData);
     
         // success
-        expect(responseTeachers.statusCode).toBe(200);
-        expect(responseTeachers.body.message).toBe('Create successful');
+        expect(createTeacherResponse.statusCode).toBe(200);
+        expect(createTeacherResponse.body.message).toBe('Create successful');
+        
+        // Delete the teacher created
+        var createdTeacherID = createTeacherResponse.body.teacher.teacher_id;
+        const deleteTeacherResponse = await adminSession.delete(`/${createdTeacherID}`);
+        expect(deleteTeacherResponse.statusCode).toBe(200);
+        expect(deleteTeacherResponse.body.message).toBe("Teacher " + createdTeacherID + " has been successfully deleted from the database");
     });
 
     // Test case for existing email
@@ -284,13 +290,14 @@ describe('TeachersRouter / endpoint', () => {
     
         app.use(initializePermission);
         app.use(TeachersRouter);
-       
+        
         const responseTeachers = await adminSession.post('/')
             .set('Content-Type', 'application/json')
             .send(teacherData);
     
         // unsuccessful since it exists
         expect(responseTeachers.statusCode).toBe(500);
+        expect(responseTeachers.body.error).toBe("Email already exists");
     });
 
     // Test case for empty content
