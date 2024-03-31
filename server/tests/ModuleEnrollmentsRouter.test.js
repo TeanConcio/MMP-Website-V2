@@ -144,7 +144,7 @@ describe('ModuleEnrollmentsRouter Endpoint Testing', () => {
             expect(responseModule.body.error).toBe('Invalid user ID');  
     });
 
-    describe('ModuleEnrollmentsRouter /active/:student_id endpoint', () => {
+    describe('ModuleEnrollmentsRouter /enrollments/:module_name/:school_year endpoint', () => {
         // Test login as a correct user with valid route parameters
         it('login as a correct user with valid route parameter', async () => {
 
