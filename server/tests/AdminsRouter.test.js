@@ -34,14 +34,15 @@ describe("AdminRouter Helper Functions", () => {
             expect(result).toBe('2024-999-000');
         });
 
-        // Test case for an overflow scenario
-        it('throw an error for ID overflow', async () => {
+        // Test case for ID overflow for generateAdminID function
+        it('throws an error when the ID overflows for admins', async () => {
             const currentYear = '2024';
             const second = '999';
             const third = '999';
 
-            await expect(generateAdminID(currentYear, second, third)).rejects.toThrowError('ID Overflow!');
+            await expect(() => generateAdminID(currentYear, second, third)).toThrow('ID Overflow!');
         });
+
     });
 
     // Test AdminsRouter /:admin_id EndPoint

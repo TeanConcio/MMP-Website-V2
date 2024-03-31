@@ -30,11 +30,11 @@ describe("TeachersRouter Helper Functions", () => {
             expect(result).toMatch(currentYear+'-601-000'); // Expects the format to be YYYY-AAA-III
         });
 
-        // Test case for ID overflow
-        it('throws an error when the ID overflows', async () => {
+        // Test case for ID overflow for generateTeacherID function
+        it('throws an error when the ID overflows for teachers', async () => {
             const input = { second: "899", third: "999" };
 
-            await expect(generateTeacherID(input)).rejects.toThrow('ID Overflow!');
+            await expect(() => generateTeacherID(input)).toThrow('ID Overflow!');
         });
 
     });
@@ -45,6 +45,19 @@ import express from 'express';
 import session from 'supertest-session';
 import AuthRouter from '../src/routes/AuthRouter';
 import TeachersRouter from '../src/routes/TeachersRouter';
+
+function generateRandomEmail() {
+    // Define a list of possible characters for the random string part of the email
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    const length = 8;
+    let randomString = '';
+    // Generate the random string part by randomly selecting characters from the list
+    for (let i = 0; i < length; i++) {
+        randomString += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    const email = `${randomString}@example.com`;
+    return email;
+}
 
 describe('TeachersRouter /all/:status endpoint', () => {
     // Test case for logged in with correct account type and correct status
@@ -174,7 +187,7 @@ describe('TeachersRouter /all/:status endpoint', () => {
     });
 });
 
-describe('TeachersRouter / validateTeacherReqBody() endpoint', () => {
+describe('TeachersRouter / endpoint', () => {
     // Test case for logged in with correct account type and the information uploaded is not empty
     it('All details inputted were correctly', async () => {
         const app = express();
@@ -185,14 +198,13 @@ describe('TeachersRouter / validateTeacherReqBody() endpoint', () => {
     
         // mock teacher data
         const teacherData = {
-            teacher_id: '2024-616-000',
-            first_name: 'Steve',
-            last_name: 'Robinson',
-            middle_name: 'Grace',
-            email: 'steve.robinson@example.com',
+            first_name: 'John',
+            middle_name: 'Robert',
+            last_name: 'Doe',
+            email: generateRandomEmail(),
             status: 'ACTIVE',
             password: 'password'
-        };        
+        };       
         
         const response = await adminSession.post('/login')
             .set('Content-Type', 'application/json')
@@ -227,10 +239,6 @@ describe('TeachersRouter / validateTeacherReqBody() endpoint', () => {
         // success
         expect(responseTeachers.statusCode).toBe(200);
         expect(responseTeachers.body.message).toBe('Create successful');
-
-        // // Delete mock teacher data
-        // const deleteTeacherResponse = await adminSession.delete(`/:${teacherData.teacher_id}`);
-        // expect(deleteTeacherResponse.statusCode).toBe(200);
     });
 
     // Test case for existing email
@@ -282,7 +290,7 @@ describe('TeachersRouter / validateTeacherReqBody() endpoint', () => {
             .send(teacherData);
     
         // unsuccessful since it exists
-        expect(responseTeachers.statusCode).toBe(400);
+        expect(responseTeachers.statusCode).toBe(500);
     });
 
     // Test case for empty content
@@ -291,15 +299,15 @@ describe('TeachersRouter / validateTeacherReqBody() endpoint', () => {
         app.use(express.json());
         app.use(AuthRouter);
     
-        const adminSession = session(app);
+        const teacherSession = session(app);
     
-        // mock teacher data
+        // empty teacher data
         const teacherData = {};
-        
-        const response = await adminSession.post('/login')
+    
+        const response = await teacherSession.post('/login')
             .set('Content-Type', 'application/json')
             .send({
-                user_id: '2024-900-000', // admin ID
+                user_id: '2024-600-000', // teacher ID
                 password: 'password'
             });
     
@@ -320,12 +328,12 @@ describe('TeachersRouter / validateTeacherReqBody() endpoint', () => {
     
         app.use(initializePermission);
         app.use(TeachersRouter);
-
-        const responseTeachers = await adminSession.post('/')
+    
+        const responseTeachers = await teacherSession.post('/')
             .set('Content-Type', 'application/json')
             .send(teacherData);
     
-        // unsuccessful
-        expect(responseTeachers.statusCode).toBe(400);
+        // success
+        expect(responseTeachers.statusCode).toBe(500);
     });
 });

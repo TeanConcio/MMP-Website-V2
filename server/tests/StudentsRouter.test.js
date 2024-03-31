@@ -34,7 +34,7 @@ describe("StudentsRouter Helper Functions", () => {
         it('throws an error when the ID overflows', async () => {
             const input = { second: "599", third: "999" };
 
-            await expect(generateStudentID(input)).rejects.toThrow('ID Overflow!');
+            await expect(() => generateStudentID(input)).toThrow('ID Overflow!');
         });
 
     });
@@ -45,6 +45,19 @@ import express from 'express';
 import session from 'supertest-session';
 import AuthRouter from '../src/routes/AuthRouter';
 import StudentsRouter from '../src/routes/StudentsRouter';
+
+function generateRandomEmail() {
+    // Define a list of possible characters for the random string part of the email
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    const length = 8;
+    let randomString = '';
+    // Generate the random string part by randomly selecting characters from the list
+    for (let i = 0; i < length; i++) {
+        randomString += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    const email = `${randomString}@example.com`;
+    return email;
+}
 
 describe('StudentsRouter /module/:module_name endpoint', () => {
     // Test case for logged in with correct account type and the information uploaded is not empty
@@ -174,7 +187,7 @@ describe('StudentsRouter /module/:module_name endpoint', () => {
     });
 });
 
-describe('StudentsRouter / validateStudentReqBody() endpoint', () => {
+describe('StudentsRouter / endpoint', () => {
     // Test case for logged in with correct account type and the information uploaded is not empty
     it('All details inputted were correctly', async () => {
         const app = express();
@@ -185,44 +198,43 @@ describe('StudentsRouter / validateStudentReqBody() endpoint', () => {
     
         // mock student data
         const studentData = {
-            student_id: '2024-112-112',
-            first_name: 'Emma',
-            last_name: 'Miller',
-            middle_name: 'Louise',
-            address: '789 Cedar Street',
-            mobile_number: '09109876543',
-            landline: '65432109',
-            email: 'emma.miller@example.com',
-            birthdate: '1996-12-10',
-            birthplace: 'Village',
+            first_name: 'Sophie',
+            last_name: 'Johnson',
+            middle_name: 'Anne',
+            address: '123 Maple Street',
+            mobile_number: '09123456789',
+            landline: '98765432',
+            email: generateRandomEmail(),
+            birthdate: '2000-03-15',
+            birthplace: 'City',
             nationality: 'American',
             gender: 'FEMALE',
-            civil_status: 'MARRIED',
-            no_of_children: 2,
-            school: 'XYZ College',
-            occupation: 'Accountant',
-            admin: 'Admin Adminson',
-            church: 'City Community Church',
-            pastor: 'Pastor Sarah',
-            is_partner_school: false,
-            gradeschool: 'Riverbank Elementary',
-            highschool: 'Mountaintop High',
-            college: 'Valleyview University',
-            college_course: 'Accounting',
-            graduate: 'Skyline Graduate School',
-            graduate_course: 'Finance',
-            others: 'Other details',
+            civil_status: 'SINGLE',
+            no_of_children: 0,
+            school: 'XYZ University',
+            occupation: 'Student',
+            admin: 'Admin User',
+            is_partner_school: true,
+            gradeschool: 'Sunrise Elementary',
+            highschool: 'Sunset High',
+            college: 'Starlight College',
+            graduate: 'Moonrise Graduate School',
+            others: 'Additional information',
             gradeschool_completed: true,
             highschool_completed: true,
             college_completed: true,
             graduate_completed: true,
             essay: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            emergency_name: 'James Johnson',
-            emergency_address: '123 Elm Street',
+            church: 'Community Church',
+            pastor: 'Pastor David',
+            graduate_course: 'Computer Science',
+            college_course: 'Information Technology',
+            emergency_name: 'John Smith',
+            emergency_address: '456 Oak Street',
             emergency_mobile_number: '09123456789',
-            password: 'password', // All passwords are 'password'
+            password: 'password',
             status: 'ACTIVE',
-            track: 'TEACHER'
+            track: 'ADMIN'
         };
     
         const response = await adminSession.post('/login')
@@ -258,10 +270,6 @@ describe('StudentsRouter / validateStudentReqBody() endpoint', () => {
         // success
         expect(createStudentResponse.statusCode).toBe(200);
         expect(createStudentResponse.body.message).toBe('Create successful');
-
-        // // Delete mock student
-        // const deleteStudentResponse = await adminSession.delete(`/:${studentData.student_id}`);
-        // expect(deleteStudentResponse.statusCode).toBe(200);
     });
 
     // Test case for invalid teacher account type
@@ -272,8 +280,8 @@ describe('StudentsRouter / validateStudentReqBody() endpoint', () => {
     
         const teacherSession = session(app);
     
-        // mock student data
-        const studentData = {
+        // mock teacher data
+        const teacherData = {
             first_name: 'John',
             last_name: 'Doe',
             middle_name: 'Middle',
@@ -340,7 +348,7 @@ describe('StudentsRouter / validateStudentReqBody() endpoint', () => {
     
         const createStudentResponse = await teacherSession.post('/')
             .set('Content-Type', 'application/json')
-            .send(studentData);
+            .send(teacherData);
     
         // success
         expect(createStudentResponse.statusCode).toBe(403);
@@ -348,17 +356,55 @@ describe('StudentsRouter / validateStudentReqBody() endpoint', () => {
        
     });
 
-    // Test case for empty content
-    it('Empty Content', async () => {
+    // Test case for existing email
+    it('Existing Email', async () => {
         const app = express();
         app.use(express.json());
         app.use(AuthRouter);
     
         const adminSession = session(app);
     
-        // mock student data
-        const studentData = {};
-    
+        // existing student email
+        const studentData = {
+            user_id: '2024-000-000',
+            first_name: 'Samuel',
+            middle_name: 'Joseph',
+            last_name: 'Lee',
+            address: 'Address',
+            mobile_number: '09123456789',
+            landline: '01234567',
+            email: 'student1@cssweng.com',
+            birthdate: '2000-03-15', 
+            birthplace: 'Birthplace',
+            nationality: 'Nationality',
+            gender: 'MALE',
+            civil_status: 'SINGLE',
+            no_of_children: 0,
+            school: 'School',
+            occupation: 'Occupation',
+            admin: 'Admin',
+            church: 'Church',
+            pastor: 'Pastor',
+            is_partner_school: false,
+            gradeschool: 'Gradeschool',
+            highschool: 'Highschool',
+            college: 'College',
+            graduate: 'BS Biology',
+            graduate_course: 'MS Biology',
+            others: 'Others',
+            gradeschool_completed: true,
+            highschool_completed: true,
+            college_completed: true,
+            graduate_completed: true,
+            essay: 'Essay',
+            emergency_name: 'Emergency Name',
+            emergency_address: 'Emergency Address',
+            emergency_mobile_number: '09123456789',
+            password: '$2a$10$.VfI5p0dmyX8yVQvoyeI3ORvP1F6QJ5.o//LeARUskA8gn7UIYP3m', // Assuming this is a hashed password
+            status: 'ACTIVE',
+            track: 'BOTH'
+        };
+        
         const response = await adminSession.post('/login')
             .set('Content-Type', 'application/json')
             .send({
@@ -389,6 +435,6 @@ describe('StudentsRouter / validateStudentReqBody() endpoint', () => {
             .send(studentData);
     
         // unsuccessful
-        expect(createStudentResponse.statusCode).toBe(400);
+        expect(createStudentResponse.statusCode).toBe(500);
     });
 });

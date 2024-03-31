@@ -31,11 +31,12 @@ describe("TORREquestsRouter Helper Functions", () => {
         });
 
         // Test case for handling ID overflow when lastRequestIDSegment exceeds 99999
-        it('throws an error for ID overflow when lastRequestIDSegment exceeds 99999', async () => {
+        it('throws an error when the lastRequestIDSegment exceeds 99999', async () => {
             const currentYear = '2024';
             const lastRequestIDSegment = 99999;
 
-            await expect(generateRequestID(currentYear, lastRequestIDSegment)).rejects.toThrowError('ID Overflow!');
+            await expect(() => generateRequestID(currentYear, lastRequestIDSegment)).toThrow('ID Overflow!');
         });
-        });
+
+    });
 });

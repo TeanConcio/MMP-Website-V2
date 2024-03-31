@@ -25,10 +25,10 @@ describe("BillsRouter Helper Functions", () => {
           expect(result).toBe('9-000000000');
         });
         
-        // Test case for exceeding the limits
-        it('throw an error when both segments are at their limits', async () => {
-
-          await expect(generateBillNo(9, 999999999)).rejects.toThrow('Bill Number Overflow');
+        // Test case for exceeding the limits of generateBillNo function
+        it('throws an error when both segments are at their limits', async () => {
+          await expect(() => generateBillNo(9, 999999999)).toThrow('Bill Number Overflow');
         });
+
     });
 });

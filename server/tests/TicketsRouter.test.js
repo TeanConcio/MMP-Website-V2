@@ -30,13 +30,14 @@ describe("TicketsRouter Helper Functions", () => {
             expect(result).toBe('2024-00000');
         });
 
-        // Test case to ensure the function correctly sends overflow message when last segment is in limit
-        it('throws an error for ID overflow when lastTicketIDSegment exceeds 99999', async () => {
+        // Test case for ID overflow when lastTicketIDSegment is within the limit
+        it('throws an error when lastTicketIDSegment exceeds 99999', async () => {
             const currentYear = '2024';
             const lastTicketIDSegment = 99999;
-    
-            await expect(generateTicketID(currentYear, lastTicketIDSegment)).rejects.toThrow('ID Overflow!');
+
+            await expect(() => generateTicketID(currentYear, lastTicketIDSegment)).toThrow('ID Overflow!');
         });
+
     });
 
 });
