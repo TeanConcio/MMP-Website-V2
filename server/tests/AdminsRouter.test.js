@@ -44,9 +44,10 @@ describe("AdminRouter Helper Functions", () => {
         });
 
     });
+});
 
-    // Test AdminsRouter /:admin_id EndPoint
-    describe('AdminsRouter /:admin_id Endpoint', () => {
+// Test AdminsRouter /:admin_id EndPoint
+describe('AdminsRouter /:admin_id Endpoint', () => {
         // Test for correct admin id with valid permission
         it('have the permission, correct admin id', async () => {
     
@@ -172,7 +173,6 @@ describe("AdminRouter Helper Functions", () => {
 
                 expect(responseModule.body.error).toBe("Admin does not exist");
             });
-    });
 });
 
 /*
