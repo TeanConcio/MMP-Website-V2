@@ -199,9 +199,8 @@ describe("TicketsRouter Endpoint", () => {
         
     });
 
-
+    // Test TicketsRouter /post Endpoint
     describe("TicketsRouter / Endpoint", () => {
-
         // Test case for having the permission with a valid ticket
         it('have the permission, valid ticket data', async () => {
             const app = express();
@@ -322,8 +321,8 @@ describe("TicketsRouter Endpoint", () => {
         });
     });
 
-    describe("TicketsRouter patch/:ticket_id Endpoint", () => {
-
+    // Test TicketsRouter /patch Endpoint
+    describe("TicketsRouter /:ticket_id Endpoint", () => {
         // Test case for having the permission with a valid ticket
         it('have the permission, valid ticket data', async () => {
             const app = express();
