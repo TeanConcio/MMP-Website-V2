@@ -58,9 +58,6 @@ const checkEmailExists = async (email) => {
         },
     });
 
-    console.log(email);
-    console.log(studentEntry);
-
     if (studentEntry == null) {
         return false;
     } else {
@@ -697,7 +694,6 @@ StudentsRouter.post("/",
         res.status(200).send({ message: "Create successful", student: createdStudent });
     } catch (error) {
         // Return error
-        console.log(error);
         res.status(500).send({ error: error.message });
     }
 });
