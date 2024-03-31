@@ -1,5 +1,5 @@
 // Import Modules
-import { checkSchema } from "express-validator";
+// import { checkSchema } from "express-validator";
 
 // Student Schema
 const studentSchema = {
@@ -331,10 +331,12 @@ const statusSchema = {
     },
 };
 
-// Student Schema Validator
-export const validateStudentReqBody = () => checkSchema(studentSchema, ["body"]);
-// Status Schema Validator
-export const validateStatusReqBody = () => checkSchema(statusSchema, ["body"]);
+// // Student Schema Validator
+// export const validateStudentReqBody = () => checkSchema(studentSchema, ["body"]);
+// // Status Schema Validator
+// export const validateStatusReqBody = () => checkSchema(statusSchema, ["body"]);
+studentSchema
+statusSchema
 
 // Student Object Cleaner
 export const cleanStudentObject = (studentObject) => {

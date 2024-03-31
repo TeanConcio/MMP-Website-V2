@@ -1,7 +1,9 @@
 // Imports Modules
 import express from "express";
-import { validationResult } from "express-validator";
-import { validatePaymentReqBody, cleanPaymentObject } from "../validators/PaymentsValidator.js";
+// import { validationResult } from "express-validator";
+import { 
+    // validatePaymentReqBody, 
+    cleanPaymentObject } from "../validators/PaymentsValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { allowed, generateFinancePKSegments } from "../utils/helpers.js";
 
@@ -156,18 +158,20 @@ PaymentsRouter.get("/bill/:bill_no", async (req, res) => {
 
 /* POST Endpoints */
 // Create Payment
-PaymentsRouter.post("/", validatePaymentReqBody(), async (req, res) => {
+PaymentsRouter.post("/", 
+    // validatePaymentReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Payment Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Payment Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get payment from req.body
@@ -190,18 +194,20 @@ PaymentsRouter.post("/", validatePaymentReqBody(), async (req, res) => {
 
 /* PATCH Endpoints */
 // Update Payment
-PaymentsRouter.patch("/:or_no", validatePaymentReqBody(), async (req, res) => {
+PaymentsRouter.patch("/:or_no", 
+    // validatePaymentReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Payment Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Payment Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get or_no from req.params

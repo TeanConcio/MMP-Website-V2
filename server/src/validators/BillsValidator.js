@@ -1,5 +1,5 @@
 // Import Modules
-import { checkSchema } from "express-validator";
+// import { checkSchema } from "express-validator";
 
 //Bills Scheme
 const billsSchema = {
@@ -55,8 +55,9 @@ const billsSchema = {
     },
 };
 
-// Bills Schema Validator
-export const validateBillReqBody = () => checkSchema(billsSchema, ["body"]);
+// // Bills Schema Validator
+// export const validateBillReqBody = () => checkSchema(billsSchema, ["body"]);
+billsSchema
 
 // Bills Object Cleaner
 export const cleanBillObject = (billObject) => {

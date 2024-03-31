@@ -1,5 +1,5 @@
 // Import Modules
-import { checkSchema } from "express-validator";
+// import { checkSchema } from "express-validator";
 
 const passwordSchema = {
     password: {
@@ -13,7 +13,8 @@ const passwordSchema = {
     },
 };
 
-export const validatePasswordBody = () => checkSchema(passwordSchema, ["body"]);
+// export const validatePasswordBody = () => checkSchema(passwordSchema, ["body"]);
+passwordSchema
 
 // Password Object Cleaner
 export const cleanPasswordObject = (passwordObject) => {

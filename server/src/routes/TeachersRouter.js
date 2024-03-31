@@ -1,13 +1,14 @@
 // Import Modules
 import express from "express";
-import { validationResult } from "express-validator";
+// import { validationResult } from "express-validator";
 import {
-    validateTeacherReqBody,
+    // validateTeacherReqBody,
     cleanTeacherObject,
-    validateStatusReqBody,
-    cleanStatusUpdateObject,
-} from "../validators/TeachersValidator.js";
-import { validatePasswordBody, cleanPasswordObject } from "../validators/PasswordValidator.js";
+    // validateStatusReqBody,
+    cleanStatusUpdateObject } from "../validators/TeachersValidator.js";
+import { 
+    // validatePasswordBody, 
+    cleanPasswordObject } from "../validators/PasswordValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { getLatestIDSegments, exclude, allowed, generatePasswordHash } from "../utils/helpers.js";
 import { sendEmail } from "../utils/email_service.js";
@@ -216,19 +217,21 @@ TeachersRouter.get("/all/:status", async (req, res) => {
 
 /* POST Endpoints */
 // Create Teacher
-TeachersRouter.post("/", validateTeacherReqBody(), async (req, res) => {
+TeachersRouter.post("/", 
+    // validateTeacherReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [0, 1, 2, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Teacher Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        res.status(400).send({ errors: result.array() });
-        return;
-    }
+    // // Validate Teacher Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     res.status(400).send({ errors: result.array() });
+    //     return;
+    // }
 
     try {
         // Get teacher info from req.body
@@ -267,18 +270,20 @@ TeachersRouter.post("/", validateTeacherReqBody(), async (req, res) => {
 
 /* PATCH Endpoints */
 // Update Teacher
-TeachersRouter.patch("/:teacher_id", validateTeacherReqBody(), async (req, res) => {
+TeachersRouter.patch("/:teacher_id", 
+    // validateTeacherReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [2, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Teacher Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Teacher Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get teacher_id from req.params
@@ -308,18 +313,20 @@ TeachersRouter.patch("/:teacher_id", validateTeacherReqBody(), async (req, res) 
 });
 
 // Update Teacher Status
-TeachersRouter.patch("/status/:teacher_id", validateStatusReqBody(), async (req, res) => {
+TeachersRouter.patch("/status/:teacher_id", 
+    // validateStatusReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Teacher Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Teacher Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get teacher_id from req.params
@@ -381,18 +388,20 @@ TeachersRouter.patch("/status/:teacher_id", validateStatusReqBody(), async (req,
 });
 
 // Update password
-TeachersRouter.patch("/update_password/:teacher_id", validatePasswordBody(), async (req, res) => {
+TeachersRouter.patch("/update_password/:teacher_id", 
+    // validatePasswordBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [2])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Teacher Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Teacher Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get teacher_id from req.params

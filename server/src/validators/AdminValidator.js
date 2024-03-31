@@ -1,5 +1,5 @@
 // Import Modules
-import { checkSchema } from "express-validator";
+// import { checkSchema } from "express-validator";
 
 //Admin Schema
 const adminSchema = {
@@ -23,8 +23,9 @@ const adminSchema = {
     },
 };
 
-// Admin Schema Validator
-export const validateAdminReqBody = () => checkSchema(adminSchema, ["body"]);
+// // Admin Schema Validator
+// export const validateAdminReqBody = () => checkSchema(adminSchema, ["body"]);
+adminSchema
 
 // Admin Object Cleaner
 export const cleanAdminObject = (adminObject) => {
