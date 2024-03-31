@@ -51,7 +51,9 @@ defineEmits(["add-success", "delete-success"]);
                     <th scope="col" class="px-3 py-3">Tuition Fee</th>
                     <th scope="col" class="px-3 py-3">Deductions</th>
                     <th scope="col" class="px-3 py-3">Bill Issued On</th>
-                    <th scope="col" class="px-3 py-3">Bill Status</th>
+                    <th scope="col" class="px-3 py-3">
+                        <label for="bill_status">Bill Status</label>
+                    </th>
                     <th scope="col" class="px-3 py-3 text-center w-[15%]">Remarks</th>
                     <th scope="col" class="px-3 py-3">OR Number</th>
                     <th scope="col" class="px-3 py-3">Payment</th>
@@ -159,6 +161,7 @@ defineEmits(["add-success", "delete-success"]);
                     </td>
                     <td scope="row" class="px-3 py-3" v-else-if="entry.bill !== null && editMode">
                         <select
+                            id="bill_status"
                             @change="editStatus(entry.bill.status, index)"
                             v-model="entry.bill.status"
                             required

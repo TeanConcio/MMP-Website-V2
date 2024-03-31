@@ -1,9 +1,15 @@
 // Imports Modules
 import express from "express";
 import { db as prisma } from "../utils/db.server.js";
+import { exclude, allowed } from "../utils/helpers.js";
+
+// Import JSZip and json2csv
 import JSZip from "jszip";
 import { parse as parseToCSV } from "json2csv";
-import { exclude, allowed } from "../utils/helpers.js";
+
+// Import PDF Generator
+import pkg from '../utils/pdf_generator.cjs';
+const generatePDF = pkg;
 
 // Express Router
 const DownloadRouter = express.Router();
@@ -68,7 +74,7 @@ DownloadRouter.get("/all", async (req, res) => {
         const blob = await zip.generateAsync({ type: "base64" });
         console.log(`ADMIN [${req.user.user_id}] EXPORTED the database`);
 
-        res.send(blob);
+        res.status(200).send(blob);
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -193,7 +199,7 @@ DownloadRouter.get("/modules", async (req, res) => {
         const blob = await zip.generateAsync({ type: "base64" });
         console.log(`ADMIN [${req.user.user_id}] EXPORTED all module data`);
 
-        res.send(blob);
+        res.status(200).send(blob);
     } catch (error) {
         // Return error
         res.status(404).send({ error: error.message });
@@ -322,7 +328,7 @@ DownloadRouter.get("/modules/:school_year", async (req, res) => {
         const blob = await zip.generateAsync({ type: "base64" });
         console.log(`ADMIN [${req.user.user_id}] EXPORTED the module data for ${school_year}`);
 
-        res.send(blob);
+        res.status(200).send(blob);
     } catch (error) {
         // Return error
         res.status(404).send({ error: error.message });
@@ -473,9 +479,126 @@ DownloadRouter.get("/student/:student_id", async (req, res) => {
         const blob = await zip.generateAsync({ type: "base64" });
         console.log(`ADMIN [${req.user.user_id}] EXPORTED the data of Student ${student_id}`);
 
-        res.send(blob);
+        res.status(200).send(blob);
     } catch (error) {
         // Return error
+        res.status(404).send({ error: error.message });
+    }
+});
+
+// Download Student Registration PDF
+DownloadRouter.get("/student/pdf/:student_id", async (req, res) => {
+    if (!allowed(req.permission, [1, 3])) {
+        res.status(401).send({ error: "You are not authorized to access this" });
+        return;
+    }
+
+    try {
+
+        // Get student_id from req.params
+        const student_id = req.params.student_id;
+
+        //Check if ID Exists
+        const checkIDExists = async (student_id) => {
+            const studentEntry = await prisma.Students.findUnique({
+                where: {
+                    student_id: student_id,
+                },
+            });
+
+            if (studentEntry == null) {
+                return false;
+            } else {
+                return true;
+            }
+        };
+        // Check if student exists
+        if (!(await checkIDExists(student_id))) {
+            throw new Error("Student does not exist");
+        }
+
+        // Get student from database
+        let studentData = null;
+        studentData = await prisma.Students.findUnique({
+            where: {
+                student_id: student_id,
+            },
+            select: {
+                student_id: true,
+                first_name: true,
+                last_name: true,
+                middle_name: true,
+                address: true,
+                mobile_number: true,
+                landline: true,
+                email: true,
+                birthdate: true,
+                birthplace: true,
+                nationality: true,
+                gender: true,
+                civil_status: true,
+                no_of_children: true,
+                school: true,
+                occupation: true,
+                admin: true,
+                church: true,
+                pastor: true,
+                is_partner_school: true,
+                gradeschool: true,
+                highschool: true,
+                college: true,
+                college_course: true,
+                graduate_course: true,
+                graduate: true,
+                others: true,
+                essay: true,
+                emergency_name: true,
+                emergency_address: true,
+                emergency_mobile_number: true,
+            },
+        });
+
+        // Format Student Data
+        studentData["school_year"] = new Date().getFullYear().toString();
+        studentData["full_name"] = `${studentData.first_name} ${studentData.middle_name} ${studentData.last_name}`;
+        studentData["college_w_course"] = `${studentData.college} (${studentData.college_course})`;
+        studentData["graduate_w_course"] = `${studentData.graduate} (${studentData.graduate_course})`;
+        let date = studentData["birthdate"] // use your date here
+        studentData["birthdate"] = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+        studentData["no_of_children"] = studentData["no_of_children"].toString();
+        switch (studentData["is_partner_school"]) {
+            case true:
+                studentData["is_partner_school"] = "YES";
+                break;
+            case false:
+                studentData["is_partner_school"] = "NO";
+                break;
+            default:
+                studentData["is_partner_school"] = "NO";
+                break;
+        }
+
+        console.log(`ADMIN [${req.user.user_id}] PRINTED the data of Student ${student_id}`);
+
+        // Generate PDF as buffer
+        const buffer = await generatePDF(studentData);
+
+        // Set Headers
+        res.setHeader('Content-Type', 'application/pdf');
+
+        //console.log(buffer instanceof Buffer)
+        //console.log(buffer)
+
+        // Convert buffer to base64
+        let bufferFromAB = Buffer.from(buffer);
+        const base64 = bufferFromAB.toString('base64');
+
+        // Send response
+        res.status(200).send(base64);
+
+    } catch (error) {
+        // Return error
+        console.log(`Error: ${error}`);
         res.status(404).send({ error: error.message });
     }
 });

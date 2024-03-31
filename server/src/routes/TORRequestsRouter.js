@@ -1,12 +1,11 @@
 // Imports Modules
 import express from "express";
-import { validationResult } from "express-validator";
+// import { validationResult } from "express-validator";
 import {
-    validateTORRequestReqBody,
+    // validateTORRequestReqBody,
     cleanTORRequestObject,
-    validateStatusReqBody,
-    cleanStatusObject,
-} from "../validators/TORRequestsValidator.js";
+    // validateStatusReqBody,
+    cleanStatusObject} from "../validators/TORRequestsValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { allowed } from "../utils/helpers.js";
 import { sendEmail } from "../utils/email_service.js";
@@ -76,7 +75,7 @@ const getLatestRequestIDSegment = async (currentYear) => {
 }
 
 // Generate requestID
-export const generateRequestID = async (currentYear, lastRequestIDSegment) => {
+export const generateRequestID = (currentYear, lastRequestIDSegment) => {
 
     //If last req id is null
     if (lastRequestIDSegment === -1) {
@@ -307,18 +306,20 @@ TORRequestsRouter.get("/all/:status", async (req, res) => {
 
 /* POST Endpoints */
 // Create TOR Request
-TORRequestsRouter.post("/", validateTORRequestReqBody(), async (req, res) => {
+TORRequestsRouter.post("/", 
+    // validateTORRequestReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [1, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate TOR Request Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate TOR Request Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get tor_request from req.body
@@ -327,7 +328,7 @@ TORRequestsRouter.post("/", validateTORRequestReqBody(), async (req, res) => {
         // Generate req_id
         const currentYear = new Date().getFullYear().toString();
         const lastRequestIDSegment = await getLatestRequestIDSegment(currentYear);
-        tor_request.req_id = await generateRequestID(currentYear, lastRequestIDSegment);
+        tor_request.req_id = generateRequestID(currentYear, lastRequestIDSegment);
 
         tor_request.status = "PENDING";
         tor_request.request_date = new Date();
@@ -360,18 +361,20 @@ TORRequestsRouter.post("/", validateTORRequestReqBody(), async (req, res) => {
 
 /* UPDATE Endpoints */
 // Update TOR Request
-TORRequestsRouter.patch("/:req_id", validateStatusReqBody(), async (req, res) => {
+TORRequestsRouter.patch("/:req_id", 
+    // validateStatusReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [1, 2, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate TOR Request Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate TOR Request Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get req_id from req.params

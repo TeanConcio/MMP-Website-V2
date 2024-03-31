@@ -1,14 +1,12 @@
 <script setup>
 // Components
-import ModulePaymentsTable from "./ModulePaymentsTable.vue";
-import LoadingSpinner from "../../common/LoadingSpinner.vue";
+import StudentModulePaymentsTable from "./StudentModulePaymentsTable.vue";
+import LoadingSpinner from "../common/LoadingSpinner.vue";
 // Popups
-import MessagePopup from "../../common/MessagePopup.vue";
-import PromptPopup from "../../common/PromptPopup.vue";
-import PaymentInputPopup from "../../common/PaymentInputPopup.vue";
-import EditPaymentPopup from "../../common/EditPaymentPopup.vue";
+import MessagePopup from "../common/MessagePopup.vue";
+import PromptPopup from "../common/PromptPopup.vue";
 // Helpers
-import { formatEnum, downloadZIP, downloadPDF, duplicate } from "../../../util/helpers";
+import { formatEnum, downloadZIP, downloadPDF, duplicate } from "../../util/helpers";
 // Validators
 import {
     validateNameField,
@@ -26,7 +24,7 @@ import {
     validateNumberField,
     validateBooleanField,
     validateTextAreaField
-} from "../../../util/validators.js";
+} from "../../util/validators.js";
 // Props
 defineProps({
     studentId: String,
@@ -237,9 +235,10 @@ defineEmits(["on-back"]);
             </div>
             <div class="grid md:grid-cols-3">
                 <div class="mb-6">
-                    <div class="block mb-1 font-medium text-gray-900 dark:text-white">Gender</div>
+                    <label for="gender" class="block mb-1 font-medium text-gray-900 dark:text-white">Gender</label>
                     <p v-if="!editMode" class="block text-sm">{{ formatEnum(student.gender) }}</p>
                     <select
+                        id="gender"
                         v-if="editMode"
                         v-model="student.gender"
                         :disabled="!editMode"
@@ -256,13 +255,14 @@ defineEmits(["on-back"]);
                     </div>
                 </div>
                 <div class="mb-6">
-                    <div class="block mb-1 font-medium text-gray-900 dark:text-white">
+                    <label for="civil_status" class="block mb-1 font-medium text-gray-900 dark:text-white">
                         Civil Status
-                    </div>
+                    </label>
                     <p v-if="!editMode" class="block text-sm">
                         {{ formatEnum(student.civil_status) }}
                     </p>
                     <select
+                        id="civil_status"
                         v-if="editMode"
                         v-model="student.civil_status"
                         :disabled="!editMode"
@@ -697,26 +697,12 @@ defineEmits(["on-back"]);
         >
             <h2 class="text-2xl font-semibold mb-1">Module Payments</h2>
             <div class="mb-5 mt-5 grid">
-                <ModulePaymentsTable
+                <StudentModulePaymentsTable
                     :finance_info="finance_info"
                     :student_id="studentId"
                     @add-success="getBills()"
                     @delete-success="getBills()"
                 />
-                <div class="sm:flex sm:justify-center block mt-5">
-                    <button
-                        class="w-full sm:w-auto text-base font-medium text-center text-white bg-highlight rounded-lg hover:bg-highlight_hover px-4 py-2 sm:mx-6 my-5 sm:my-0"
-                        @click="currentPopup = 'addPayment'"
-                    >
-                        Add Payment
-                    </button>
-                    <button
-                        class="w-full sm:w-auto text-base font-medium text-center text-white bg-highlight rounded-lg hover:bg-highlight_hover px-4 py-2 sm:mx-6"
-                        @click="editPayment()"
-                    >
-                        Edit Payment
-                    </button>
-                </div>
             </div>
         </div>
         <div
@@ -779,43 +765,6 @@ defineEmits(["on-back"]);
         @on-exit="currentPopup = null"
     />
 
-    <PromptPopup
-        v-if="currentPopup === 'delete-confirmation'"
-        title="Are You Sure You Want to Delete This Payment?"
-        description="Please make sure you want to delete this payment. This action cannot be undone."
-        confirm-text="Yes, I'm sure"
-        exit-text="No, cancel"
-        @on-confirm="deletePayment(selectedPayment)"
-        @on-exit="currentPopup = null"
-    />
-
-    <MessagePopup
-        v-if="currentPopup === 'add'"
-        title="Added Payment!"
-        description="Payment has been successfully added."
-        :accepted="true"
-        exit-text="Close"
-        @on-exit="currentPopup = null"
-    />
-
-    <MessagePopup
-        v-if="currentPopup === 'edit'"
-        title="Edited Payment!"
-        description="Payment has been successfully edited."
-        :accepted="true"
-        exit-text="Close"
-        @on-exit="currentPopup = null"
-    />
-
-    <MessagePopup
-        v-if="currentPopup === 'delete'"
-        title="Deleted Payment!"
-        description="Payment has been successfully deleted."
-        :accepted="true"
-        exit-text="Close"
-        @on-exit="currentPopup = null"
-    />
-
     <MessagePopup
         v-if="currentPopup === 'error'"
         title="Something went wrong."
@@ -830,29 +779,6 @@ defineEmits(["on-back"]);
         description="Please exit edit mode before trying again."
         exit-text="Close"
         @on-exit="currentPopup = null"
-    />
-
-    <PaymentInputPopup
-        v-if="currentPopup === 'addPayment'"
-        :bills="bills"
-        :student_id="studentId"
-        @on-exit="currentPopup = null"
-        @success="addSuccess()"
-        @fail="currentPopup = 'error'"
-    />
-
-    <EditPaymentPopup
-        v-if="currentPopup === 'editPayment'"
-        :payments="payments"
-        @on-exit="currentPopup = null"
-        @success="editSuccess()"
-        @delete="
-            (or_no) => {
-                selectedPayment = or_no;
-                currentPopup = 'delete-confirmation';
-            }
-        "
-        @fail="currentPopup = 'error'"
     />
 </template>
 
@@ -869,7 +795,6 @@ export default {
             student: {},
             backupStudent: {},
             finance_info: {},
-            selectedPayment: null,
             // Errors
             errors: {},
             // Popups
@@ -1028,19 +953,6 @@ export default {
                 this.currentPopup = "invalid-inputs";
             }
         },
-        // Delete payment based on OR number
-        async deletePayment(or_no) {
-            await this.$axios
-                .delete(`/payments/${or_no}`)
-                .then(() => {
-                    this.currentPopup = "delete";
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.currentPopup = "error";
-                });
-            await this.updateFinanceInfo();
-        },
         async updateStudent() {
             this.student.password = "password";     // Bypass password validation, does not actually change
             await this.$axios
@@ -1085,10 +997,6 @@ export default {
             });
 
             return this.payments;
-        },
-        async editPayment() {
-            await this.getPayments();
-            this.currentPopup = "editPayment";
         },
         // Download
         async downloadStudentData() {

@@ -4,22 +4,21 @@ import ErrorMessagePopup from "../../components/common/ErrorMessagePopup.vue";
 import LoadingSpinner from "../common/LoadingSpinner.vue";
 // Validators
 import {
-    validateName,
-    validateLongName,
-    validateEmail,
-    validatePassword,
-    validateConfirmPassword,
-    validateAddress,
-    validateMobileNumber,
-    validateLandline,
-    validateBirthdate,
-    validate150String,
-    validate30String,
-    validate200String,
-    validateEnum,
-    validateNumber,
-    validateBoolean,
-    validateTextArea
+    validateNameField,
+    validateLongNameField,
+    validateEmailField,
+    validatePasswordField,
+    validateConfirmPasswordField,
+    validateMobileNumberField,
+    validateLandlineField,
+    validateBirthdateField,
+    validate150StringField,
+    validate30StringField,
+    validate200StringField,
+    validateEnumField,
+    validateNumberField,
+    validateBooleanField,
+    validateTextAreaField
 } from "../../util/validators";
 </script>
 
@@ -48,17 +47,17 @@ import {
                             First Name<span class="text-required_red">*</span>
                         </label>
                         <input
-                            type="first_name"
-                            id="firstname"
+                            type="text"
+                            id="first_name"
                             class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="First Name"
                             required
                             autocomplete="off"
-                            v-model="firstname"
+                            v-model="first_name"
                         />
-                        <div class="input-errors" v-if="errors.firstname">
+                        <div class="input-errors" v-if="errors.first_name">
                             <div class="block mb-2 text-sm font-medium text-red-500">
-                                {{ errors.firstname }}
+                                {{ errors.first_name }}
                             </div>
                         </div>
                     </div>
@@ -70,17 +69,17 @@ import {
                             >Last Name<span class="text-required_red">*</span></label
                         >
                         <input
-                            type="last_name"
-                            id="lastname"
+                            type="text"
+                            id="last_name"
                             class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                             placeholder="Last Name"
                             required
                             autocomplete="off"
-                            v-model="lastname"
+                            v-model="last_name"
                         />
-                        <div class="input-errors" v-if="errors.lastname">
+                        <div class="input-errors" v-if="errors.last_name">
                             <div class="block mb-2 text-sm font-medium text-red-500">
-                                {{ errors.lastname }}
+                                {{ errors.last_name }}
                             </div>
                         </div>
                     </div>
@@ -93,16 +92,16 @@ import {
                         >Middle Name</label
                     >
                     <input
-                        type="middle_name"
-                        id="middlename"
+                        type="text"
+                        id="middle_name"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="Middle Name"
                         autocomplete="off"
-                        v-model="middlename"
+                        v-model="middle_name"
                     />
-                    <div class="input-errors" v-if="errors.middlename">
+                    <div class="input-errors" v-if="errors.middle_name">
                         <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.middlename }}
+                            {{ errors.middle_name }}
                         </div>
                     </div>
                 </div>
@@ -205,7 +204,7 @@ import {
                         Address<span class="text-required_red">*</span>
                     </label>
                     <input
-                        type="address"
+                        type="text"
                         id="address"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Address"
@@ -229,17 +228,17 @@ import {
                             Mobile Number<span class="text-required_red">*</span>
                         </label>
                         <input
-                            type="string"
+                            type="text"
                             id="mobile"
                             class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="09XXXXXXXXX"
                             required
                             autocomplete="off"
-                            v-model="mobile_no"
+                            v-model="mobile_number"
                         />
-                        <div class="input-errors" v-if="errors.mobile_no">
+                        <div class="input-errors" v-if="errors.mobile_number">
                             <div class="block mb-2 text-sm font-medium text-red-500">
-                                {{ errors.mobile_no }}
+                                {{ errors.mobile_number }}
                             </div>
                         </div>
                     </div>
@@ -252,7 +251,7 @@ import {
                             Landline Number<span class="text-required_red">*</span>
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             id="landline"
                             class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             placeholder="12345678"
@@ -493,12 +492,12 @@ import {
                             type="checkbox"
                             value=""
                             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            v-model="isPartner"
+                            v-model="is_partner_school"
                         />
 
-                        <div class="input-errors" v-if="errors.isPartner">
+                        <div class="input-errors" v-if="errors.is_partner_school">
                             <div class="block mb-2 text-sm font-medium text-red-500">
-                                {{ errors.isPartner }}
+                                {{ errors.is_partner_school }}
                             </div>
                         </div>
 
@@ -750,7 +749,7 @@ import {
                         Full Name<span class="text-required_red">*</span>
                     </label>
                     <input
-                        type="emergency_name"
+                        type="text"
                         id="emergencyname"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Emergency Contact Name"
@@ -773,7 +772,7 @@ import {
                         Emergency Address<span class="text-required_red">*</span>
                     </label>
                     <input
-                        type="address"
+                        type="text"
                         id="emergencyaddress"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Address"
@@ -796,17 +795,17 @@ import {
                         Emergency Number<span class="text-required_red">*</span>
                     </label>
                     <input
-                        type="string"
+                        type="text"
                         id="emergencymobile"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="09XXXXXXXXX"
                         required
                         autocomplete="off"
-                        v-model="emergency_number"
+                        v-model="emergency_mobile_number"
                     />
-                    <div class="input-errors" v-if="errors.emergency_number">
+                    <div class="input-errors" v-if="errors.emergency_mobile_number">
                         <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.emergency_number }}
+                            {{ errors.emergency_mobile_number }}
                         </div>
                     </div>
                 </div>
@@ -922,14 +921,15 @@ export default {
     //  this is the data that will be used in the form
     data() {
         return {
-            firstname: "",
-            lastname: "",
-            middlename: "",
+            first_name: "",
+            last_name: "",
+            middle_name: "",
             email: "",
+            track: "",
             password: "",
             confirmPassword: "",
             address: "",
-            mobile_no: "",
+            mobile_number: "",
             landline: "",
             birthdate: "",
             birthplace: "",
@@ -940,7 +940,7 @@ export default {
             occupation: "",
             school: "",
             admin: "",
-            isPartner: false,
+            is_partner_school: false,
             church: "",
             pastor: "",
             gradeschool: "",
@@ -957,8 +957,7 @@ export default {
             essay: "",
             emergency_name: "",
             emergency_address: "",
-            emergency_number: "",
-            track: "",
+            emergency_mobile_number: "",
             agreeTerms: false,
             errors: {},
             // Popups
@@ -976,50 +975,221 @@ export default {
             this.$router.push("/teacher/signup");
         },
 
+        // Trim inputs
+        trimInputs() {
+            this.first_name = this.first_name.trim();
+            this.last_name = this.last_name.trim();
+            this.middle_name = this.middle_name.trim();
+            this.email = this.email.trim();
+            this.password = this.password.trim();;
+            this.confirmPassword = this.confirmPassword.trim();
+            this.address = this.address.trim();
+            this.birthplace = this.birthplace.trim();
+            this.nationality = this.nationality.trim();
+            this.occupation = this.occupation.trim();
+            this.school = this.school.trim();
+            this.admin = this.admin.trim();
+            this.church = this.church.trim();
+            this.pastor = this.pastor.trim();
+            this.gradeschool = this.gradeschool.trim();
+            this.highschool = this.highschool.trim();
+            this.college = this.college.trim();
+            this.college_course = this.college_course.trim();
+            this.graduate = this.graduate.trim();
+            this.graduate_course = this.graduate_course.trim();
+            this.others = this.others.trim();
+            this.essay = this.essay.trim();
+            this.emergency_name = this.emergency_name.trim();
+            this.emergency_address = this.emergency_address.trim();
+        },
+        // Submit form
+        submitForm() {
+            this.trimInputs();
+
+            // Validate form
+            if (this.validateForm()) {
+                this.signup();
+            } else {
+                this.showInvalidPopup = true;
+            }
+        },
+        // Sign up Teacher
+        async signup() {
+            //Get the student info object
+            let student = {
+                first_name: this.first_name,
+                last_name: this.last_name,
+                address: this.address,
+                mobile_number: this.mobile_number,
+                landline: this.landline,
+                email: this.email,
+                birthdate: this.birthdate,
+                birthplace: this.birthplace,
+                nationality: this.nationality,
+                gender: this.gender,
+                civil_status: this.civil_status,
+                no_of_children: this.no_of_children,
+                school: this.school,
+                occupation: this.occupation,
+                admin: this.admin,
+                church: this.church,
+                pastor: this.pastor,
+                is_partner_school: this.is_partner_school,
+                others: this.others,
+                gradeschool_completed: this.gradeschool_completed,
+                highschool_completed: this.highschool_completed,
+                college_completed: this.college_completed,
+                graduate_completed: this.graduate_completed,
+                essay: this.essay,
+                emergency_name: this.emergency_name,
+                emergency_address: this.emergency_address,
+                emergency_mobile_number: this.emergency_mobile_number,
+                password: this.password,
+                status: "FOR_APPROVAL",
+                track: this.track,
+            };
+
+            // Add optional fields if they have a value
+            if (this.middle_name.length > 0) {
+                student["middle_name"] = this.middle_name;
+            }
+
+            if (this.gradeschool.length > 0) {
+                student["gradeschool"] = this.gradeschool;
+            }
+
+            if (this.highschool.length > 0) {
+                student["highschool"] = this.highschool;
+            }
+
+            if (this.college.length > 0) {
+                student["college"] = this.college;
+            }
+
+            if (this.college_course.length > 0) {
+                student["college_course"] = this.college_course;
+            }
+
+            if (this.graduate.length > 0) {
+                student["graduate"] = this.graduate;
+            }
+
+            if (this.graduate_course.length > 0) {
+                student["graduate_course"] = this.graduate_course;
+            }
+
+            // Call Sign up api endpoint
+            await this.$axios
+                .post("/students/", student)
+                // If successful
+                .then(() => {
+                    this.showSuccessPopup = true;
+                })
+                // If unsuccessful
+                .catch((error) => {
+                    console.log(error);
+                    if (error.response.data.error === "Email already exists") {
+                        this.showUsedEmailPopup = true;
+                    } else {
+                        this.showErrorPopup = true;
+                    }
+                });
+        },
         // BELOW ARE THE VALIDATORS TO CHECK IF THE DATA ARE VALID FOR SIGNING UP
+        validateForm() {
+            // Validate all fields
+            this.validateFirstName();
+            this.validateLastName();
+            this.validateMiddleName();
+            this.validateEmail();
+            this.validateTrack();
+            this.validatePassword();
+            this.validateConfirmPassword();
+            this.validateAddress();
+            this.validateMobileNumber();
+            this.validateLandline();
+            this.validateBirthdate();
+            this.validateBirthplace();
+            this.validateNationality();
+            this.validateGender();
+            this.validateCivilStatus();
+            this.validateNoOfChildren();
+            this.validateOccupation();
+            this.validateSchool();
+            this.validateAdmin();
+            this.validateIsPartner();
+            this.validateChurch();
+            this.validatePastor();
+            this.validateGradeschool();
+            this.validateHighschool();
+            this.validateCollege();
+            this.validateCollegeCourse();
+            this.validateGraduate();
+            this.validateGraduateCourse();
+            this.validateOthers();
+            this.validateEssay();
+            this.validateEmergencyName();
+            this.validateEmergencyAddress();
+            this.validateEmergencyNumber();
+            this.validateAgreeTerms();
+
+            if (Object.keys(this.errors).length === 0) { // If no errors, return true
+                return true;
+            } else {
+                return false;
+            }
+        },
         validateFirstName() {
-            validateName(this.firstname, "firstname", this.errors);
+            validateNameField(this.first_name, "first_name", this.errors);
         },
         validateLastName() {
-            validateName(this.lastname, "lastname", this.errors);
+            validateNameField(this.last_name, "last_name", this.errors);
         },
         validateMiddleName() {
-            if (this.middlename.length === 0) {
-                delete this.errors["middlename"];
+            if (this.middle_name.length === 0) {
+                delete this.errors["middle_name"];
                 return;
             }
 
-            validateName(this.middlename, "middlename", this.errors);
+            validateNameField(this.middle_name, "middle_name", this.errors);
         },
         validateEmail() {
-            validateEmail(this.email, this.errors);
+            validateEmailField(this.email, this.errors);
+        },
+        validateTrack() {
+            validateEnumField(
+                this.track, 
+                "track", 
+                ["ADMIN", "TEACHER", "BOTH"], 
+                this.errors
+            );
         },
         validatePassword() {
-            validatePassword(this.password, this.errors);
+            validatePasswordField(this.password, this.errors);
         },
         validateConfirmPassword() {
-            validateConfirmPassword(this.confirmPassword, this.password, this.errors);
+            validateConfirmPasswordField(this.confirmPassword, this.password, this.errors);
         },
         validateAddress() {
-            validate150String(this.address, "address", this.errors);
+            validate150StringField(this.address, "address", this.errors);
         },
         validateMobileNumber() {
-            validateMobileNumber(this.mobile_no, this.errors);
+            validateMobileNumberField(this.mobile_number, "mobile_number", this.errors);
         },
         validateLandline() {
-            validateLandline(this.landline, this.errors);
+            validateLandlineField(this.landline, this.errors);
         },
         validateBirthdate() {
-            validateBirthdate(this.birthdate, this.errors);
+            validateBirthdateField(this.birthdate, this.errors);
         },
         validateBirthplace() {
-            validate150String(this.birthplace, "birthplace", this.errors);
+            validate150StringField(this.birthplace, "birthplace", this.errors);
         },
         validateNationality() {
-            validate150String(this.nationality, "nationality", this.errors);
+            validate150StringField(this.nationality, "nationality", this.errors);
         },
         validateGender() {
-            validateEnum(
+            validateEnumField(
                 this.gender, 
                 "gender", 
                 ["MALE", "FEMALE", "OTHERS"], 
@@ -1027,7 +1197,7 @@ export default {
             );
         },
         validateCivilStatus() {
-            validateEnum(
+            validateEnumField(
                 this.civil_status,
                 "civil_status",
                 ["SINGLE", "MARRIED", "WIDOWED", "ANNULLED"],
@@ -1035,25 +1205,25 @@ export default {
             );
         },
         validateNoOfChildren() {
-            validateNumber(this.no_of_children, "no_of_children", this.errors);
+            validateNumberField(this.no_of_children, "no_of_children", this.errors);
         },
         validateOccupation() {
-            validate30String(this.occupation, "occupation", this.errors);
+            validate30StringField(this.occupation, "occupation", this.errors);
         },
         validateSchool() {
-            validate30String(this.school, "school", this.errors);
+            validate30StringField(this.school, "school", this.errors);
         },
         validateAdmin() {
-            validate150String(this.admin, "admin", this.errors);
+            validate150StringField(this.admin, "admin", this.errors);
         },
         validateIsPartner() {
-            validateBoolean(this.isPartner, "isPartner", this.errors);
+            validateBooleanField(this.is_partner_school, "is_partner_school", this.errors);
         },
-        validatChurch() {
-            validate150String(this.church, "church", this.errors);
+        validateChurch() {
+            validate150StringField(this.church, "church", this.errors);
         },
         validatePastor() {
-            validate150String(this.pastor, "pastor", this.errors);
+            validate150StringField(this.pastor, "pastor", this.errors);
         },
         validateGradeschool() {
             if (this.gradeschool.length > 50) {
@@ -1178,28 +1348,20 @@ export default {
                 delete this.errors["graduate_course"];
             }
         },
-        validateTrack() {
-            validateEnum(
-                this.track, 
-                "track", 
-                ["ADMIN", "TEACHER", "BOTH"], 
-                this.errors
-            );
-        },
         validateOthers() {
-            validate200String(this.others, "others", this.errors);
+            validate200StringField(this.others, "others", this.errors);
         },
         validateEssay() {
-            validateTextArea(this.essay, "essay", this.errors);
+            validateTextAreaField(this.essay, "essay", this.errors);
         },
         validateEmergencyName() {
-            validateLongName(this.emergency_name, "emergency_name", this.errors);
+            validateLongNameField(this.emergency_name, "emergency_name", this.errors);
         },
         validateEmergencyAddress() {
-            validate150String(this.emergency_address, "emergency_address", this.errors);
+            validate150StringField(this.emergency_address, "emergency_address", this.errors);
         },
         validateEmergencyNumber() {
-            validateMobileNumber(this.emergency_number, this.errors);
+            validateMobileNumberField(this.emergency_mobile_number, "emergency_mobile_number", this.errors);
         },
         validateAgreeTerms() {
             if (!this.agreeTerms) {
@@ -1208,158 +1370,25 @@ export default {
                 delete this.errors["agreeTerms"];
             }
         },
-        validateForm() {
-            // Validate all fields
-            this.validateFirstName();
-            this.validateLastName();
-            this.validateMiddleName();
-            this.validateEmail();
-            this.validatePassword();
-            this.validateConfirmPassword();
-            this.validateTrack();
-            this.validateAddress();
-            this.validateMobileNumber();
-            this.validateLandline();
-            this.validateBirthdate();
-            this.validateBirthplace();
-            this.validateNationality();
-            this.validateGender();
-            this.validateCivilStatus();
-            this.validateNoOfChildren();
-            this.validateOccupation();
-            this.validateSchool();
-            this.validateAdmin();
-            this.validateIsPartner();
-            this.validatChurch();
-            this.validatePastor();
-            this.validateGradeschool();
-            this.validateHighschool();
-            this.validateCollege();
-            this.validateGraduate();
-            this.validateCollegeCourse();
-            this.validateGraduateCourse();
-            this.validateOthers();
-            this.validateEssay();
-            this.validateEmergencyName();
-            this.validateEmergencyAddress();
-            this.validateEmergencyNumber();
-            this.validateAgreeTerms();
-
-            if (Object.keys(this.errors).length === 0) { // If no errors, return true
-                return true;
-            } else {
-                return false;
-            }
-        },
-        // Submit form
-        submitForm() {
-            // Validate form
-            if (this.validateForm()) {
-                this.signup();
-            } else {
-                this.showInvalidPopup = true;
-            }
-        },
-        // Sign up Teacher
-        async signup() {
-            //Get the student info object
-            let student = {
-                first_name: this.firstname.trim(),
-                last_name: this.lastname.trim(),
-                address: this.address.trim(),
-                mobile_number: this.mobile_no.trim(),
-                landline: this.landline.trim(),
-                email: this.email.trim(),
-                birthdate: this.birthdate.trim(),
-                birthplace: this.birthplace.trim(),
-                nationality: this.nationality.trim(),
-                gender: this.gender.trim(),
-                civil_status: this.civil_status.trim(),
-                no_of_children: this.no_of_children.trim(),
-                school: this.school.trim(),
-                occupation: this.occupation.trim(),
-                admin: this.admin.trim(),
-                church: this.church.trim(),
-                pastor: this.pastor.trim(),
-                is_partner_school: this.isPartner.trim(),
-                others: this.others.trim(),
-                gradeschool_completed: this.gradeschool_completed.trim(),
-                highschool_completed: this.highschool_completed.trim(),
-                college_completed: this.college_completed.trim(),
-                graduate_completed: this.graduate_completed.trim(),
-                essay: this.essay.trim(),
-                emergency_name: this.emergency_name.trim(),
-                emergency_address: this.emergency_address.trim(),
-                emergency_mobile_number: this.emergency_number.trim(),
-                password: this.password.trim(),
-                status: "FOR_APPROVAL",
-                track: this.track.trim(),
-            };
-
-            // Add optional fields if they have a value
-            if (this.middlename.length > 0) {
-                student["middle_name"] = this.middlename;
-            }
-
-            if (this.gradeschool.length > 0) {
-                student["gradeschool"] = this.gradeschool;
-            }
-
-            if (this.highschool.length > 0) {
-                student["highschool"] = this.highschool;
-            }
-
-            if (this.college.length > 0) {
-                student["college"] = this.college;
-            }
-
-            if (this.college_course.length > 0) {
-                student["college_course"] = this.college_course;
-            }
-
-            if (this.graduate.length > 0) {
-                student["graduate"] = this.graduate;
-            }
-
-            if (this.graduate_course.length > 0) {
-                student["graduate_course"] = this.graduate_course;
-            }
-
-            // Call Sign up api endpoint
-            await this.$axios
-                .post("/students/", student)
-                // If successful
-                .then(() => {
-                    this.showSuccessPopup = true;
-                })
-                // If unsuccessful
-                .catch((error) => {
-                    if (error.response.data.error === "Email already exists") {
-                        this.showUsedEmailPopup = true;
-                    } else {
-                        this.showErrorPopup = true;
-                    }
-                });
-        },
     },
     watch: {
-        firstname() {
+        first_name() {
             this.validateFirstName();
         },
-        lastname() {
+        last_name() {
             this.validateLastName();
         },
-        middlename() {
+        middle_name() {
             this.validateMiddleName();
         },
         email() {
             this.validateEmail();
         },
-        password() {
-            this.validatePassword();
-        },
         track() {
             this.validateTrack();
+        },
+        password() {
+            this.validatePassword();
         },
         confirmPassword() {
             this.validateConfirmPassword();
@@ -1367,7 +1396,7 @@ export default {
         address() {
             this.validateAddress();
         },
-        mobile_no() {
+        mobile_number() {
             this.validateMobileNumber();
         },
         landline() {
@@ -1400,11 +1429,11 @@ export default {
         admin() {
             this.validateAdmin();
         },
-        isPartner() {
+        is_partner_school() {
             this.validateIsPartner();
         },
         church() {
-            this.validatChurch();
+            this.validateChurch();
         },
         pastor() {
             this.validatePastor();
@@ -1433,18 +1462,18 @@ export default {
             this.validateCollegeCourse();
             this.validateGraduateCourse();
         },
+        college_course() {
+            this.validateCollege();
+            this.validateCollegeCourse();
+            this.validateGraduate();
+            this.validateGraduateCourse();
+        },
         graduate() {
             this.validateGradeschool();
             this.validateHighschool();
             this.validateCollege();
             this.validateGraduate();
             this.validateCollegeCourse();
-            this.validateGraduateCourse();
-        },
-        college_course() {
-            this.validateCollege();
-            this.validateCollegeCourse();
-            this.validateGraduate();
             this.validateGraduateCourse();
         },
         graduate_course() {
@@ -1463,7 +1492,7 @@ export default {
         emergency_address() {
             this.validateEmergencyAddress();
         },
-        emergency_number() {
+        emergency_mobile_number() {
             this.validateEmergencyNumber();
         },
         agreeTerms() {

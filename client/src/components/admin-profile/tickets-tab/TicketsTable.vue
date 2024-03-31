@@ -38,7 +38,9 @@ defineProps({
                         <th scope="col" class="px-6 py-3">Mobile</th>
                         <th scope="col" class="px-6 py-3">Create Date</th>
                         <th scope="col" class="px-6 py-3">Ticket Info</th>
-                        <th scope="col" class="px-6 py-3">Status</th>
+                        <th scope="col" class="px-6 py-3">
+                            <label for="status">Status</label>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,6 +121,7 @@ defineProps({
 
                         <th scope="row" class="px-6 py-3 font-medium">
                             <select
+                                id="status"
                                 v-model="statusArray[index]"
                                 @change="addEditedIndex(index)"
                                 :class="{
@@ -208,6 +211,7 @@ export default {
                 await this.$axios
                     .patch(`/tickets/${data.ticket_id}`, { status: data.status })
                     .catch((error) => {
+                        console.log(error);
                         errorsID.push(data.ticket_id);
                     });
             }
@@ -246,10 +250,20 @@ export default {
         addEditedIndex(index) {
             // if the status is changed, add the ticket ID and status to the editArray
             if (this.TicketArray[index].status !== this.statusArray[index]) {
-                this.editArray.push({
-                    ticket_id: this.TicketArray[index].ticket_id,
-                    status: this.statusArray[index],
-                });
+
+                // Update the status of the ticket in editArray if it already exists, if not, then add it
+                let found = this.editArray.find(
+                    (element) => element.ticket_id === this.TicketArray[index].ticket_id
+                );
+                if (found) {
+                    found.status = this.statusArray[index];
+                } else {
+                    this.editArray.push({
+                        ticket_id: this.TicketArray[index].ticket_id,
+                        status: this.statusArray[index],
+                    });
+                }
+                
             } else { // if the status is changed back to the original, remove the ticket ID and status from the editArray
                 this.editArray = this.editArray.filter(
                     (element) => element.ticket_id !== this.TicketArray[index].ticket_id

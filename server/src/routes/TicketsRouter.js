@@ -65,7 +65,7 @@ const getLatestTicketIDSegment = async (currentYear) => {
 }
 
 // Generate requestID
-export const generateTicketID = async (currentYear, lastTicketIDSegment) => {
+export const generateTicketID = (currentYear, lastTicketIDSegment) => {
 
     //If last ticket id is null
     if (lastTicketIDSegment === -1) {
@@ -261,7 +261,7 @@ TicketsRouter.post("/", async (req, res) => {
         // Generate ticket_id
         const currentYear = new Date().getFullYear().toString();
         const lastTicketIDSegment = await getLatestTicketIDSegment(currentYear);
-        ticket.ticket_id = await generateTicketID(currentYear, lastTicketIDSegment);
+        ticket.ticket_id = generateTicketID(currentYear, lastTicketIDSegment);
         
         ticket.status = "PENDING";
         ticket.create_date = new Date();

@@ -1,11 +1,10 @@
 // Imports Modules
 import express from "express";
-import { validationResult } from "express-validator";
+// import { validationResult } from "express-validator";
 import { allowed } from "../utils/helpers.js";
 import {
-    validateDetailsReqBody,
-    cleanDetailsObject,
-} from "../validators/ModuleDetailsValidator.js";
+    // validateDetailsReqBody,
+    cleanDetailsObject} from "../validators/ModuleDetailsValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 
 // Express Router
@@ -104,18 +103,20 @@ ModuleDetailsRouter.get("/all/details", async (req, res) => {
 
 /* POST Endpoints */
 //Create a new module entry
-ModuleDetailsRouter.post("/", validateDetailsReqBody(), async (req, res) => {
+ModuleDetailsRouter.post("/", 
+    // validateDetailsReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Details Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Details Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         //Get info from body

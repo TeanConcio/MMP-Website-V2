@@ -191,6 +191,7 @@ export default {
                     this.enrollmentArray.splice(index, 1);
                 })
                 .catch((error) => {
+                    console.log(error);
                     // Show error popup
                     this.showErrorPopup = true;
                 });

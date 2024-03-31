@@ -1,12 +1,11 @@
 // Imports Modules
 import express from "express";
-import { validationResult } from "express-validator";
+// import { validationResult } from "express-validator";
 import {
-    validateModuleReqBody,
+    // validateModuleReqBody,
     cleanModuleObject,
-    validateEditTeacherReqBody,
-    cleanTeacherEditObject,
-} from "../validators/ModuleValidator.js";
+    // validateEditTeacherReqBody,
+    cleanTeacherEditObject} from "../validators/ModuleValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { allowed } from "../utils/helpers.js";
 
@@ -596,18 +595,20 @@ ModulesRouter.get("/report/:school_year", async (req, res) => {
 
 /* POST Endpoints */
 // Add a new module
-ModulesRouter.post("/", validateModuleReqBody(), async (req, res) => {
+ModulesRouter.post("/", 
+    // validateModuleReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    //Validate Modules Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // //Validate Modules Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get module from req.body
@@ -636,18 +637,20 @@ ModulesRouter.post("/", validateModuleReqBody(), async (req, res) => {
 
 /* PATCH Endpoints */
 // Edit an existing module
-ModulesRouter.patch("/:module_name/:school_year", validateModuleReqBody(), async (req, res) => {
+ModulesRouter.patch("/:module_name/:school_year", 
+    // validateModuleReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    //Validate Modules Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // //Validate Modules Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         //Get module_name from req.params
@@ -681,19 +684,19 @@ ModulesRouter.patch("/:module_name/:school_year", validateModuleReqBody(), async
 
 ModulesRouter.patch(
     "/teacher/:module_name/:school_year",
-    validateEditTeacherReqBody(),
+    // validateEditTeacherReqBody(),
     async (req, res) => {
         if (!allowed(req.permission, [3])) {
             res.status(403).send({ error: "You are not authorized to access this" });
             return;
         }
 
-        //Validate Modules Info
-        const result = validationResult(req);
-        if (!result.isEmpty()) {
-            // Return errors if any
-            return res.status(400).send({ errors: result.array() });
-        }
+        // //Validate Modules Info
+        // const result = validationResult(req);
+        // if (!result.isEmpty()) {
+        //     // Return errors if any
+        //     return res.status(400).send({ errors: result.array() });
+        // }
 
         try {
             //Get module_name from req.params

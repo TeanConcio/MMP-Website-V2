@@ -1,5 +1,5 @@
 // Import Modules
-import { checkSchema } from "express-validator";
+// import { checkSchema } from "express-validator";
 
 // TOR Requests Schema
 const TORRequestSchema = {
@@ -34,10 +34,12 @@ const statusSchema = {
     },
 };
 
-// TOR Request Schema Validator
-export const validateTORRequestReqBody = () => checkSchema(TORRequestSchema, ["body"]);
-// Status Request Schema Validator
-export const validateStatusReqBody = () => checkSchema(statusSchema, ["body"]);
+// // TOR Request Schema Validator
+// export const validateTORRequestReqBody = () => checkSchema(TORRequestSchema, ["body"]);
+// // Status Request Schema Validator
+// export const validateStatusReqBody = () => checkSchema(statusSchema, ["body"]);
+TORRequestSchema
+statusSchema
 
 // TOR Request Object Cleaner
 export const cleanTORRequestObject = (TORRequestObject) => {

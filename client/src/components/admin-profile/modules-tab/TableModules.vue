@@ -18,7 +18,9 @@ import axios from "axios";
             >
                 <tr>
                     <th scope="col" class="px-6 py-3">Module Name</th>
-                    <th scope="col" class="px-6 py-3">Teacher Assigned</th>
+                    <th scope="col" class="px-6 py-3">
+                        <label for="teacher_assigned">Teacher Assigned</label>
+                    </th>
                     <th scope="col" class="px-6 py-3">Program</th>
                     <th scope="col" class="px-6 py-3">Session 1</th>
                     <th scope="col" class="px-6 py-3 text-center">Session 2</th>
@@ -51,6 +53,7 @@ import axios from "axios";
                     >
                         <!-- Dropdown for Teachers -->
                         <select
+                            id="teacher_assigned"
                             :class="{
                                 'text-edited':
                                     `${formatName(
@@ -243,6 +246,7 @@ export default {
                             this.teacherMap[this.parseVal(this.updateHandlerArray[index])];
                     })
                     .catch((error) => {
+                        console.log(error);
                         this.errorCount++;
                     });
             }

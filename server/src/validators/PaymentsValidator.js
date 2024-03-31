@@ -1,5 +1,5 @@
 // Import Modules
-import { checkSchema } from "express-validator";
+// import { checkSchema } from "express-validator";
 
 // Payments Schema
 const paymentsSchema = {
@@ -47,7 +47,8 @@ const paymentsSchema = {
 };
 
 // Payment Schema Validator
-export const validatePaymentReqBody = () => checkSchema(paymentsSchema, ["body"]);
+// export const validatePaymentReqBody = () => checkSchema(paymentsSchema, ["body"]);
+paymentsSchema
 
 // Payment Object Cleaner
 export const cleanPaymentObject = (paymentObject) => {

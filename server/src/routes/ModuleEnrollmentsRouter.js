@@ -1,12 +1,11 @@
 // Imports Modules
 import express from "express";
-import { validationResult } from "express-validator";
+// import { validationResult } from "express-validator";
 import {
-    validateEnrollmentReqBody,
+    // validateEnrollmentReqBody,
     cleanEnrollmentObject,
-    validateEditGradeReqBody,
-    cleanEditGradeObject,
-} from "../validators/ModuleEnrollmentsValidator.js";
+    // validateEditGradeReqBody,
+    cleanEditGradeObject} from "../validators/ModuleEnrollmentsValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { allowed, exclude } from "../utils/helpers.js";
 import { sendEmail } from "../utils/email_service.js";
@@ -356,7 +355,7 @@ ModuleEnrollmentsRouter.get("/active/:student_id", async (req, res) => {
 
 //Get finance related module enrollment info from a student
 ModuleEnrollmentsRouter.get("/balance/:student_id", async (req, res) => {
-    if (!allowed(req.permission, [3])) {
+    if (!allowed(req.permission, [1, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
@@ -617,18 +616,20 @@ ModuleEnrollmentsRouter.get("/enrollments/:module_name/:school_year", async (req
 
 /* POST Endpoints */
 //Create a new enrollment
-ModuleEnrollmentsRouter.post("/", validateEnrollmentReqBody(), async (req, res) => {
+ModuleEnrollmentsRouter.post("/", 
+    // validateEnrollmentReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [1, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    //Validate Modules Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // //Validate Modules Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get enrollment from req.body
@@ -694,19 +695,19 @@ ModuleEnrollmentsRouter.post("/", validateEnrollmentReqBody(), async (req, res) 
 // Edit full enrollment info
 ModuleEnrollmentsRouter.patch(
     "/:student_id/:module_name/:school_year",
-    validateEnrollmentReqBody(),
+    // validateEnrollmentReqBody(),
     async (req, res) => {
         if (!allowed(req.permission, [3])) {
             res.status(403).send({ error: "You are not authorized to access this" });
             return;
         }
 
-        //Validate Modules Info
-        const result = validationResult(req);
-        if (!result.isEmpty()) {
-            // Return errors if any
-            return res.status(400).send({ errors: result.array() });
-        }
+        // //Validate Modules Info
+        // const result = validationResult(req);
+        // if (!result.isEmpty()) {
+        //     // Return errors if any
+        //     return res.status(400).send({ errors: result.array() });
+        // }
 
         try {
             //Get student_id and module_name from req.params
@@ -786,19 +787,19 @@ ModuleEnrollmentsRouter.patch("/status/:student_id/:module_name/:school_year", a
 //Edit final grade
 ModuleEnrollmentsRouter.patch(
     "/grade/:student_id/:module_name/:school_year",
-    validateEditGradeReqBody(),
+    // validateEditGradeReqBody(),
     async (req, res) => {
         if (!allowed(req.permission, [2, 3])) {
             res.status(403).send({ error: "You are not authorized to access this" });
             return;
         }
 
-        //Validate Grade Info
-        const result = validationResult(req);
-        if (!result.isEmpty()) {
-            // Return errors if any
-            return res.status(400).send({ errors: result.array() });
-        }
+        // //Validate Grade Info
+        // const result = validationResult(req);
+        // if (!result.isEmpty()) {
+        //     // Return errors if any
+        //     return res.status(400).send({ errors: result.array() });
+        // }
 
         try {
             //Get student_id and module_name from req.params
