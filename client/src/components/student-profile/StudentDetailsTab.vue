@@ -235,9 +235,10 @@ defineEmits(["on-back"]);
             </div>
             <div class="grid md:grid-cols-3">
                 <div class="mb-6">
-                    <div class="block mb-1 font-medium text-gray-900 dark:text-white">Gender</div>
+                    <label for="gender" class="block mb-1 font-medium text-gray-900 dark:text-white">Gender</label>
                     <p v-if="!editMode" class="block text-sm">{{ formatEnum(student.gender) }}</p>
                     <select
+                        id="gender"
                         v-if="editMode"
                         v-model="student.gender"
                         :disabled="!editMode"
@@ -254,13 +255,14 @@ defineEmits(["on-back"]);
                     </div>
                 </div>
                 <div class="mb-6">
-                    <div class="block mb-1 font-medium text-gray-900 dark:text-white">
+                    <label for="civil_status" class="block mb-1 font-medium text-gray-900 dark:text-white">
                         Civil Status
-                    </div>
+                    </label>
                     <p v-if="!editMode" class="block text-sm">
                         {{ formatEnum(student.civil_status) }}
                     </p>
                     <select
+                        id="civil_status"
                         v-if="editMode"
                         v-model="student.civil_status"
                         :disabled="!editMode"

@@ -43,7 +43,9 @@ defineEmits(["delete"]);
                         <th scope="col" class="px-6 py-3">ID Number</th>
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">Date Enrolled</th>
-                        <th scope="col" class="px-6 py-3">Status</th>
+                        <th scope="col" class="px-6 py-3">
+                            <label for="status">Status</label>
+                        </th>
                         <th scope="col" class="px-6 py-3 text-center">Action</th>
                     </tr>
                 </thead>
@@ -96,6 +98,7 @@ defineEmits(["delete"]);
                             "
                         >
                             <select
+                                id="status"
                                 :class="{
                                     'text-edited': student.status !== baseDataArray[index].status,
                                 }"

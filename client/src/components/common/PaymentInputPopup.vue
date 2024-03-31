@@ -50,6 +50,7 @@ defineProps({
                                     Bill Number<span class="text-required_red">*</span>
                                 </label>
                                 <select
+                                    id="bill_no"
                                     v-model="bill_no"
                                     required
                                     class="rounded-lg border-gray-200"

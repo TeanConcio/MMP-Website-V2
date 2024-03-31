@@ -51,7 +51,10 @@ defineProps({
                                 >
                                     Bill Status<span class="text-required_red">*</span>
                                 </label>
-                                <select v-model="status" required>
+                                <select 
+                                    id="status"
+                                    v-model="status" 
+                                    required>
                                     <option selected disabled hidden>Select</option>
                                     <option v-for="val in statuses" :value="val">
                                         {{ formatEnum(val) }}

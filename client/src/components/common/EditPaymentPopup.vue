@@ -49,7 +49,7 @@ defineProps({
                                 >
                                     OR Number<span class="text-required_red">*</span>
                                 </label>
-                                <select v-model="or_no" required class="rounded-lg border-gray-200">
+                                <select id="or_no" v-model="or_no" required class="rounded-lg border-gray-200">
                                     <option v-for="payment in payments" :value="payment.or_no">
                                         {{ payment.or_no }}
                                     </option>

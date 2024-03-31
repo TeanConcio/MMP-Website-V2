@@ -44,7 +44,9 @@ import { duplicate } from "../../../util/helpers";
                         <th scope="col" class="px-6 py-3">ID Number</th>
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">Date Requested</th>
-                        <th scope="col" class="px-6 py-3">Status</th>
+                        <th scope="col" class="px-6 py-3">
+                            <label for="status">Status</label>
+                        </th>
                         <th scope="col" class="px-6 py-3 text-center">Action</th>
                     </tr>
                 </thead>
@@ -94,6 +96,7 @@ import { duplicate } from "../../../util/helpers";
                             v-if="['ACTIVE', 'INACTIVE'].includes(teacher.status)"
                         >
                             <select
+                                id="status"
                                 :class="{
                                     'text-edited': teacher.status !== baseDataArray[index].status,
                                 }"

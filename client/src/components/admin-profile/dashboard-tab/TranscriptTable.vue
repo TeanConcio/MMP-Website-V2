@@ -35,7 +35,9 @@ defineProps({
                         <th scope="col" class="px-6 py-3">Request ID</th>
                         <th scope="col" class="px-6 py-3">Requester</th>
                         <th scope="col" class="px-6 py-3">Date Requested</th>
-                        <th scope="col" class="px-6 py-3">Status</th>
+                        <th scope="col" class="px-6 py-3">
+                            <label for="status">Status</label>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,6 +86,7 @@ defineProps({
                         </th>
                         <th scope="row" class="px-6 py-3 font-medium">
                             <select
+                                id="status"
                                 v-model="statusArray[index]"
                                 @change="addEditedIndex(index)"
                                 :class="{
