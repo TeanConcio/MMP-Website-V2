@@ -3,11 +3,37 @@
 import express from 'express';
 import session from 'supertest-session';
 import AuthRouter from '../src/routes/AuthRouter';
-import ModuleDetailsRouter from '../src/routes/ModuleDetailsRouter';
+import ModuleDetailsRouter, {module_exists} from '../src/routes/ModuleDetailsRouter';
 
 // Test Suite
 // Test ModuleDetailsRouter Endpoint
 describe('ModuleDetailsRouter Endpoint Testing', () => {
+
+    // Tests module_exists function
+    describe("Test module_exists Functions", () => {
+        // Test case for existing module
+        test("checks for existing module", async () => {
+            const module = "Child and Development";
+            const result = await module_exists(module);
+            expect(result).toBe(true);
+        });
+
+        // Test case for non existing module 
+        test("checks for non-existing module", async () => {
+            const module = "Placeholder";
+            const result = await module_exists(module);
+            expect(result).toBe(false);
+        });
+
+        // Test case for empty module name
+        test("checks for empty module name", async () => {
+            const module = "";
+            const result = await module_exists(module);
+            expect(result).toBe(false);
+        });
+    });
+
+
     // Test ModuleDetailsRouter /all Endpoint
     describe('ModuleDetailsRouter /all Endpoint', () => {
         // Test case for admin

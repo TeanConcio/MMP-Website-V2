@@ -14,7 +14,7 @@ const ModulesRouter = express.Router();
 
 /* Helper Functions */
 //Check for existence
-const exists = async (module_name, school_year) => {
+export const exists = async (module_name, school_year) => {
     const moduleEntry = await prisma.Modules.findUnique({
         where: {
             module_name_school_year: { module_name, school_year },

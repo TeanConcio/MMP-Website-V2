@@ -11,7 +11,7 @@ import { db as prisma } from "../utils/db.server.js";
 const ModuleDetailsRouter = express.Router();
 
 /* Helper Functions */
-const module_exists = async (name) => {
+export const module_exists = async (name) => {
     const record = await prisma.Module_Names.findUnique({
         where: {
             module_name: name,
