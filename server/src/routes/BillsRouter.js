@@ -1,7 +1,9 @@
 // Imports Modules
 import express from "express";
-import { validationResult } from "express-validator";
-import { validateBillReqBody, cleanBillObject } from "../validators/BillsValidator.js";
+// import { validationResult } from "express-validator";
+import { 
+    // validateBillReqBody, 
+    cleanBillObject } from "../validators/BillsValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { allowed, generateFinancePKSegments } from "../utils/helpers.js";
 
@@ -53,7 +55,7 @@ const getLatestBillIDSegment = async () => {
     return {first, second};
 }
 
-export const generateBillNo = async (first, second) => {
+export const generateBillNo = (first, second) => {
 
     // Bill Number Format: A-XXXXXXXXX
     // A: 1-digit segment
@@ -260,19 +262,19 @@ BillsRouter.get("/module/:module_name", async (req, res) => {
 // Create Bill
 BillsRouter.post(
     "/bill/:module_name/:school_year/:student_id",
-    validateBillReqBody(),
+    // validateBillReqBody(),
     async (req, res) => {
         if (!allowed(req.permission, [3])) {
             res.status(403).send({ error: "You are not authorized to access this" });
             return;
         }
 
-        // Validate Bill Info
-        const result = validationResult(req);
-        if (!result.isEmpty()) {
-            // Return errors if any
-            return res.status(400).send({ errors: result.array() });
-        }
+        // // Validate Bill Info
+        // const result = validationResult(req);
+        // if (!result.isEmpty()) {
+        //     // Return errors if any
+        //     return res.status(400).send({ errors: result.array() });
+        // }
 
         try {
             // Get bill from req.body
@@ -280,7 +282,7 @@ BillsRouter.post(
 
             //Add bill number
             const {first, second} = await getLatestBillIDSegment();
-            bill.bill_no = await generateBillNo(first, second);
+            bill.bill_no = generateBillNo(first, second);
 
             // Create bill in database
             await prisma.Bills.create({ data: bill });
@@ -309,18 +311,20 @@ BillsRouter.post(
 
 /* PATCH Endpoints */
 // Update Bill
-BillsRouter.patch("/:bill_no", validateBillReqBody(), async (req, res) => {
+BillsRouter.patch("/:bill_no", 
+    // validateBillReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Bill Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Bill Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get bill_no from req.params

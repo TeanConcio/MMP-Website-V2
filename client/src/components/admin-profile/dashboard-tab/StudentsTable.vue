@@ -43,7 +43,9 @@ defineEmits(["delete"]);
                         <th scope="col" class="px-6 py-3">ID Number</th>
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">Date Enrolled</th>
-                        <th scope="col" class="px-6 py-3">Status</th>
+                        <th scope="col" class="px-6 py-3">
+                            <label for="status">Status</label>
+                        </th>
                         <th scope="col" class="px-6 py-3 text-center">Action</th>
                     </tr>
                 </thead>
@@ -96,6 +98,7 @@ defineEmits(["delete"]);
                             "
                         >
                             <select
+                                id="status"
                                 :class="{
                                     'text-edited': student.status !== baseDataArray[index].status,
                                 }"
@@ -322,6 +325,7 @@ export default {
                     })
                     //If unsuccessful, add to errored edits
                     .catch((error) => {
+                        console.log(error);
                         this.erroredEdits.push(this.displayArray[index].student_id);
                     });
             });
@@ -373,6 +377,7 @@ export default {
                 })
                 //If unsuccessful, show error popup
                 .catch((error) => {
+                    console.log(error);
                     this.showErrorPopup = true;
                 });
         },
@@ -442,6 +447,7 @@ export default {
                     });
                 })
                 .catch((error) => {
+                    console.log(error);
                     this.showErrorPopup = true;
                 });
                 //duplicate displayArray to baseDataArray

@@ -1,5 +1,5 @@
 // Import Modules
-import { checkSchema } from "express-validator";
+// import { checkSchema } from "express-validator";
 
 //Details Schema
 const detailsSchema = {
@@ -41,8 +41,9 @@ const detailsSchema = {
     },
 };
 
-// Details Schema Validator
-export const validateDetailsReqBody = () => checkSchema(detailsSchema, ["body"]);
+// // Details Schema Validator
+// export const validateDetailsReqBody = () => checkSchema(detailsSchema, ["body"]);
+detailsSchema
 
 // Details Object Cleaner
 export const cleanDetailsObject = (detailsObject) => {

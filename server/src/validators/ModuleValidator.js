@@ -1,5 +1,5 @@
 // Import Modules
-import { checkSchema } from "express-validator";
+// import { checkSchema } from "express-validator";
 
 //Module Scheme
 const moduleSchema = {
@@ -51,10 +51,11 @@ const teacherEditSchema = {
     },
 };
 
-// Module Schema Validator
-export const validateModuleReqBody = () => checkSchema(moduleSchema, ["body"]);
-
-export const validateEditTeacherReqBody = () => checkSchema(teacherEditSchema, ["body"]);
+// // Module Schema Validator
+// export const validateModuleReqBody = () => checkSchema(moduleSchema, ["body"]);
+// export const validateEditTeacherReqBody = () => checkSchema(teacherEditSchema, ["body"]);
+moduleSchema
+teacherEditSchema
 
 // Module Object Cleaner
 export const cleanModuleObject = (moduleObject) => {

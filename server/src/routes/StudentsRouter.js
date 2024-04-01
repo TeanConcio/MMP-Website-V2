@@ -1,13 +1,14 @@
 // Imports Modules
 import express from "express";
-import { validationResult } from "express-validator";
+// import { validationResult } from "express-validator";
 import {
-    validateStudentReqBody,
+    // validateStudentReqBody,
     cleanStudentObject,
-    validateStatusReqBody,
-    cleanStatusObject,
-} from "../validators/StudentsValidator.js";
-import { validatePasswordBody, cleanPasswordObject } from "../validators/PasswordValidator.js";
+    // validateStatusReqBody,
+    cleanStatusObject} from "../validators/StudentsValidator.js";
+import { 
+    // validatePasswordBody, 
+    cleanPasswordObject } from "../validators/PasswordValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { getLatestIDSegments, exclude, allowed, generatePasswordHash } from "../utils/helpers.js";
 import { sendEmail } from "../utils/email_service.js";
@@ -97,7 +98,7 @@ const getLatestStudentIDSegment = async () => {
 };
 
 // Generate student_id
-export const generateStudentID = async ({ second, third }) => {
+export const generateStudentID = ({ second, third }) => {
     // ID Format: YYYY-AAA-III
     // Year [0:4] - Account Type Code [5:8] ID Number [9:12]
     const currentYear = new Date().getFullYear().toString();
@@ -137,7 +138,7 @@ StudentsRouter.get("/id/:student_id", async (req, res) => {
 
         // Get student from database
         let student = null;
-        if (req.permission === 3) {
+        if (req.permission === 3 || req.user.user_id === student_id) {
             student = await prisma.Students.findUnique({
                 where: {
                     student_id: student_id,
@@ -641,18 +642,20 @@ StudentsRouter.get("/module/:module_name", async (req, res) => {
 
 /* POST Endpoints */
 // Create a new student
-StudentsRouter.post("/", validateStudentReqBody(), async (req, res) => {
+StudentsRouter.post("/", 
+    // validateStudentReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [0, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Student Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Student Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get student from req.body
@@ -664,8 +667,8 @@ StudentsRouter.post("/", validateStudentReqBody(), async (req, res) => {
         }
 
         // Generate student_id
-        const { second, third } = getLatestStudentIDSegment()
-        student.student_id = await generateStudentID({ second, third });
+        const { second, third } = await getLatestStudentIDSegment()
+        student.student_id = generateStudentID({ second, third });
 
         // Generate password hash
         student.password = generatePasswordHash(student.password);
@@ -674,7 +677,10 @@ StudentsRouter.post("/", validateStudentReqBody(), async (req, res) => {
         parser(student);
 
         // Create student in database
-        await prisma.Students.create({ data: student });
+        var createdStudent = await prisma.Students.create({ data: student });
+
+        // Exclude password from response
+        createdStudent = exclude(createdStudent, ["password"]);
 
         // Send email to admin
         await sendEmail(
@@ -685,7 +691,7 @@ StudentsRouter.post("/", validateStudentReqBody(), async (req, res) => {
             )
         );
 
-        res.status(200).send({ message: "Create successful" });
+        res.status(200).send({ message: "Create successful", student: createdStudent });
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -694,18 +700,20 @@ StudentsRouter.post("/", validateStudentReqBody(), async (req, res) => {
 
 /* PATCH Endpoints */
 // Update Student
-StudentsRouter.patch("/:student_id", validateStudentReqBody(), async (req, res) => {
+StudentsRouter.patch("/:student_id", 
+    // validateStudentReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Student Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Student Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get student_id from req.params
@@ -716,18 +724,21 @@ StudentsRouter.patch("/:student_id", validateStudentReqBody(), async (req, res) 
             throw new Error("Student does not exist");
         }
 
-        // Get updated info from req.body
+        // Get updated info from req.body and exclude password
         const updatedData = exclude(parser(cleanStudentObject(req.body)), ["password"]);
 
         // Update student in database
-        await prisma.Students.update({
+        var updatedStudent = await prisma.Students.update({
             where: {
                 student_id: student_id,
             },
             data: updatedData,
         });
 
-        res.status(200).send({ message: "Update successful" });
+        // Exclude password from response
+        updatedStudent = exclude(updatedStudent, ["password"]);
+
+        res.status(200).send({ message: "Update successful", student: updatedStudent });
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -735,18 +746,20 @@ StudentsRouter.patch("/:student_id", validateStudentReqBody(), async (req, res) 
 });
 
 // Update Student Status
-StudentsRouter.patch("/status/:student_id", validateStatusReqBody(), async (req, res) => {
+StudentsRouter.patch("/status/:student_id", 
+    // validateStatusReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Student Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Student Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get student_id from req.params
@@ -799,7 +812,7 @@ StudentsRouter.patch("/status/:student_id", validateStatusReqBody(), async (req,
             }
         }
 
-        res.status(200).send({ message: "Status updated" });
+        res.status(200).send({ message: "Status updated", student: updatedStudent });
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -807,18 +820,20 @@ StudentsRouter.patch("/status/:student_id", validateStatusReqBody(), async (req,
 });
 
 // Update password
-StudentsRouter.patch("/update_password/:student_id", validatePasswordBody(), async (req, res) => {
+StudentsRouter.patch("/update_password/:student_id", 
+    // validatePasswordBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [1])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Student Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Student Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get student_id from req.params
@@ -834,18 +849,21 @@ StudentsRouter.patch("/update_password/:student_id", validatePasswordBody(), asy
             return;
         }
 
-        // Get updated info from req.body
-        const updatedData = cleanPasswordObject(req.body);
-
         // Update password in database
-        await prisma.Students.update({
+        const updatedData = cleanPasswordObject(req.body);
+        
+        // Get updated info from req.body
+        var updatedStudent = await prisma.Students.update({
             where: {
                 student_id: student_id,
             },
             data: updatedData,
         });
 
-        res.status(200).send({ message: "Password successfully changed" });
+        // Exclude password from response
+        updatedStudent = exclude(updatedStudent, ["password"]);
+
+        res.status(200).send({ message: "Password successfully changed", student: updatedStudent });
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -894,14 +912,18 @@ StudentsRouter.delete("/:student_id", async (req, res) => {
             },
         });
 
-        await prisma.Students.delete({
+        var deletedStudent = await prisma.Students.delete({
             where: {
                 student_id: student_id,
             },
         });
 
+        // Return response message
+        deletedStudent = exclude(deletedStudent, ["password"]);
+
         res.status(200).send({
             message: "Student " + student_id + " has been successfully deleted from the database",
+            student: deletedStudent,
         });
     } catch (error) {
         // Return error

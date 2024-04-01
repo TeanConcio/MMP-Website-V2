@@ -26,38 +26,11 @@ describe("PaymentsRouter Helper Functions", () => {
             expect(result).toBe('9-000000000');
         });
 
-        // Test case for exceeding the limits
+        // Test case for exceeding the limits of generateOR function
         it('throws an error when both segments are at their limits', async () => {
-
-            await expect(generateOR(9, 999999999)).rejects.toThrow('OR Number Overflow');
+            await expect(() => generateOR(9, 999999999)).toThrow('OR Number Overflow');
         });
-
-
-        // jest.spyOn(prisma.payments, "findMany").mockResolvedValue([]);
-
-        // // See if it matches the OR number format: A-XXXXXXXXX
-        // it("generates a new OR number with incremented segment", async () => {
-        //     const result = await generateOR();
-        //     expect(result).toMatch(/^\d-\d{9}$/); 
-        // });
-
-        // // See if it handles having no existing OR numbers
-        // it("handles the case when there are no existing OR numbers", async () => {
-        //     jest.spyOn(prisma.payments, "findMany").mockResolvedValue([]);
-
-        //     const result = await generateOR();
-        //     expect(result).toBe("1-000000000");
-        // });
-
-        // // See if it overflows
-        // it("throws an error for OR number overflow", async () => {
-        //     jest.spyOn(prisma.payments, "findMany").mockResolvedValue([
-        //         { or_no: "1-999999999" }, 
-        //         { or_no: "9-999999999" }, 
-        //     ]);
-
-        //     await expect(generateOR()).rejects.toThrow("OR Number Overflow");
-        // });
+        
     });
 
 });

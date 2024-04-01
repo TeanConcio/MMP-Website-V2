@@ -1,13 +1,14 @@
 // Import Modules
 import express from "express";
-import { validationResult } from "express-validator";
+// import { validationResult } from "express-validator";
 import {
-    validateTeacherReqBody,
+    // validateTeacherReqBody,
     cleanTeacherObject,
-    validateStatusReqBody,
-    cleanStatusUpdateObject,
-} from "../validators/TeachersValidator.js";
-import { validatePasswordBody, cleanPasswordObject } from "../validators/PasswordValidator.js";
+    // validateStatusReqBody,
+    cleanStatusUpdateObject } from "../validators/TeachersValidator.js";
+import { 
+    // validatePasswordBody, 
+    cleanPasswordObject } from "../validators/PasswordValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { getLatestIDSegments, exclude, allowed, generatePasswordHash } from "../utils/helpers.js";
 import { sendEmail } from "../utils/email_service.js";
@@ -84,7 +85,7 @@ const getLatestTeacherIDSegment = async () => {
 };
 
 // Generate teacher_id
-export const generateTeacherID = async ({ second, third }) => {
+export const generateTeacherID = ({ second, third }) => {
     // ID Format: YYYY-AAA-III
     // Year [0:4] - Account Type Code [5:8] ID Number [9:12]
     const currentYear = new Date().getFullYear().toString();
@@ -216,19 +217,21 @@ TeachersRouter.get("/all/:status", async (req, res) => {
 
 /* POST Endpoints */
 // Create Teacher
-TeachersRouter.post("/", validateTeacherReqBody(), async (req, res) => {
+TeachersRouter.post("/", 
+    // validateTeacherReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [0, 1, 2, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Teacher Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        res.status(400).send({ errors: result.array() });
-        return;
-    }
+    // // Validate Teacher Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     res.status(400).send({ errors: result.array() });
+    //     return;
+    // }
 
     try {
         // Get teacher info from req.body
@@ -240,14 +243,17 @@ TeachersRouter.post("/", validateTeacherReqBody(), async (req, res) => {
         }
 
         // Generate teacher_id
-        const { second, third } = getLatestTeacherIDSegment()
-        teacher.teacher_id = await generateTeacherID({ second, third });
+        const { second, third } = await getLatestTeacherIDSegment()
+        teacher.teacher_id = generateTeacherID({ second, third });
 
         // Generate password hash
         teacher.password = generatePasswordHash(teacher.password);
 
         // Create teacher in database
-        await prisma.Teachers.create({ data: teacher });
+        var createdTeacher = await prisma.Teachers.create({ data: teacher });
+
+        // Exclude password from response
+        createdTeacher = exclude(createdTeacher, ["password"]);
 
         // Send email to admin
         await sendEmail(
@@ -258,7 +264,7 @@ TeachersRouter.post("/", validateTeacherReqBody(), async (req, res) => {
             )
         );
 
-        res.status(200).send({ message: "Create successful" });
+        res.status(200).send({ message: "Create successful", teacher: createdTeacher });
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -267,18 +273,20 @@ TeachersRouter.post("/", validateTeacherReqBody(), async (req, res) => {
 
 /* PATCH Endpoints */
 // Update Teacher
-TeachersRouter.patch("/:teacher_id", validateTeacherReqBody(), async (req, res) => {
+TeachersRouter.patch("/:teacher_id", 
+    // validateTeacherReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [2, 3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Teacher Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Teacher Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get teacher_id from req.params
@@ -293,14 +301,17 @@ TeachersRouter.patch("/:teacher_id", validateTeacherReqBody(), async (req, res) 
         const updatedData = exclude(cleanTeacherObject(req.body), ["status", "password"]);
 
         // Update teacher in database
-        await prisma.Teachers.update({
+        var updatedTeacher = await prisma.Teachers.update({
             where: {
                 teacher_id: teacher_id,
             },
             data: updatedData,
         });
 
-        res.status(200).send({ message: "Update successful" });
+        // Exclude password from response
+        updatedTeacher = exclude(updatedTeacher, ["password"]);
+
+        res.status(200).send({ message: "Update successful", teacher: updatedTeacher});
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -308,18 +319,20 @@ TeachersRouter.patch("/:teacher_id", validateTeacherReqBody(), async (req, res) 
 });
 
 // Update Teacher Status
-TeachersRouter.patch("/status/:teacher_id", validateStatusReqBody(), async (req, res) => {
+TeachersRouter.patch("/status/:teacher_id", 
+    // validateStatusReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Teacher Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Teacher Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get teacher_id from req.params
@@ -348,6 +361,7 @@ TeachersRouter.patch("/status/:teacher_id", validateStatusReqBody(), async (req,
             },
             data: updatedData,
             select: {
+                teacher_id: true,
                 first_name: true,
                 middle_name: true,
                 last_name: true,
@@ -372,7 +386,7 @@ TeachersRouter.patch("/status/:teacher_id", validateStatusReqBody(), async (req,
             }
         }
 
-        res.status(200).send({ message: "Status updated" });
+        res.status(200).send({ message: "Status updated", teacher: updatedTeacher});
     } catch (error) {
         // Return error
         console.log(error);
@@ -381,18 +395,20 @@ TeachersRouter.patch("/status/:teacher_id", validateStatusReqBody(), async (req,
 });
 
 // Update password
-TeachersRouter.patch("/update_password/:teacher_id", validatePasswordBody(), async (req, res) => {
+TeachersRouter.patch("/update_password/:teacher_id", 
+    // validatePasswordBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [2])) {
         res.status(403).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Teacher Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Teacher Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get teacher_id from req.params
@@ -412,14 +428,17 @@ TeachersRouter.patch("/update_password/:teacher_id", validatePasswordBody(), asy
         const updatedData = cleanPasswordObject(req.body);
 
         // Update password in database
-        await prisma.Teachers.update({
+        var updatedTeacher = await prisma.Teachers.update({
             where: {
                 teacher_id: teacher_id,
             },
             data: updatedData,
         });
 
-        res.status(200).send({ message: "Password successfully changed" });
+        // Exclude password from response
+        updatedTeacher = exclude(updatedTeacher, ["password"]);
+
+        res.status(200).send({ message: "Password successfully changed", teacher: updatedTeacher });
     } catch (error) {
         // Return error
         res.status(500).send({ error: error.message });
@@ -444,14 +463,18 @@ TeachersRouter.delete("/:teacher_id", async (req, res) => {
         }
 
         // Delete from database
-        await prisma.Teachers.delete({
+        var deletedTeacher = await prisma.Teachers.delete({
             where: {
                 teacher_id: teacher_id,
             },
         });
 
+        // Exclude password from response
+        deletedTeacher = exclude(deletedTeacher, ["password"]);
+
         res.status(200).send({
             message: "Teacher " + teacher_id + " has been successfully deleted from the database",
+            teacher: deletedTeacher,
         });
     } catch (error) {
         res.status(500).send({ error: error.message });

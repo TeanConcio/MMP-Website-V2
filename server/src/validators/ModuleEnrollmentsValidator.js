@@ -1,5 +1,5 @@
 // Import Modules
-import { checkSchema } from "express-validator";
+// import { checkSchema } from "express-validator";
 
 //Module Scheme
 const enrollmentSchema = {
@@ -150,7 +150,8 @@ const gradeSchema = {
 };
 
 // Module Enrollment Schema Validator
-export const validateEnrollmentReqBody = () => checkSchema(enrollmentSchema, ["body"]);
+// export const validateEnrollmentReqBody = () => checkSchema(enrollmentSchema, ["body"]);
+enrollmentSchema
 
 // Module Enrollment Object Cleaner
 export const cleanEnrollmentObject = (enrollmentObject) => {
@@ -178,8 +179,9 @@ export const cleanEnrollmentObject = (enrollmentObject) => {
     return cleanedObject;
 };
 
-// Grade Schema Validator
-export const validateEditGradeReqBody = () => checkSchema(gradeSchema, ["body"]);
+// // Grade Schema Validator
+// export const validateEditGradeReqBody = () => checkSchema(gradeSchema, ["body"]);
+gradeSchema
 
 // Grade Object Cleaner
 export const cleanEditGradeObject = (gradeObject) => {

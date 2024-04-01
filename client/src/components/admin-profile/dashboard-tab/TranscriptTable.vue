@@ -35,7 +35,9 @@ defineProps({
                         <th scope="col" class="px-6 py-3">Request ID</th>
                         <th scope="col" class="px-6 py-3">Requester</th>
                         <th scope="col" class="px-6 py-3">Date Requested</th>
-                        <th scope="col" class="px-6 py-3">Status</th>
+                        <th scope="col" class="px-6 py-3">
+                            <label for="status">Status</label>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,6 +86,7 @@ defineProps({
                         </th>
                         <th scope="row" class="px-6 py-3 font-medium">
                             <select
+                                id="status"
                                 v-model="statusArray[index]"
                                 @change="addEditedIndex(index)"
                                 :class="{
@@ -173,6 +176,7 @@ export default {
                 await this.$axios
                     .patch(`/tor_requests/${data.req_id}`, { status: data.status })
                     .catch((error) => {
+                        console.log(error);
                         errorsID.push(data.req_id);
                     });
             }
@@ -210,10 +214,20 @@ export default {
         addEditedIndex(index) {
             // if the status is changed, add the request ID and status to the editArray
             if (this.TORRequestArray[index].status !== this.statusArray[index]) {
-                this.editArray.push({
-                    req_id: this.TORRequestArray[index].req_id,
-                    status: this.statusArray[index],
-                });
+                
+                // Update the status of the request in editArray if it already exists, if not, then add it
+                let found = this.editArray.find(
+                    (element) => element.req_id === this.TORRequestArray[index].req_id
+                );
+                if (found) {
+                    found.status = this.statusArray[index];
+                } else {
+                    this.editArray.push({
+                        req_id: this.TORRequestArray[index].req_id,
+                        status: this.statusArray[index],
+                    });
+                }
+
             } else { // if the status is changed back to the original, remove the request ID and status from the editArray
                 this.editArray = this.editArray.filter(
                     (element) => element.req_id !== this.TORRequestArray[index].req_id

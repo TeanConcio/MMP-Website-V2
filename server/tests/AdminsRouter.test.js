@@ -1,12 +1,11 @@
 /* eslint-disable no-undef */
 // Import functions to test
-import {
-    //checkIDExists,
-    //checkEmailExists,
+import AdminsRouter, {
     generateAdminID
 } from "../src/routes/AdminsRouter.js";
-
-
+import AuthRouter from '../src/routes/AuthRouter';
+import express from 'express';
+import session from 'supertest-session';
 
 // Test Suite
 describe("AdminRouter Helper Functions", () => {
@@ -35,15 +34,145 @@ describe("AdminRouter Helper Functions", () => {
             expect(result).toBe('2024-999-000');
         });
 
-        // Test case for an overflow scenario
-        it('throw an error for ID overflow', async () => {
+        // Test case for ID overflow for generateAdminID function
+        it('throws an error when the ID overflows for admins', async () => {
             const currentYear = '2024';
             const second = '999';
             const third = '999';
 
-            await expect(generateAdminID(currentYear, second, third)).rejects.toThrowError('ID Overflow!');
+            await expect(() => generateAdminID(currentYear, second, third)).toThrow('ID Overflow!');
         });
+
     });
+});
+
+// Test AdminsRouter /:admin_id EndPoint
+describe('AdminsRouter /:admin_id Endpoint', () => {
+        // Test for correct admin id with valid permission
+        it('have the permission, correct admin id', async () => {
+    
+            const app = express();
+    
+            app.use(express.json());
+            app.use(AuthRouter);
+            
+            const adminSession = session(app);
+    
+            const response = await adminSession.post('/login')
+                .set('Content-Type', 'application/json')
+                .send({
+                    // Admin id
+                    user_id: '2024-900-000',
+                    password: 'password'
+                });
+    
+            // Successful connection
+            expect(response.statusCode).toBe(200);
+    
+            // Middleware to determine the req.permission of ModuleDetailsRouter from currently logged in user
+            const initializePermission = (req, res, next) => {
+                if (response.body.account_type == 'admin')
+                    req.permission = 3;
+                else if (response.body.account_type == 'teacher')
+                    req.permission = 2;
+                else 
+                    req.permission = 1;
+                
+                next();
+            };
+            
+            app.use(initializePermission);
+            app.use(AdminsRouter);
+    
+            // Valid module_name as a router parameter
+            const responseModule = await adminSession.get('/2024-900-000')
+    
+            expect(responseModule.statusCode).toBe(200);
+        });
+    
+    // Test for invalid admin id
+    it('invalid admin id', async () => {
+    
+        const app = express();
+
+        app.use(express.json());
+        app.use(AuthRouter);
+        
+        const adminSession = session(app);
+
+        const response = await adminSession.post('/login')
+            .set('Content-Type', 'application/json')
+            .send({
+                // Admin id
+                user_id: '2024-000-000',
+                password: 'password'
+            });
+
+        // Successful connection
+        expect(response.statusCode).toBe(200);
+
+        // Middleware to determine the req.permission of ModuleDetailsRouter from currently logged in user
+        const initializePermission = (req, res, next) => {
+            if (response.body.account_type == 'admin')
+                req.permission = 3;
+            else if (response.body.account_type == 'teacher')
+                req.permission = 2;
+            else 
+                req.permission = 1;
+            
+            next();
+            };
+            
+            app.use(initializePermission);
+            app.use(AdminsRouter);
+
+            // Valid module_name as a router parameter
+            const responseModule = await adminSession.get('/2024-900-123')
+
+            expect(responseModule.body.error).toBe("You are not authorized to access this");
+        });
+
+        // Test for invalid route paramter
+        it('invalid route parameter', async () => {
+        
+            const app = express();
+
+            app.use(express.json());
+            app.use(AuthRouter);
+            
+            const adminSession = session(app);
+
+            const response = await adminSession.post('/login')
+                .set('Content-Type', 'application/json')
+                .send({
+                    // Admin id
+                    user_id: '2024-900-000',
+                    password: 'password'
+                });
+
+            // Successful connection
+            expect(response.statusCode).toBe(200);
+
+            // Middleware to determine the req.permission of ModuleDetailsRouter from currently logged in user
+            const initializePermission = (req, res, next) => {
+                if (response.body.account_type == 'admin')
+                    req.permission = 3;
+                else if (response.body.account_type == 'teacher')
+                    req.permission = 2;
+                else 
+                    req.permission = 1;
+                
+                next();
+                };
+                
+                app.use(initializePermission);
+                app.use(AdminsRouter);
+
+                // Valid module_name as a router parameter
+                const responseModule = await adminSession.get('/2024-900-123')
+
+                expect(responseModule.body.error).toBe("Admin does not exist");
+            });
 });
 
 /*

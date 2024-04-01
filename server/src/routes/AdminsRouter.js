@@ -1,8 +1,12 @@
 // Imports Modules
 import express from "express";
-import { validationResult } from "express-validator";
-import { validateAdminReqBody, cleanAdminObject } from "../validators/AdminValidator.js";
-import { validatePasswordBody, cleanPasswordObject } from "../validators/PasswordValidator.js";
+//import { validationResult } from "express-validator";
+import { 
+    // validateAdminReqBody, 
+    cleanAdminObject } from "../validators/AdminValidator.js";
+import { 
+    // validatePasswordBody,
+    cleanPasswordObject } from "../validators/PasswordValidator.js";
 import { db as prisma } from "../utils/db.server.js";
 import { getLatestIDSegments, exclude, allowed, generatePasswordHash } from "../utils/helpers.js";
 
@@ -67,7 +71,7 @@ const getLatestAdminIDSegment = async (currentYear) => {
 }
 
 // Generate admin_id
-export const generateAdminID = async (currentYear, second, third) => {
+export const generateAdminID = (currentYear, second, third) => {
 
     //If last req id is null
     if (second === "" && third === "") {
@@ -126,18 +130,20 @@ AdminsRouter.get("/:admin_id", async (req, res) => {
 
 /* POST Endpoints */
 // Create Admin
-AdminsRouter.post("/", validateAdminReqBody(), async (req, res) => {
+AdminsRouter.post("/", 
+    // validateAdminReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(401).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Admin Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Admin Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get admin from req.body
@@ -151,7 +157,7 @@ AdminsRouter.post("/", validateAdminReqBody(), async (req, res) => {
         // Generate admin_id
         const currentYear = new Date().getFullYear().toString();
         const { second, third } = await getLatestAdminIDSegment(currentYear);
-        admin.admin_id = await generateAdminID(currentYear, second, third);
+        admin.admin_id = generateAdminID(currentYear, second, third);
 
         // Generate password hash
         admin.password = generatePasswordHash(admin.password);
@@ -170,18 +176,20 @@ AdminsRouter.post("/", validateAdminReqBody(), async (req, res) => {
 
 /* PATCH Endpoints */
 // Update Admin Information
-AdminsRouter.patch("/:admin_id", validateAdminReqBody(), async (req, res) => {
+AdminsRouter.patch("/:admin_id", 
+    // validateAdminReqBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(401).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Admin Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Admin Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get admin_id from req.params
@@ -211,18 +219,20 @@ AdminsRouter.patch("/:admin_id", validateAdminReqBody(), async (req, res) => {
 });
 
 // Update password
-AdminsRouter.patch("/update_password/:admin_id", validatePasswordBody(), async (req, res) => {
+AdminsRouter.patch("/update_password/:admin_id", 
+    // validatePasswordBody(), 
+    async (req, res) => {
     if (!allowed(req.permission, [3])) {
         res.status(401).send({ error: "You are not authorized to access this" });
         return;
     }
 
-    // Validate Admin Info
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        // Return errors if any
-        return res.status(400).send({ errors: result.array() });
-    }
+    // // Validate Admin Info
+    // const result = validationResult(req);
+    // if (!result.isEmpty()) {
+    //     // Return errors if any
+    //     return res.status(400).send({ errors: result.array() });
+    // }
 
     try {
         // Get admin_id from req.params
