@@ -1,4 +1,4 @@
-# MMP-Website
+# MMP-Website-V2
 This is a website for Mission Ministries Philippines' Certificate Course in Early Childhood Education. It primarily contains initial features needed for the administrative side of the program.
 
 # FOR BOTH
