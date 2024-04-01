@@ -88,7 +88,12 @@ export function validateBirthdateField (string, errorObject) {
         
     if (Date.parse(string) === NaN) {
         errorObject["birthdate"] = "Must be a valid date";
-    } else {
+    }
+    // Check if birthdate is in the future
+    else if (new Date(string) > new Date()) {
+        errorObject["birthdate"] = "Birthdate cannot be in the future";
+    }
+    else {
         delete errorObject["birthdate"];
     }
 }
