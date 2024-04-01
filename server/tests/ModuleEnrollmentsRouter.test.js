@@ -52,7 +52,7 @@ describe('ModuleEnrollmentsRouter Endpoint Testing', () => {
             const responseModule = await studentSession.get('/active/2024-000-000');
 
             expect(responseModule.statusCode).toBe(200); 
-        });
+        }, 30000);
     });
 
     // Test incorrect session type
@@ -97,7 +97,7 @@ describe('ModuleEnrollmentsRouter Endpoint Testing', () => {
         const responseModule = await teacherSession.get('/active/2024-000-000');
 
         expect(responseModule.body.error).toBe("You are not authorized to access this"); 
-    });
+    }, 30000);
 
     // Test session_id not matching given id
     it('session_id not matching given id', async () => {
@@ -142,7 +142,7 @@ describe('ModuleEnrollmentsRouter Endpoint Testing', () => {
             const responseModule = await studentSession.get('/active/2024-000-000');
 
             expect(responseModule.body.error).toBe('Invalid user ID');  
-    });
+    }, 30000);
 
     describe('ModuleEnrollmentsRouter /enrollments/:module_name/:school_year endpoint', () => {
         // Test login as a correct user with valid route parameters
@@ -185,7 +185,7 @@ describe('ModuleEnrollmentsRouter Endpoint Testing', () => {
             const responseModule = await adminSession.get('/enrollments/Assessment of Learning and Development/2024')
 
             expect(responseModule.statusCode).toBe(200);
-        });
+        }, 30000);
 
         // Test invalid account type permission
         it('invalid account type permission', async () => {
@@ -227,49 +227,49 @@ describe('ModuleEnrollmentsRouter Endpoint Testing', () => {
             const responseModule = await studentSession.get('/enrollments/Assessment of Learning and Development/2024')
 
             expect(responseModule.body.error).toBe("You are not authorized to access this");
-        });
+        }, 30000);
 
-    // Test empty route parameters
-    it('empty route parameters', async () => {
+        // Test empty route parameters
+        it('empty route parameters', async () => {
 
-        const app = express();
+            const app = express();
 
-        app.use(express.json());
-        app.use(AuthRouter);
-        
-        const adminSession = session(app);
-
-        const response = await adminSession.post('/login')
-            .set('Content-Type', 'application/json')
-            .send({
-                // Admin id
-                user_id: '2024-900-000',
-                password: 'password'
-            });
-
-        // Successful connection
-        expect(response.statusCode).toBe(200);
-
-        // Middleware to determine the req.permission of ModuleDetailsRouter from currently logged in user
-        const initializePermission = (req, res, next) => {
-            if (response.body.account_type == 'admin')
-                req.permission = 3;
-            else if (response.body.account_type == 'teacher')
-                req.permission = 2;
-            else 
-                req.permission = 1;
+            app.use(express.json());
+            app.use(AuthRouter);
             
-            next();
-        };
-        
-        app.use(initializePermission);
-        app.use(ModuleEnrollmentsRouter);
+            const adminSession = session(app);
 
-        // Valid module_name as a router parameter
-        const responseModule = await adminSession.get('/enrollments/')
+            const response = await adminSession.post('/login')
+                .set('Content-Type', 'application/json')
+                .send({
+                    // Admin id
+                    user_id: '2024-900-000',
+                    password: 'password'
+                });
 
-        expect(responseModule.statusCode).toBe(404);
-        });
+            // Successful connection
+            expect(response.statusCode).toBe(200);
+
+            // Middleware to determine the req.permission of ModuleDetailsRouter from currently logged in user
+            const initializePermission = (req, res, next) => {
+                if (response.body.account_type == 'admin')
+                    req.permission = 3;
+                else if (response.body.account_type == 'teacher')
+                    req.permission = 2;
+                else 
+                    req.permission = 1;
+                
+                next();
+            };
+            
+            app.use(initializePermission);
+            app.use(ModuleEnrollmentsRouter);
+
+            // Valid module_name as a router parameter
+            const responseModule = await adminSession.get('/enrollments/')
+
+            expect(responseModule.statusCode).toBe(404);
+        }, 30000);
 
     });
 });

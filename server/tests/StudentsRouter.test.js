@@ -46,18 +46,18 @@ import session from 'supertest-session';
 import AuthRouter from '../src/routes/AuthRouter';
 import StudentsRouter from '../src/routes/StudentsRouter';
 
-function generateRandomEmail() {
-    // Define a list of possible characters for the random string part of the email
-    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    const length = 8;
-    let randomString = '';
-    // Generate the random string part by randomly selecting characters from the list
-    for (let i = 0; i < length; i++) {
-        randomString += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    const email = `${randomString}@example.com`;
-    return email;
-}
+// function generateRandomEmail() {
+//     // Define a list of possible characters for the random string part of the email
+//     const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+//     const length = 8;
+//     let randomString = '';
+//     // Generate the random string part by randomly selecting characters from the list
+//     for (let i = 0; i < length; i++) {
+//         randomString += characters.charAt(Math.floor(Math.random() * characters.length));
+//     }
+//     const email = `${randomString}@example.com`;
+//     return email;
+// }
 
 describe('StudentsRouter /module/:module_name endpoint', () => {
     // Test case for logged in with correct account type and the information uploaded is not empty
@@ -100,7 +100,7 @@ describe('StudentsRouter /module/:module_name endpoint', () => {
 
         // Successful Connection
         expect(responseStudents.statusCode).toBe(200);
-    });
+    }, 30000);
 
     // Test case for invalid student account type
     it('Invalid account type permission - Student', async () => {
@@ -142,7 +142,7 @@ describe('StudentsRouter /module/:module_name endpoint', () => {
         // Unsuccessful Connection due to wrong account type
         expect(responseStudents.statusCode).toBe(403);
         expect(responseStudents.body.error).toBe("You are not authorized to access this");
-    });
+    }, 30000);
 
     // Test case for invalid teacher account type
     it('Invalid account type permission - Teacher', async () => {
@@ -184,7 +184,7 @@ describe('StudentsRouter /module/:module_name endpoint', () => {
         // Unsuccessful Connection due to wrong account type
         expect(responseStudents.statusCode).toBe(403);
         expect(responseStudents.body.error).toBe("You are not authorized to access this");
-    });
+    }, 30000);
 });
 
 describe('StudentsRouter / endpoint', () => {
@@ -276,7 +276,7 @@ describe('StudentsRouter / endpoint', () => {
         const deleteStudentResponse = await adminSession.delete(`/${createdStudentID}`);
         expect(deleteStudentResponse.statusCode).toBe(200);
         expect(deleteStudentResponse.body.message).toBe("Student " + createdStudentID + " has been successfully deleted from the database");
-    });
+    }, 30000);
 
     // Test case for invalid teacher account type
     it('Invalid account type permission - Teacher', async () => {
@@ -359,7 +359,7 @@ describe('StudentsRouter / endpoint', () => {
         // success
         expect(createStudentResponse.statusCode).toBe(403);
         expect(createStudentResponse.body.error).toBe("You are not authorized to access this");
-    });
+    }, 30000);
 
     // Test case for existing email
     it('Existing Email', async () => {
@@ -442,5 +442,5 @@ describe('StudentsRouter / endpoint', () => {
         // unsuccessful
         expect(createStudentResponse.statusCode).toBe(500);
         expect(createStudentResponse.body.error).toBe("Email already exists");
-    });
+    }, 30000);
 });

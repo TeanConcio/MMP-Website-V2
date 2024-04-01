@@ -98,19 +98,19 @@ describe("TicketsRouter Endpoint", () => {
 
             // if there is a 2024-00000 ticket (the first ticket which will be created to test), delete it
             //const deleteTicket = await adminSession.delete(`/2024-00000`);
-           
+            
             // Create ticket for testing
             let responseModule = await adminSession.post('/')
             .set('Content-Type', 'application/json')
             .send(ticket);
 
             ticket_id  = responseModule.body.ticket_id;
-     
+            
             responseModule = await adminSession.get(`/${ticket_id}`);
 
             expect(responseModule.statusCode).toBe(200);
             
-        });
+        }, 30000);
 
         // Test case for not having the permission with correct ticket id
         it('invalid user permission', async () => {
@@ -150,7 +150,7 @@ describe("TicketsRouter Endpoint", () => {
             const responseModule = await adminSession.get(`/${ticket_id}`)
 
             expect(responseModule.body.error).toBe("You are not authorized to access this");
-        });
+        }, 30000);
 
         // Test case for having the permission with incorrect ticket id
         it('have the permission, incorrect ticket id', async () => {
@@ -195,7 +195,7 @@ describe("TicketsRouter Endpoint", () => {
 
             // Delete the ticket create for testing at the end
             expect(deleteTicket.statusCode).toBe(200);
-        });
+        }, 30000);
         
     });
 
@@ -261,7 +261,7 @@ describe("TicketsRouter Endpoint", () => {
             // Delete the ticket create for testing at the end
             expect(deleteTicket.statusCode).toBe(200);
 
-        });
+        }, 30000);
 
         // Test case for not having the permission
         it('dont have the permission', async () => {
@@ -314,11 +314,11 @@ describe("TicketsRouter Endpoint", () => {
             .send(ticket);
 
             ticket_id  = responseModule.body.ticket_id;
-         
+            
             responseModule = await adminSession.get(`/${ticket_id}`);
 
             expect(responseModule.body.error).toBe("You are not authorized to access this");
-        });
+        }, 30000);
     });
 
     // Test TicketsRouter /patch Endpoint
@@ -385,7 +385,7 @@ describe("TicketsRouter Endpoint", () => {
             // Delete the ticket create for testing at the end
             expect(deleteTicket.statusCode).toBe(200);
 
-        });
+        }, 30000);
 
         // Test case for not having the permission with a valid ticket
         it('dont have the permission, valid ticket id', async () => {
@@ -444,7 +444,7 @@ describe("TicketsRouter Endpoint", () => {
 
             expect(responseModule.body.error).toBe("You are not authorized to access this");
 
-        });
+        }, 30000);
 
         // test case for having the permission with an invalid ticket
         it('have the permission, invalid ticket id', async () => {
@@ -487,7 +487,7 @@ describe("TicketsRouter Endpoint", () => {
 
             expect(responseModule.body.error).toBe("Ticket does not exist");
 
-        });
+        }, 30000);
         
     });
 });

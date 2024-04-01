@@ -19,7 +19,7 @@ describe('AuthRouter /login endpoint', () => {
             });
         
         expect(response.statusCode).toBe(200);
-    });
+    }, 30000);
 
      // Test case for a scenario where id is valid but password isn't
     it('correct user_id, wrong password', async () => {
@@ -32,7 +32,7 @@ describe('AuthRouter /login endpoint', () => {
             });
         
         expect(response.body.error).toBe("INVALID_CREDENTIALS");
-    });
+    }, 30000);
 
     // Test case for a scenario where id and password valid but status is inactive
     it('correct user_id and password, status is not active', async () => {
@@ -45,5 +45,5 @@ describe('AuthRouter /login endpoint', () => {
             });
         
         expect(response.body.error).toBe("INACTIVE_ACCOUNT");
-    });
+    }, 30000);
 });

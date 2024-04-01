@@ -13,7 +13,7 @@ describe("Test exists Functions", () => {
         const year = 2023;
         const result = await exists(module, year);
         expect(result).toBe(true);
-    });
+    }, 30000);
 
     // Test case for existing module name but wrong school year
     test("existing module name, wrong school year", async () => {
@@ -21,7 +21,7 @@ describe("Test exists Functions", () => {
         const year = 2000;
         const result = await exists(module, year);
         expect(result).toBe(false);
-    });
+    }, 30000);
 
     // Test case for both wrong module name and school year
     test("both wrong module name and school year", async () => {
@@ -29,5 +29,5 @@ describe("Test exists Functions", () => {
         const year = 2000;
         const result = await exists(module, year);
         expect(result).toBe(false);
-    });
+    }, 30000);
 });

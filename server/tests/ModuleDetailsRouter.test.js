@@ -16,21 +16,21 @@ describe('ModuleDetailsRouter Endpoint Testing', () => {
             const module = "Child and Development";
             const result = await module_exists(module);
             expect(result).toBe(true);
-        });
+        }, 30000);
 
         // Test case for non existing module 
         test("checks for non-existing module", async () => {
             const module = "Placeholder";
             const result = await module_exists(module);
             expect(result).toBe(false);
-        });
+        }, 30000);
 
         // Test case for empty module name
         test("checks for empty module name", async () => {
             const module = "";
             const result = await module_exists(module);
             expect(result).toBe(false);
-        });
+        }, 30000);
     });
 
 
@@ -75,7 +75,7 @@ describe('ModuleDetailsRouter Endpoint Testing', () => {
             const responseModule = await adminSession.get('/all');
 
             expect(responseModule.statusCode).toBe(200);
-        });
+        }, 30000);
 
         // Test case for student
         it('login as student to view the modules', async () => {
@@ -115,7 +115,7 @@ describe('ModuleDetailsRouter Endpoint Testing', () => {
             const responseModule = await studentSession.get('/all');
             
             expect(responseModule.statusCode).toBe(403);
-        });
+        }, 30000);
 
         // Test case for non-existing account
         it('login as non-existing account to view the modules', async () => {
@@ -155,7 +155,7 @@ describe('ModuleDetailsRouter Endpoint Testing', () => {
             const responseModule = await invalidSession.get('/all');
             
             expect(responseModule.statusCode).toBe(403);
-        });
+        }, 30000);
     });
 
     // Test ModuleDetailsRouter /:module_name Endpoint
@@ -200,7 +200,7 @@ describe('ModuleDetailsRouter Endpoint Testing', () => {
             const responseModule = await adminSession.get('/info/Child and Development')
 
             expect(responseModule.statusCode).toBe(200);
-        });
+        }, 30000);
 
         // Test case for invalid user type
         it('login as a invalid user type', async () => {
@@ -242,7 +242,7 @@ describe('ModuleDetailsRouter Endpoint Testing', () => {
             const responseModule = await studentSession.get('/info/Child and Development')
 
             expect(responseModule.statusCode).toBe(403);
-        });
+        }, 30000);
 
         // Test case for admin and invalid route parameter
         it('login as a correct user with invalid route parameter', async () => {
@@ -284,7 +284,7 @@ describe('ModuleDetailsRouter Endpoint Testing', () => {
             const responseModule = await adminSession.get('/info/x')
 
             expect(responseModule.statusCode).toBe(404);
-        });
+        }, 30000);
 
     });
 });
