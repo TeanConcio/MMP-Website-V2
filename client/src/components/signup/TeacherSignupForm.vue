@@ -4,6 +4,13 @@ import ErrorMessagePopup from "../../components/common/ErrorMessagePopup.vue";
 import LoadingSpinner from "../../components/common/LoadingSpinner.vue";
 // Router
 import { useRouter } from 'vue-router';
+// Validators
+import {
+    validateNameField,
+    validateEmailField,
+    validatePasswordField,
+    validateConfirmPasswordField,
+} from "../../util/validators";
 </script>
 
 <template>
@@ -29,15 +36,15 @@ import { useRouter } from 'vue-router';
                     </label>
                     <input
                         type="first_name"
-                        id="firstname"
+                        id="first_name"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="First Name"
                         autocomplete="off"
-                        v-model="firstName"
+                        v-model="first_name"
                     />
-                    <div class="input-errors" v-if="errors.firstName">
+                    <div class="input-errors" v-if="errors.first_name">
                         <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.firstName }}
+                            {{ errors.first_name }}
                         </div>
                     </div>
                 </div>
@@ -50,15 +57,15 @@ import { useRouter } from 'vue-router';
                     >
                     <input
                         type="last_name"
-                        id="lastname"
+                        id="last_name"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="Last Name"
                         autocomplete="off"
-                        v-model="lastName"
+                        v-model="last_name"
                     />
-                    <div class="input-errors" v-if="errors.lastName">
+                    <div class="input-errors" v-if="errors.last_name">
                         <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.lastName }}
+                            {{ errors.last_name }}
                         </div>
                     </div>
                 </div>
@@ -71,15 +78,15 @@ import { useRouter } from 'vue-router';
                     >
                     <input
                         type="middle_name"
-                        id="middleName"
+                        id="middle_name"
                         class="shadow-sm bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="Middle Name"
                         autocomplete="off"
-                        v-model="middleName"
+                        v-model="middle_name"
                     />
-                    <div class="input-errors" v-if="errors.middleName">
+                    <div class="input-errors" v-if="errors.middle_name">
                         <div class="block mb-2 text-sm font-medium text-red-500">
-                            {{ errors.middleName }}
+                            {{ errors.middle_name }}
                         </div>
                     </div>
                 </div>
@@ -250,9 +257,9 @@ export default {
         // Data of the component
         return {
             // Form data
-            firstName: "",
-            lastName: "",
-            middleName: "",
+            first_name: "",
+            last_name: "",
+            middle_name: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -287,15 +294,15 @@ export default {
         async signup() {
             //Added teacher object
             let teacher = {
-                first_name: this.firstName,
-                last_name: this.lastName,
+                first_name: this.first_name,
+                last_name: this.last_name,
                 email: this.email,
                 password: this.password,
                 status: "FOR_APPROVAL",
             };
 
-            if (this.middleName.length > 0) {
-                teacher["middle_name"] = this.middleName;
+            if (this.middle_name.length > 0) {
+                teacher["middle_name"] = this.middle_name;
             }
 
             // Call Sign up api endpoint
@@ -333,66 +340,31 @@ export default {
             }
         },
         validateFirstName() {
-            if (this.firstName.length < 2 || this.firstName.length > 50) {
-                this.errors["firstName"] = "First name must be between 2 and 50 characters!";
-            } else if (/\d/.test(this.firstName)) {
-                this.errors["firstName"] = "First name must not have numbers!";
-            } else {
-                delete this.errors["firstName"];
-            }
+            validateNameField(this.first_name, "first_name", this.errors);
         },
         validateLastName() {
-            if (this.lastName.length < 2 || this.lastName.length > 50) {
-                this.errors["lastName"] = "Last name must be between 2 and 50 characters!";
-            } else if (/\d/.test(this.lastName)) {
-                this.errors["lastName"] = "Last name must not have numbers!";
-            } else {
-                delete this.errors["lastName"];
-            }
+            validateNameField(this.last_name, "last_name", this.errors);
         },
         validateMiddleName() {
-            if (this.middleName.length === 0) {
-                delete this.errors["middleName"];
+            if (this.middle_name.length === 0) {
+                delete this.errors["middle_name"];
                 return;
             }
 
-            if (this.middleName.length < 2 || this.middleName.length > 50) {
-                this.errors["middleName"] = "Middle name must be between 2 and 50 characters!";
-            } else if (/\d/.test(this.middleName)) {
-                this.errors["middleName"] = "Middle name must not have numbers!";
-            } else {
-                delete this.errors["middleName"];
-            }
+            validateNameField(this.middle_name, "middle_name", this.errors);
         },
         validateEmail() {
-            const emailPattern =
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-            if (emailPattern.test(this.email) === false) {
-                this.errors["email"] = "Must be an email!";
-            } else if (this.email.length > 50) {
-                this.errors["email"] = "Email must be less than 50 characters!";
-            } else {
-                delete this.errors["email"];
-            }
+            validateEmailField(this.email, this.errors);
         },
         validatePassword() {
-            if (this.password.length < 8 || this.password.length > 40) {
-                this.errors["password"] = "Password must be between 8 and 40 characters!";
-            } else {
-                delete this.errors["password"];
-            }
+            validatePasswordField(this.password, this.errors);
         },
         validateConfirmPassword() {
-            if (this.confirmPassword !== this.password) {
-                this.errors["confirmPassword"] = "Passwords must match!";
-            } else {
-                delete this.errors["confirmPassword"];
-            }
+            validateConfirmPasswordField(this.confirmPassword, this.password, this.errors);
         },
         validateAgreeTerms() {
             if (!this.agreeTerms) {
-                this.errors["agreeTerms"] = "You must agree to the terms!";
+                this.errors["agreeTerms"] = "You must agree to the terms and conditions!";
             } else {
                 delete this.errors["agreeTerms"];
             }
@@ -400,13 +372,13 @@ export default {
     },
     watch: {
         // Watchers of the component
-        firstName() {
+        first_name() {
             this.validateFirstName();
         },
-        lastName() {
+        last_name() {
             this.validateLastName();
         },
-        middleName() {
+        middle_name() {
             this.validateMiddleName();
         },
         email() {

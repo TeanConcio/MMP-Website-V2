@@ -2,6 +2,8 @@
 import MessagePopup from "../../components/common/MessagePopup.vue";
 import ErrorMessagePopup from "../../components/common/ErrorMessagePopup.vue";
 import LoadingSpinner from "../common/LoadingSpinner.vue";
+// Router
+import { useRouter } from 'vue-router';
 // Validators
 import {
     validateNameField,
@@ -20,8 +22,6 @@ import {
     validateBooleanField,
     validateTextAreaField
 } from "../../util/validators";
-// Router
-import { useRouter } from 'vue-router';
 </script>
 
 <template>
