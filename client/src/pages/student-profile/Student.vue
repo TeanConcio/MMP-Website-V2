@@ -9,6 +9,8 @@ import AllEnrollmentsTab from "../../components/student-profile/AllEnrollmentsTa
 import EnrollTab from "../../components/student-profile/EnrollTab.vue";
 // Store
 import { useCredentialsStore } from "../../store/store";
+// Router
+import { useRouter } from 'vue-router';
 // Helpers
 import { formatName } from "../../util/helpers";
 </script>
@@ -151,6 +153,8 @@ export default {
     data() {
         return {
             store: useCredentialsStore(),
+            // Router
+            router: useRouter(),
             // Page mode
             pageMode: 'grades', // "details", 'grades', 'enroll, 'history'
             // Popups
@@ -202,7 +206,7 @@ export default {
         // If user is not an student
         if (store.account_type !== "student") {
             // Redirect to home page
-            this.$router.push("/");
+            this.router.push("/");
         }
     },
     mounted() {

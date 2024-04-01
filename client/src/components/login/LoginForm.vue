@@ -108,6 +108,8 @@
 import MessagePopup from "../../components/common/MessagePopup.vue";
 import { useCredentialsStore } from "../../store/store";
 import LoadingSpinner from "../common/LoadingSpinner.vue";
+// Router
+import { useRouter } from 'vue-router';
 </script>
 
 <script>
@@ -126,6 +128,8 @@ export default {
             showErrorPopup: false,
             //Loading
             loading: false,
+            // Router
+            router: useRouter(),
         };
     },
     methods: {
@@ -161,11 +165,11 @@ export default {
                     if (store.isLoggedIn) {
                         // Redirect to designated profile page
                         if (store.account_type === "admin") {
-                            this.$router.push("/admin");
+                            this.router.push("/admin");
                         } else if (store.account_type === "teacher") {
-                            this.$router.push("/teacher");
+                            this.router.push("/teacher");
                         } else if (store.account_type === "student") {
-                            this.$router.push("/student");
+                            this.router.push("/student");
                         }
                     }
                 })
@@ -173,7 +177,7 @@ export default {
                 .catch((error) => {
                     console.log(error);
                     this.showErrorPopup = true;
-                    this.description = error.response.data.error;
+                    //this.description = error.response.data.error;
                 });
         },
         // Validators

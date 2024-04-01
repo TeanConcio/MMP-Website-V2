@@ -1,8 +1,10 @@
 <script setup>
-// Sore
+// Store
 import { useCredentialsStore } from "../../store/store";
 // Components
 import PromptPopup from "./PromptPopup.vue";
+// Router
+import { useRouter } from 'vue-router';
 </script>
 
 <template>
@@ -135,6 +137,8 @@ export default {
         return {
             // Store
             store: useCredentialsStore(),
+            // Router
+            router: useRouter(),
             // Popups
             currentPopup: null,
         };
@@ -149,18 +153,18 @@ export default {
             this.currentPopup = null
             // Redirect to login
             if (!this.store.isLoggedIn) {
-                this.$router.push("/login");
+                this.router.push("/login");
             }
         },
         redirectProfile() {
             if (this.store.account_type == "student") {
-                this.$router.push("/student");
+                this.router.push("/student");
             }
             if (this.store.account_type == "teacher") {
-                this.$router.push("/teacher");
+                this.router.push("/teacher");
             }
             if (this.store.account_type == "admin") {
-                this.$router.push("/admin");
+                this.router.push("/admin");
             }
         },
     },

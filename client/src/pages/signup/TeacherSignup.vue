@@ -1,6 +1,8 @@
 <script setup>
 // Store
 import { useCredentialsStore } from "../../store/store";
+// Router
+import { useRouter } from 'vue-router';
 // Components
 import LogoLink from "../../components/common/LogoLink.vue";
 import TeacherSignupForm from "../../components/signup/TeacherSignupForm.vue";
@@ -21,13 +23,19 @@ import TeacherSignupForm from "../../components/signup/TeacherSignupForm.vue";
 
 <script>
 export default {
+    data() {
+        return {
+            // Router
+            router: useRouter(),
+        };
+    },
     beforeCreate() {
         // On component mount
         const store = useCredentialsStore();
         // If user is logged in
         if (store.isLoggedIn) {
             // Redirect to home page
-            this.$router.push("/");
+            this.router.push("/");
         }
     },
 };

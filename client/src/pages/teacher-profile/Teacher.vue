@@ -4,6 +4,8 @@ import ModulesTab from "../../components/teacher-profile/ModulesTab.vue";
 import ModuleEnrollmentsTab from "../../components/teacher-profile/ModuleEnrollmentsTab.vue";
 // Store
 import { useCredentialsStore } from "../../store/store";
+// Router
+import { useRouter } from 'vue-router';
 // Helpers
 import { formatName } from "../../util/helpers";
 </script>
@@ -76,6 +78,8 @@ export default {
         return {
             // Store
             store: useCredentialsStore(),
+            // Router
+            router: useRouter(),
             // Page mode
             pageMode: 'modules', // 'modules', 'student-records'
             // Data
@@ -103,7 +107,7 @@ export default {
         // If user is not a teacher
         if (store.account_type !== "teacher") {
             // Redirect to home page
-            this.$router.push("/");
+            this.router.push("/");
         }
     },
 };

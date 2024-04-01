@@ -9,6 +9,8 @@ import TicketsTab from "../../components/admin-profile/tickets-tab/TicketsTab.vu
 import StudentCard from "../../components/admin-profile/student-card/StudentCard.vue";
 // Store
 import { useCredentialsStore } from "../../store/store";
+// Router
+import { useRouter } from 'vue-router';
 </script>
 
 <template>
@@ -143,6 +145,8 @@ export default {
         return {
             // Store
             store: useCredentialsStore(),
+            // Router
+            router: useRouter(),
             // Page mode
             pageMode: "dashboard", // 'dashboard', 'enrollment-records', 'student-records', 'module-student-records', 'modules-tab', 'student-card', 'tickets-tab'
             // Data
@@ -215,7 +219,7 @@ export default {
         // If user is not an admin
         if (store.account_type !== "admin") {
             // Redirect to home page
-            this.$router.push("/");
+            this.router.push("/");
         }
     },
 };

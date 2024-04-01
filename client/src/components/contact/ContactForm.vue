@@ -202,7 +202,7 @@ import LoadingSpinner from "../common/LoadingSpinner.vue";
         exit-text="Close"
         @on-exit="
             currentPopup = 'null';
-            //this.$router.push('/contact');
+            //this.router.push('/contact');
             resetForm();
             loading = false;
         "

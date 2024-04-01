@@ -2,6 +2,8 @@
 import MessagePopup from "../../components/common/MessagePopup.vue";
 import ErrorMessagePopup from "../../components/common/ErrorMessagePopup.vue";
 import LoadingSpinner from "../../components/common/LoadingSpinner.vue";
+// Router
+import { useRouter } from 'vue-router';
 </script>
 
 <template>
@@ -214,7 +216,7 @@ import LoadingSpinner from "../../components/common/LoadingSpinner.vue";
         exit-text="Close"
         @on-exit="
             showSuccessPopup = false;
-            $router.push('/');
+            router.push('/');
             loading = false;
         "
     />
@@ -263,12 +265,14 @@ export default {
             showErrorPopup: false,
             //Loading
             loading: false,
+            // Router
+            router: useRouter(),
         };
     },
     methods: {
         // Methods of the component
         swapForm() {
-            this.$router.push("/student/signup");
+            this.router.push("/student/signup");
         },
         // Submit form
         submitForm() {

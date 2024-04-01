@@ -20,6 +20,8 @@ import {
     validateBooleanField,
     validateTextAreaField
 } from "../../util/validators";
+// Router
+import { useRouter } from 'vue-router';
 </script>
 
 <template>
@@ -888,7 +890,7 @@ import {
         exit-text="Close"
         @on-exit="
             showSuccessPopup = false;
-            this.$router.push('/');
+            router.push('/');
             loading = false;
         "
     />
@@ -967,12 +969,14 @@ export default {
             showErrorPopup: false,
             //Loading
             loading: false,
+            // Router
+            router: useRouter(),
         };
     },
     methods: {
         // change signup form type to teachers
         swapForm() {
-            this.$router.push("/teacher/signup");
+            this.router.push("/teacher/signup");
         },
 
         // Trim inputs
